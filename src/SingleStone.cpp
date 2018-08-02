@@ -2,7 +2,7 @@
 // Created by mirex on 04.07.2018.
 //
 
-#include "MainHeader.hpp"
+#include "../headers/MainHeader.hpp"
 
 SingleStone::SingleStone() : 
     _xCord(NULL),
