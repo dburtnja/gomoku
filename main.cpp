@@ -5,25 +5,17 @@ int main() {
 
     ArtificialIntelligence * AI = new ArtificialIntelligence;
     mainBoard->availablespots.push_back(new AvailableSpot(GOMOKU_BOARD_SIZE/2,GOMOKU_BOARD_SIZE/2));
-//    mainBoard->putStoneOnBoard(0,0,2);
-//    mainBoard->putStoneOnBoard(0,2,1);
-//    mainBoard->putStoneOnBoard(1,1,2);
-//    mainBoard->putStoneOnBoard(2,2,1);
-//    mainBoard->putStoneOnBoard(1,2,2);
-//    mainBoard->putStoneOnBoard(1,0,1);
-//    mainBoard->putStoneOnBoard(2,1,2);
 
-
-
-
-   // AI->runAI(mainBoard, 1);
-    for (int i = 0; i < GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE; ++i) {
-        if (i%2 + 1 == AI_PLAYER)
+    int i = 0;
+    while(int winner = ArtificialIntelligence::checkVictory(mainBoard->board, 1)) {
+        if (winner == 1 or winner == 2)
         {
-//            if (i >= 1)
-                AI->runAI(mainBoard,AI_PLAYER );
-//            else
-               // mainBoard->putStoneOnBoard(1,1,AI_PLAYER);
+            std::cout << winner << " WON !\n";
+           // break;
+        }
+        if (i % 2 + 1  == AI_PLAYER)
+        {
+            AI->runAI(mainBoard,AI_PLAYER );
             mainBoard->printBoard();
         }
         else
@@ -37,6 +29,8 @@ int main() {
             mainBoard->putStoneOnBoard(x,y,HUMAN_PLAYER);
             mainBoard->printBoard();
         }
+        i++;
+
     }
     mainBoard->printBoard();
 
