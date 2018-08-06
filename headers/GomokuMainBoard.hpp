@@ -30,6 +30,9 @@ public:
     int board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
     void printBoard();
 
+    int checkVictoryBoard(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
+
+
     std::vector<AvailableSpot*> availablespots;
 
 private:

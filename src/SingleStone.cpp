@@ -7,7 +7,7 @@
 SingleStone::SingleStone() : 
     _xCord(NULL),
     _yCord(NULL),
-    _Player(NULL)
+    _Player(0)
 {}
 
 SingleStone::SingleStone(unsigned int Player, unsigned int CordX, unsigned int CordY):

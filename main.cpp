@@ -11,7 +11,7 @@ int main() {
         if (winner == 1 or winner == 2)
         {
             std::cout << winner << " WON !\n";
-           // break;
+           break;
         }
         if (i % 2 + 1  == AI_PLAYER)
         {

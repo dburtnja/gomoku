@@ -46,18 +46,21 @@ void GomokuMainBoard::addNewSpots(int x, int y) {
         {
             if (i == 0 && j == 0)
                 continue;
-            if ((x+i >=0 and x+i < GOMOKU_BOARD_SIZE) and (y+j >=0 and y+j < GOMOKU_BOARD_SIZE)
-                and checkForSameSpot(x+i,y+j) and this->board[x+i][y+j] == 0)
+            if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE)
+                and checkForSameSpot(x + i,y + j) and this->board[x + i][y + j] == 0)
                 this->availablespots.push_back(new AvailableSpot(x + i, y + j));
         }
     }
-    deleteUsedSpot(x , y);
+
+    deleteUsedSpot(x, y);
 }
 
 void GomokuMainBoard::clearStoneOnBoard(int x, int y) {
 
-    board[x][y] = 0;
+
     this->dellOldSpots(x,y);
+    board[x][y] = 0;
+
 }
 
 void GomokuMainBoard::dellOldSpots(int x, int y) {
@@ -67,8 +70,7 @@ void GomokuMainBoard::dellOldSpots(int x, int y) {
         {
             if (i == 0 && j == 0)
                 continue;
-            if ((x+i >=0 and x+i < GOMOKU_BOARD_SIZE) and (y+j >=0 and y+j < GOMOKU_BOARD_SIZE)
-                and this->board[x+i][y+j] != 0)
+            if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE))
                 deleteUsedSpot(x + i , y + j);
         }
     }
@@ -125,3 +127,40 @@ void GomokuMainBoard::printBoard() {
     std::cout << "\n";
 
 }
+
+//int ArtificialIntelligence::checkVictory(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]) {
+//    int victory = -1;
+//
+//    for (int i=0; i < GOMOKU_BOARD_SIZE; i++)
+//    {
+//        if (Board[i][0] == Board[i][1] && Board[i][1] == Board[i][2] && Board[i][0] != 0)
+//        {
+//            victory = Board[i][0];
+//            break;
+//        }
+//        if (Board[0][i] == Board[1][i] && Board[1][i] == Board[2][i] && Board[0][i] != 0)
+//        {
+//            victory = Board[0][i];
+//            break;
+//        }
+//        if (Board[0][0] == Board[1][1] && Board[2][2] == Board[0][0] && Board[0][0] != 0)
+//        {
+//            victory = Board[0][0];
+//            break;
+//        }
+//        if (Board[0][2] == Board[1][1] && Board[2][0] == Board[0][2] && Board[0][2] != 0)
+//        {
+//            victory = Board[0][2];
+//            break;
+//        }
+//        else victory = 0;
+//    }
+//    if (victory == 0)
+//        for (int i = 0; i < GOMOKU_BOARD_SIZE; ++i) {
+//            for (int j = 0; j <GOMOKU_BOARD_SIZE ; ++j) {
+//                if (Board[i][j] == 0)
+//                    victory = -1;
+//            }
+//        }
+//    return victory;
+//}

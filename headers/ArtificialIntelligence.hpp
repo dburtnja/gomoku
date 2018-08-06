@@ -19,7 +19,7 @@ class ArtificialIntelligence {
         ~ArtificialIntelligence();
         ArtificialIntelligence(const ArtificialIntelligence & toCopy);
         ArtificialIntelligence &operator = (const ArtificialIntelligence & rhs);
-        int checkVictory(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int player);
+        static int checkVictory(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int player);
         void printBoard(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
         void runAI(GomokuMainBoard * mainBoard, int player) ;
         AiMove minmaxSearch(GomokuMainBoard * mainBoard);

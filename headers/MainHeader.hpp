@@ -5,9 +5,10 @@
 #ifndef GOMOKU_MAINHEADER_HPP
 #define GOMOKU_MAINHEADER_HPP
 
-#define GOMOKU_BOARD_SIZE 5
+#define GOMOKU_BOARD_SIZE 3
 #define AI_PLAYER 1
 #define HUMAN_PLAYER 2
+#define REC_DEPT 20
 
 #include "iostream"
 #include <iomanip>

@@ -20,46 +20,47 @@ ArtificialIntelligence& ArtificialIntelligence::operator=(const ArtificialIntell
 }
 
 void ArtificialIntelligence::runAI(GomokuMainBoard * mainBoard, int player) {
-    AiMove move;
-    std::vector<AvailableSpot*> temp;
+    AiMove move{};
 
-    temp = mainBoard->availablespots;
     move = minmaxSearch(mainBoard);
-    mainBoard->availablespots = temp;
     mainBoard->putStoneOnBoard(move.x, move.y, player);
 }
 
-int ArtificialIntelligence::checkVictory(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int player) {
+int ArtificialIntelligence::checkVictory(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int player) {
     int victory = -1;
 
-    for (int i=0; i < GOMOKU_BOARD_SIZE; i++)
-    {
-        if (Board[i][0] == Board[i][1] && Board[i][1] == Board[i][2] && Board[i][0] != 0)
+    for(int i = 0; i < GOMOKU_BOARD_SIZE; i++){
+        for (int j = 0; j < GOMOKU_BOARD_SIZE; j++)
         {
-            victory = Board[i][0];
-            break;
+            if (board[i][j] == board[i][j + 1] && board[i][j + 1] == board[i][j + 2] && board[i][j] != 0 and j+2 < GOMOKU_BOARD_SIZE)
+            {
+                victory = board[i][j];
+                return victory;
+            }
+
+            if (board[i][j] == board[i+1][j] && board[i+1][j] == board[i+2][j] && board[i][j] != 0 and i+2 < GOMOKU_BOARD_SIZE)
+            {
+                victory = board[i][j];
+                return victory;
+            }
+            if (board[i][j] == board[i+1][j+1] && board[i+2][j+2] == board[i][j] && board[i][j] != 0 and i+2 <GOMOKU_BOARD_SIZE and j+2 <GOMOKU_BOARD_SIZE  )
+            {
+                victory = board[i][j];
+                return victory;
+            }
+            if (board[i][j] == board[i-1][j+1] && board[i-1][j+1] == board[i-2][j+2] && board[i][j] != 0 and i - 2 >= 0 and j + 2 < GOMOKU_BOARD_SIZE)
+            {
+                victory = board[i][j];
+                return victory;
+            }
+            else victory = 0;
         }
-        if (Board[0][i] == Board[1][i] && Board[1][i] == Board[2][i] && Board[0][i] != 0)
-        {
-            victory = Board[0][i];
-            break;
-        }
-        if (Board[0][0] == Board[1][1] && Board[2][2] == Board[0][0] && Board[0][0] != 0)
-        {
-            victory = Board[0][0];
-            break;
-        }
-        if (Board[0][2] == Board[1][1] && Board[2][0] == Board[0][2] && Board[0][2] != 0)
-        {
-            victory = Board[0][2];
-            break;
-        }
-        else victory = 0;
     }
+
     if (victory == 0)
         for (int i = 0; i < GOMOKU_BOARD_SIZE; ++i) {
             for (int j = 0; j <GOMOKU_BOARD_SIZE ; ++j) {
-                if (Board[i][j] == 0)
+                if (board[i][j] == 0)
                     victory = -1;
             }
         }
@@ -99,21 +100,30 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard * mainBoard) {
     int score = 1000000;
 
     AiMove move{};
+    std::vector<AvailableSpot *> tmp_vector;
 
-        for(auto & element: mainBoard->availablespots) {
+    tmp_vector = mainBoard->availablespots;
+
+        for(auto & element: tmp_vector) {
             int x = element->getX();
             int y = element->getY();
 
-           //mainBoard->board[x][y] = AI_PLAYER;
+
+            //mainBoard->board[x][y] = AI_PLAYER;
             mainBoard->putStoneOnBoard(x, y, AI_PLAYER);
             int temp = maxSearch(mainBoard, 0);
 
+            std::cout << x << "|" <<y<<"||" << temp << "\n";
+            fflush(stdout);
             if (temp < score) {
                 score = temp;
                 move.x = x;
                 move.y = y;
             }
+            mainBoard->availablespots=tmp_vector;
             mainBoard->board[x][y] = 0;
+            //mainBoard->availablespots.push_back(new AvailableSpot(x,y));
+
         }
         return move;
 }
@@ -127,8 +137,8 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard * mainBoard) {
 //            if (mainBoard->board[i][j] == 0) {
 //                mainBoard->board[i][j] = AI_PLAYER;
 //
-//                int temp = maxSearch(mainBoard);
-//                std::cout << i << "|" <<j<<"||" << score << "\n";
+//                int temp = maxSearch(mainBoard,0);
+//                std::cout << i << "|" <<j<<"||" << temp << "\n";
 //                fflush(stdout);
 //                if (temp < score) {
 //                    score = temp;
@@ -143,14 +153,14 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard * mainBoard) {
 //    return move;
 //}
 
-//int ArtificialIntelligence::maxSearch(GomokuMainBoard * mainBoard) {
+//int ArtificialIntelligence::maxSearch(GomokuMainBoard * mainBoard, int depth) {
 //    int victory = this->checkVictory(mainBoard->board, AI_PLAYER);
 //
 //    if (victory == HUMAN_PLAYER)
 //        return {100};
 //    else if (victory == AI_PLAYER)
 //        return {-100};
-//    else if (victory == 0)
+//    else if (victory == 0 or depth > REC_DEPT)
 //        return {0};
 //
 //    int score = -1000000;
@@ -161,7 +171,7 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard * mainBoard) {
 //            if (mainBoard->board[i][j] == 0)
 //            {
 //                mainBoard->board[i][j] = HUMAN_PLAYER;
-//                score = std::max(score, minSearch(mainBoard));
+//                score = std::max(score, minSearch(mainBoard, depth + 1));
 //                mainBoard->board[i][j] = 0;
 //            }
 //        }
@@ -177,31 +187,37 @@ int ArtificialIntelligence::maxSearch(GomokuMainBoard * mainBoard, int depth) {
         return {100};
     else if (victory == AI_PLAYER)
         return {-100};
-    else if (victory == 0 or depth > 1)
+    else if (victory == 0  or depth > REC_DEPT)
         return {0};
 
     int score = -1000000;
-    for(auto & element: mainBoard->availablespots) {
+
+    std::vector<AvailableSpot *> tmp_vector;
+
+    tmp_vector = mainBoard->availablespots;
+    for(auto & element: tmp_vector) {
         int x = element->getX();
         int y = element->getY();
 
         mainBoard->putStoneOnBoard(x, y, HUMAN_PLAYER);
-        score = std::max(score, minSearch(mainBoard, ++depth));
+        //mainBoard->board[x][y] = HUMAN_PLAYER;
+
+        score = std::max(score, minSearch(mainBoard, depth + 1));
         mainBoard->clearStoneOnBoard(x,y);
-        //mainBoard->board[x][y] = 0;
-        }
+        mainBoard->availablespots.push_back(new AvailableSpot(x,y));
+    }
 
     return score;
 }
 
-//int ArtificialIntelligence::minSearch(GomokuMainBoard * mainBoard) {
+//int ArtificialIntelligence::minSearch(GomokuMainBoard * mainBoard, int depth) {
 //    int victory = this->checkVictory(mainBoard->board, HUMAN_PLAYER);
 //
 //    if (victory == HUMAN_PLAYER)
 //        return {100};
 //    else if (victory == AI_PLAYER)
 //        return {-100};
-//    else if (victory == 0)
+//    else if (victory == 0  or depth > REC_DEPT)
 //        return {0};
 //
 //    int score = 1000000;
@@ -212,7 +228,7 @@ int ArtificialIntelligence::maxSearch(GomokuMainBoard * mainBoard, int depth) {
 //            if (mainBoard->board[i][j] == 0)
 //            {
 //                mainBoard->board[i][j] = AI_PLAYER;
-//                score = std::min(score, maxSearch(mainBoard));
+//                score = std::min(score, maxSearch(mainBoard, depth + 1));
 //                mainBoard->board[i][j] = 0;
 //            }
 //        }
@@ -228,19 +244,24 @@ int ArtificialIntelligence::minSearch(GomokuMainBoard * mainBoard, int depth) {
         return {100};
     else if (victory == AI_PLAYER)
         return {-100};
-    else if (victory == 0 or depth > 1)
+    else if (victory == 0  or depth > REC_DEPT)
         return {0};
 
     int score = 1000000;
-    for(auto & element: mainBoard->availablespots) {
-        if (element) {
-            int x = element->getX();
-            int y = element->getY();
 
-            mainBoard->putStoneOnBoard(x, y, AI_PLAYER);
-            score = std::min(score, maxSearch(mainBoard, ++depth));
-            mainBoard->clearStoneOnBoard(x, y);
-        }
+    std::vector<AvailableSpot *> tmp_vector;
+
+    tmp_vector = mainBoard->availablespots;
+    for(auto element: tmp_vector) {
+        int x = element->getX();
+        int y = element->getY();
+
+        mainBoard->putStoneOnBoard(x, y, AI_PLAYER);
+        //0mainBoard->board[x][y] = AI_PLAYER;
+
+        score = std::min(score, maxSearch(mainBoard, depth + 1));
+        mainBoard->clearStoneOnBoard(x, y);
+        mainBoard->availablespots.push_back(new AvailableSpot(x,y));
     }
 
     return score;
