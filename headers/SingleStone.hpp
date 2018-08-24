@@ -13,7 +13,6 @@ public:
     ~SingleStone();
     SingleStone & operator =(const SingleStone & rhs);
 
-protected:
     unsigned int _Player;
     unsigned int getCordX( void );
     unsigned int getCordY( void );
