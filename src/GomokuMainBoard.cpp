@@ -38,15 +38,16 @@ void GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth) {
 //    std::cout << x << "|" <<y<<"||" << "\n";
 //    fflush(stdout);
     board[x][y] = plyaer;
+
     this->addNewSpots(x, y, depth);
 }
 
 void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
-    if (depth > 1 )
+    if (depth > 1)
     {
-        for (int i = -2; i<= 2; i++)
+        for (int i = -1; i<= 1; i++)
         {
-            for (int j = -2; j<= 2; j++)
+            for (int j = -1; j<= 1; j++)
             {
                 if (i == 0 && j == 0)
                     continue;
@@ -70,9 +71,9 @@ void GomokuMainBoard::clearStoneOnBoard(int x, int y) {
 }
 
 void GomokuMainBoard::dellOldSpots(int x, int y) {
-    for (int i = -2; i<= 2; i++)
+    for (int i = -1; i<= 1; i++)
     {
-        for (int j = -2; j<= 2; j++)
+        for (int j = -1; j<= 1; j++)
         {
             if (i == 0 && j == 0)
                 continue;
@@ -190,6 +191,10 @@ int GomokuMainBoard::getValue(int x, int y) {
 }
 
 bool GomokuMainBoard::checkEmpty(int x, int y) {
+    if (x < 0 || x > GOMOKU_BOARD_SIZE)
+        return false;
+    if (y < 0 || y > GOMOKU_BOARD_SIZE)
+        return false;
     return this->board[x][y] == 0;
 }
 
@@ -208,17 +213,14 @@ bool GomokuMainBoard::rowOfFive(int x, int y){
         i++;
     }
     i = 1;
-    if (temp >=5)
-        five = true;
-    temp = 1;
+
     while (y + i <= GOMOKU_BOARD_SIZE-1 && board[x][y+i] == board[x][y]){
         temp++;
         i++;
     }
-    if (temp >=5)
-        five = true;
-    //return (temp >= 5);
-    return five;
+
+    return (temp >= POINTS_TO_WIN);
+
 }
 
 bool GomokuMainBoard::columnOfFive(int x, int y){
@@ -232,15 +234,12 @@ bool GomokuMainBoard::columnOfFive(int x, int y){
         i++;
     }
     i = 1;
-    if (temp >=5)
-        five = true;
-    temp = 1;
+
     while (x + i <= GOMOKU_BOARD_SIZE-1 && board[x+i][y] == board[x][y]){
         temp++;
         i++;
     }
-    //return (temp >= 5);
-    return five;
+    return (temp >= POINTS_TO_WIN);
 }
 
 bool GomokuMainBoard::mainDiagnolOfFive(int x, int y){
@@ -254,14 +253,14 @@ bool GomokuMainBoard::mainDiagnolOfFive(int x, int y){
         i++;
     }
     i = 1;
-    if (temp >=5)
-        five = true;
-    temp = 1;
+//    if (temp >=5)
+//        five = true;
+//    temp = 1;
     while (x + i <= GOMOKU_BOARD_SIZE-1 && y + i <= GOMOKU_BOARD_SIZE-1 && board[x+i][y+i] == board[x][y]){
         temp++;
         i++;
     }
-    //return (temp >= 5);
+    return (temp >= POINTS_TO_WIN);
     return five;
 }
 
@@ -276,14 +275,14 @@ bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y){
         i++;
     }
     i = 1;
-    if (temp >=5)
-        five = true;
-    temp = 1;
+//    if (temp >=5)
+//        five = true;
+//    temp = 1;
     while (x + i <= GOMOKU_BOARD_SIZE-1 && y - i >= 0 && board[x+i][y-i] == board[x][y]){
         temp++;
         i++;
     }
-    //return (temp >= 5);
+    return (temp >= POINTS_TO_WIN);
     return five;
 }
 
