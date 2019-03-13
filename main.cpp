@@ -6,10 +6,11 @@ int main() {
 
     ArtificialIntelligence * AI = new ArtificialIntelligence;
 
+    mainBoard->availablespots.push_back(new AvailableSpot(GOMOKU_BOARD_SIZE / 2, GOMOKU_BOARD_SIZE / 2));
 
     int i = 0;
     while(1) {
-        if (i % 2 + 1  == AI_PLAYER)
+        if (i % 2   == AI_PLAYER)
         {
             move = AI->runAI(*mainBoard, AI_PLAYER );
             if (mainBoard->win(move.x, move.y))
