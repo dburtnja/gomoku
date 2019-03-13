@@ -9,7 +9,7 @@
 #define AI_PLAYER 1
 #define HUMAN_PLAYER 2
 #define REC_DEPT 3
-
+#define POINTS_TO_WIN 5
 
 #include "iostream"
 #include <iomanip>
