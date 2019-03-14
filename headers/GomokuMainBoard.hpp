@@ -10,6 +10,8 @@
 #include "MainHeader.hpp"
 #include "SingleStone.hpp" //не бачить цей хедер з MainHeader.hpp ??????
 #include "AvailableSpot.hpp" //не бачить цей хедер з MainHeader.hpp ??????
+#include "BoardState.hpp" //не бачить цей хедер з MainHeader.hpp ??????
+
 
 class GomokuMainBoard {
 public:
@@ -17,10 +19,23 @@ public:
     GomokuMainBoard(const GomokuMainBoard & toCopy);
     ~GomokuMainBoard();
     GomokuMainBoard & operator = (const GomokuMainBoard & rhs);
+    int getValue(int x, int y);
+    bool checkEmpty(int x, int y);
+    void setValue(int x,int y, int c);
+    std::string toString();
 
-    //void putStoneOnBoard(SingleStone * newStone);
-    void putStoneOnBoard(int x, int y, int plyaer);
-    void addNewSpots(int x, int y);
+    bool win(int, int);
+    bool draw();
+    bool rowOfFive(int, int);
+    bool columnOfFive(int, int);
+    bool mainDiagnolOfFive(int, int);
+    bool reverseDiagnolOfFive(int, int);
+    int count = 0;
+    long int recs = 0;
+
+
+    void putStoneOnBoard(int x, int y, int plyaer, int depth);
+    void addNewSpots(int x, int y, int depth);
 
     void clearStoneOnBoard(int x, int y);
     void dellOldSpots(int x, int y);
@@ -30,10 +45,11 @@ public:
     int board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
     void printBoard();
 
-    int checkVictoryBoard(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
-
+    int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
 
     std::vector<AvailableSpot*> availablespots;
+    std::vector<BoardState *> boardHash;
+
 
 private:
     unsigned int _boardSize;
