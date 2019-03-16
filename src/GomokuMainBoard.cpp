@@ -43,6 +43,21 @@ void GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth) {
 }
 
 void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
+    if (depth > 200)
+    {
+        for (int i = -2; i<= 2; i++)
+        {
+            for (int j = -2; j<= 2; j++)
+            {
+                if (i == 0 && j == 0)
+                    continue;
+                if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE)
+                    and checkForSameSpot(x + i,y + j)
+                    and this->board[x + i][y + j] == 0)
+                    this->availablespots.push_back(new AvailableSpot(x + i, y + j));
+            }
+        }
+    }
     if (depth > 1)
     {
         for (int i = -1; i<= 1; i++)
@@ -253,10 +268,8 @@ bool GomokuMainBoard::mainDiagnolOfFive(int x, int y){
         i++;
     }
     i = 1;
-//    if (temp >=5)
-//        five = true;
-//    temp = 1;
-    while (x + i <= GOMOKU_BOARD_SIZE-1 && y + i <= GOMOKU_BOARD_SIZE-1 && board[x+i][y+i] == board[x][y]){
+
+    while (x + i < GOMOKU_BOARD_SIZE && y + i < GOMOKU_BOARD_SIZE && board[x+i][y+i] == board[x][y]){
         temp++;
         i++;
     }
@@ -270,7 +283,7 @@ bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y){
     int i = 1;
     bool five = false;
 
-    while (x-i >= 0 && y + i <= GOMOKU_BOARD_SIZE-1 && board[x-i][y+i] == board[x][y]){
+    while (x-i >= 0 && y + i < GOMOKU_BOARD_SIZE && board[x-i][y+i] == board[x][y]){
         temp++;
         i++;
     }
@@ -278,7 +291,7 @@ bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y){
 //    if (temp >=5)
 //        five = true;
 //    temp = 1;
-    while (x + i <= GOMOKU_BOARD_SIZE-1 && y - i >= 0 && board[x+i][y-i] == board[x][y]){
+    while (x + i < GOMOKU_BOARD_SIZE && y - i >= 0 && board[x+i][y-i] == board[x][y]){
         temp++;
         i++;
     }
@@ -291,6 +304,87 @@ bool GomokuMainBoard::win(int x, int y){
 }
 
 
+bool GomokuMainBoard::rowOfTwo(int x, int y)
+{
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+
+    while (y - i >= 0 && board[x][y - i] == board[x][y]){
+        temp++;
+        i++;
+    }
+
+    while (y + j <= GOMOKU_BOARD_SIZE-1 && board[x][y + j] == board[x][y]){
+        temp++;
+        j++;
+    }
+
+    return (temp == 2 && this->getValue(x, y - i) == HUMAN_PLAYER && this->getValue(x, y + i) == HUMAN_PLAYER);
+}
+
+bool GomokuMainBoard::columnOfTwo(int x, int y)
+{
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+
+    while (x - i >= 0 && board[x - i][y] == board[x][y]){
+        temp++;
+        i++;
+    }
+
+    while (x + j <= GOMOKU_BOARD_SIZE-1 && board[x + j][y] == board[x][y]){
+        temp++;
+        j++;
+    }
+
+    return (temp == 2 && this->getValue(x - i, y) == HUMAN_PLAYER && this->getValue(x + j, y) == HUMAN_PLAYER);
+}
+
+bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y){
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+
+    while (x - i >= 0 && y - i >= 0 && board[x - i][y - i] == board[x][y]){
+        temp++;
+        i++;
+    }
+
+    while (x + j < GOMOKU_BOARD_SIZE && y + j < GOMOKU_BOARD_SIZE && board[x + j][y + j] == board[x][y]){
+        temp++;
+        j++;
+    }
+
+    return (temp == 2 && this->getValue(x - i, y - j) == HUMAN_PLAYER && this->getValue(x + j, y + j) == HUMAN_PLAYER);
+}
+
+bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y){
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+
+    while (x - i >= 0 && y + i >= 0 && board[x - i][y + i] == board[x][y]){
+        temp++;
+        i++;
+    }
+
+    while (x + j < GOMOKU_BOARD_SIZE && y - j < GOMOKU_BOARD_SIZE && board[x + j][y - j] == board[x][y]){
+        temp++;
+        j++;
+    }
+
+    return (temp == 2 && this->getValue(x - i, y + j) == HUMAN_PLAYER && this->getValue(x - j, y + j) == HUMAN_PLAYER);
+}
+
+int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y)
+{
+
+    bool ready_for_capture = rowOfTwo(x,y) || columnOfTwo(x,y) || mainDiagnolOfTwo(x,y) || reverseDiagnolOfTwo(x,y);
+    if (ready_for_capture)
+        printf("CAPTURE %d, %d \n", x, y);
+}
 bool GomokuMainBoard::draw(){
     if (count == GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE){
         return true;

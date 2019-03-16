@@ -26,6 +26,13 @@ public:
 
     bool win(int, int);
     bool draw();
+    int check_for_capture(GomokuMainBoard & board, int x_cor, int y_cor);
+
+    bool rowOfTwo(int, int);
+    bool columnOfTwo(int, int);
+    bool mainDiagnolOfTwo(int, int);
+    bool reverseDiagnolOfTwo(int, int);
+
     bool rowOfFive(int, int);
     bool columnOfFive(int, int);
     bool mainDiagnolOfFive(int, int);
@@ -45,7 +52,7 @@ public:
     int board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
     void printBoard();
 
-    int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
+    //int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
 
     std::vector<AvailableSpot*> availablespots;
     std::vector<BoardState *> boardHash;

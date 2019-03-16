@@ -9,7 +9,8 @@ int main() {
     //mainBoard->availablespots.push_back(new AvailableSpot(GOMOKU_BOARD_SIZE / 2, GOMOKU_BOARD_SIZE / 2));
 
     int i = 0;
-    while(1) {
+    while(1)
+    {
         if (i % 2   == AI_PLAYER)
         {
             move = AI->runAI(*mainBoard, AI_PLAYER );
@@ -58,6 +59,7 @@ int main() {
 //            }
 //            mainBoard->printBoard();
         }
+        printf("Moves =%d \n", mainBoard->count);
 //        int score = AI->evaluation(*mainBoard, AI_PLAYER);
 //        printf("SCORE 1 = %d\n", score);
 //        score = AI->evaluation(*mainBoard, HUMAN_PLAYER);

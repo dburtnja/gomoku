@@ -8,7 +8,7 @@
 #define GOMOKU_BOARD_SIZE 19
 #define AI_PLAYER 1
 #define HUMAN_PLAYER 2
-#define REC_DEPT 3
+#define REC_DEPT 0
 #define POINTS_TO_WIN 5
 
 #include "iostream"
