@@ -1,6 +1,4 @@
-//
-// Created by Mirex on 30.07.2018.
-//
+
 
 #include "../headers/MainHeader.hpp"
 
@@ -75,58 +73,54 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
     int value = INT_MIN;
     int x = -1;
     int y = -1;
-//    int new_board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
-    
-//    for (int i = 0; i < GOMOKU_BOARD_SIZE ; ++i) {
-//        for (int j = 0; j < GOMOKU_BOARD_SIZE; ++j) {
-//            if ( mainBoard.getValue(i,j) == 0
-//            //&& adjacentPlaced(mainBoard.board, i, j)
-//            )
-//            {
-//                //new_board = mainBoard.board;
-//                mainBoard.setValue(i,j,AI_PLAYER);
-//                int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT, HUMAN_PLAYER, INT_MIN, INT_MAX, i, j);
-//                mainBoard.setValue(i,j,0);
-//                if (value < tmp) {
-//                    value = tmp;
-//                    x = i;
-//                    y = j;
-//                }
-//            }
-//
-//        }
-//    }
-//    if (x == -1 && y == -1)
-//    {
-//        x = GOMOKU_BOARD_SIZE /2;
-//        y = GOMOKU_BOARD_SIZE /2;
-//    }
-    std::vector<AvailableSpot *> tmp_vector;
+    //int new_board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
 
-    tmp_vector = mainBoard.availablespots;
+    for (int i = 0; i < GOMOKU_BOARD_SIZE ; ++i) {
+        for (int j = 0; j < GOMOKU_BOARD_SIZE; ++j) {
+            if ( mainBoard.getValue(i,j) == 0 && adjacentPlaced(mainBoard.board, i, j))
+            {
+                int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT, true, INT_MIN, INT_MAX, i, j);
+                printf("x=%d, y=%d -> score = %d\n", x,y,tmp);
+                if (value < tmp) {
+                    value = tmp;
+                    x = i;
+                    y = j;
+                }
+            }
 
-    for(auto & element: tmp_vector) {
-        int x_cor = element->getX();
-        int y_cor = element->getY();
-
-        //mainBoard.putStoneOnBoard(x_cor, y_cor, AI_PLAYER, 100);
-        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT-1, true, INT_MIN, INT_MAX, x_cor,y_cor);
-       // mainBoard.clearStoneOnBoard(x_cor,y_cor);
-        //printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
-        if (tmp > value )
-        {
-            value = tmp;
-            x = x_cor;
-            y = y_cor;
         }
-        if (tmp == INT_MAX)
-            break ;
     }
     if (x == -1 && y == -1)
     {
         x = GOMOKU_BOARD_SIZE /2;
         y = GOMOKU_BOARD_SIZE /2;
     }
+//    std::vector<AvailableSpot *> tmp_vector;
+//
+//    tmp_vector = mainBoard.availablespots;
+//
+//    for(auto & element: tmp_vector) {
+//        int x_cor = element->getX();
+//        int y_cor = element->getY();
+//
+//        //mainBoard.putStoneOnBoard(x_cor, y_cor, AI_PLAYER, 100);
+//        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT-1, true, INT_MIN, INT_MAX, x_cor,y_cor);
+//        // mainBoard.clearStoneOnBoard(x_cor,y_cor);
+//        //printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
+//        if (tmp > value )
+//        {
+//            value = tmp;
+//            x = x_cor;
+//            y = y_cor;
+//        }
+//        if (tmp == INT_MAX)
+//            break ;
+//    }
+//    if (x == -1 && y == -1)
+//    {
+//        x = GOMOKU_BOARD_SIZE /2;
+//        y = GOMOKU_BOARD_SIZE /2;
+//    }
     move.x = x;
     move.y = y;
 
@@ -178,121 +172,123 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         return value;
     }
 
-//    std::vector<int> firstCoord;
-//    std::vector<int> secondCoord;
-//    for (int i = 0; i < GOMOKU_BOARD_SIZE; i++){
-//        for (int j = 0; j < GOMOKU_BOARD_SIZE; j++){
-//
-//            if (mainBoard.getValue(i,j) == 0 && adjacentPlaced(mainBoard.board, i, j) ){
-//                firstCoord.push_back(i);
-//                secondCoord.push_back(j);
-//            }
-//        }
-//    }
-//    int len = (int) firstCoord.size();
-//
-//
-//    if (player == AI_PLAYER)
+    std::vector<int> firstCoord;
+    std::vector<int> secondCoord;
+    for (int i = 0; i < GOMOKU_BOARD_SIZE; i++){
+        for (int j = 0; j < GOMOKU_BOARD_SIZE; j++){
+
+            if (mainBoard.getValue(i,j) == 0 && adjacentPlaced(mainBoard.board, i, j) ){
+                firstCoord.push_back(i);
+                secondCoord.push_back(j);
+            }
+        }
+    }
+    int len = (int) firstCoord.size();
+
+
+    if (isMax)
+    {
+        for (int i = 0; i < len; ++i) {
+           // mainBoard.setValue(firstCoord[i],secondCoord[i],c);
+            alpha = std::max(alpha, minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, firstCoord[i], secondCoord[i]));
+
+            if (alpha >= beta)
+            {
+                break ;
+            }
+        }
+        mainBoard.setValue(x,y,0);
+
+        //mainBoard.setValue(x,y,0);
+        return alpha;
+    }
+    else
+    {
+        for (int i = 0; i < len; ++i) {
+            beta = std::min(beta, (minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, firstCoord[i], secondCoord[i])));
+            mainBoard.setValue(firstCoord[i],secondCoord[i],0);
+            if (alpha >= beta)
+            {
+                break;
+            }
+        }
+        mainBoard.setValue(x,y,0);
+
+        // mainBoard.setValue(x,y,0);
+        return beta;
+    }
+//    if (isMax == true)
 //    {
-//        for (int i = 0; i < len; ++i) {
-//            mainBoard.setValue(firstCoord[i],secondCoord[i],player);
-//            alpha = std::max(alpha, minimaxAlphaBeta(mainBoard, depth - 1, HUMAN_PLAYER, alpha, beta, firstCoord[i], secondCoord[i]));
-//            mainBoard.setValue(firstCoord[i],secondCoord[i],0);
+//        std::vector<AvailableSpot *> tmp_vector;
 //
+//        tmp_vector = mainBoard.availablespots;
+//        int m = INT_MAX;
+//
+//        for (auto & element: tmp_vector)
+//        {
+//            int x_cor = element->getX();
+//            int y_cor = element->getY();
+//
+//            std::vector<AvailableSpot *> tmp_vector1;
+//            tmp_vector1 = mainBoard.availablespots;
+//
+//            //mainBoard.putStoneOnBoard(x_cor, y_cor, player, depth);
+////            alpha = std::max(minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor), alpha);
+//            int temp = minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor);
+//            if (m > temp)
+//                m = temp;
+//            if (beta > m)
+//                beta = m;
+//            //mainBoard.setValue(x_cor,y_cor, 0);
+//            mainBoard.availablespots = tmp_vector1;
+//
+//            //mainBoard.clearStoneOnBoard(x_cor, y_cor);
 //            if (alpha >= beta)
 //            {
 //                break ;
 //            }
 //        }
-//        //mainBoard.setValue(x,y,0);
-//        return alpha;
+//        mainBoard.setValue(x,y, 0);
+//        return m;
+////        return alpha;
 //    }
 //    else
 //    {
-//        for (int i = 0; i < len; ++i) {
-//            mainBoard.setValue(firstCoord[i],secondCoord[i],player);
-//            beta = std::min(beta, (minimaxAlphaBeta(mainBoard, depth - 1, AI_PLAYER, alpha, beta, firstCoord[i], secondCoord[i])));
-//            mainBoard.setValue(firstCoord[i],secondCoord[i],0);
+//        std::vector<AvailableSpot *> tmp_vector;
+//
+//        tmp_vector = mainBoard.availablespots;
+//        int M = INT_MIN;
+//        for (auto & element: tmp_vector)
+//        {
+//            int x_cor = element->getX();
+//            int y_cor = element->getY();
+//
+//            std::vector<AvailableSpot *> tmp_vector1;
+//            tmp_vector1 = mainBoard.availablespots;
+//
+//            //mainBoard.putStoneOnBoard(x_cor, y_cor, player, depth);
+////            beta = std::min(minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor), beta);
+//            int temp = minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor);
+//            if (M < temp){
+//                M = temp;
+//            }
+//            if (alpha < M){
+//                alpha = M;
+//            }
+//            //mainBoard.setValue(x_cor,y_cor, 0);
+//            mainBoard.availablespots = tmp_vector1;
+//
+//            //mainBoard.clearStoneOnBoard(x_cor, y_cor);
 //            if (alpha >= beta)
 //            {
-//                break;
+//                break ;
 //            }
 //        }
-//       // mainBoard.setValue(x,y,0);
+//        mainBoard.setValue(x,y, 0);
+//
+//        return M;
 //        return beta;
 //    }
-    if (isMax == true)
-    {
-        std::vector<AvailableSpot *> tmp_vector;
-
-        tmp_vector = mainBoard.availablespots;
-        int m = INT_MAX;
-
-        for (auto & element: tmp_vector)
-        {
-            int x_cor = element->getX();
-            int y_cor = element->getY();
-
-            std::vector<AvailableSpot *> tmp_vector1;
-            tmp_vector1 = mainBoard.availablespots;
-
-            //mainBoard.putStoneOnBoard(x_cor, y_cor, player, depth);
-//            alpha = std::max(minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor), alpha);
-            int temp = minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor);
-            if (m > temp)
-                m = temp;
-            if (beta > m)
-                beta = m;
-            //mainBoard.setValue(x_cor,y_cor, 0);
-            mainBoard.availablespots = tmp_vector1;
-
-            //mainBoard.clearStoneOnBoard(x_cor, y_cor);
-            if (alpha >= beta)
-            {
-                break ;
-            }
-        }
-        mainBoard.setValue(x,y, 0);
-        return m;
-//        return alpha;
-    }
-    else
-    {
-        std::vector<AvailableSpot *> tmp_vector;
-
-        tmp_vector = mainBoard.availablespots;
-        int M = INT_MIN;
-        for (auto & element: tmp_vector)
-        {
-            int x_cor = element->getX();
-            int y_cor = element->getY();
-
-            std::vector<AvailableSpot *> tmp_vector1;
-            tmp_vector1 = mainBoard.availablespots;
-
-            //mainBoard.putStoneOnBoard(x_cor, y_cor, player, depth);
-//            beta = std::min(minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor), beta);
-            int temp = minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor);
-            if (M < temp){
-                M = temp;
-            }
-            if (alpha < M){
-                alpha = M;
-            }
-            //mainBoard.setValue(x_cor,y_cor, 0);
-            mainBoard.availablespots = tmp_vector1;
-
-            //mainBoard.clearStoneOnBoard(x_cor, y_cor);
-            if (alpha >= beta)
-            {
-                break ;
-            }
-        }
-        mainBoard.setValue(x,y, 0);
-
-        return M;
-        return beta;
-    }
 }
 
 
@@ -302,7 +298,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     std::vector<int> computerPattern(POINTS_TO_WIN + 1,0);
     std::vector<int> playerPattern(POINTS_TO_WIN + 1,0);
     int sum = 0;
-
     for (int  i = 0 ; i < GOMOKU_BOARD_SIZE; i++)
     {
         for (int j = 0; j < GOMOKU_BOARD_SIZE ; j++)
@@ -313,7 +308,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                 bool needMax = c == AI_PLAYER;
                 int sameSymbol = 1; // count same symbols in columns
                 int k = 1;
-
                 while (i- k >= 0 && mainBoard.getValue(i-k, j)  == c)
                 {
                     sameSymbol++;
@@ -326,7 +320,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     l++;
                 }
-
                 if (sameSymbol >= POINTS_TO_WIN)
                 {
                     if (needMax)
@@ -362,7 +355,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     else
                         playerPattern[POINTS_TO_WIN-4]++;
                 }
-
                 sameSymbol = 1; // count same symbols in rows
                 k = 1;
                 while (j - k >= 0 && mainBoard.getValue(i, j-k)  == c)
@@ -370,7 +362,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     k++;
                 }
-
                 //consider value at i - k later to see if it's blocked or not
                 l = 1;
                 while (j + l < GOMOKU_BOARD_SIZE && mainBoard.getValue(i, j+l) == c)
@@ -378,7 +369,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     l++;
                 }
-
                 if (sameSymbol >= POINTS_TO_WIN)
                 {
                     if (needMax)
@@ -410,7 +400,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     if (needMax) computerPattern[POINTS_TO_WIN-4]++;
                     else playerPattern[POINTS_TO_WIN-4]++;
                 }
-
                 sameSymbol = 1;// count same symbols in main diagnol
                 k = 1;
                 while (i - k >= 0 && j - k >= 0 && mainBoard.getValue(i-k, j- k)  == c)
@@ -418,8 +407,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     k++;
                 }
-
-
                 //consider value at i - k later to see if it's blocked or not
                 l = 1;
                 while (i + l < GOMOKU_BOARD_SIZE && j + l < GOMOKU_BOARD_SIZE && mainBoard.getValue(i+l, j+l ) == c)
@@ -427,7 +414,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     l++;
                 }
-
                 if (sameSymbol >= POINTS_TO_WIN)
                 {
                     if (needMax)
@@ -463,12 +449,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     else
                         playerPattern[POINTS_TO_WIN-4]++;
                 }
-
-
-
                 //-----------------------------------------------------------------------
-
-
                 sameSymbol = 1;// count same symbols in reverse diagnols
                 k = 1;
                 while (i - k >= 0 && j + k < GOMOKU_BOARD_SIZE && mainBoard.getValue(i-k, j+ k)  == c)
@@ -483,7 +464,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     sameSymbol++;
                     l++;
                 }
-
                 if (sameSymbol >= POINTS_TO_WIN)
                 {
                     if (needMax)
@@ -519,8 +499,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                     else
                         playerPattern[POINTS_TO_WIN-4]++;
                 }
-
-
             }
         }
     }
@@ -528,7 +506,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         return INT_MAX;
     if (playerPattern[POINTS_TO_WIN] > 0)
         return INT_MIN;
-
     int x = 1;
     sum += computerPattern[1];
     sum -= playerPattern[1] * 5;
@@ -538,7 +515,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         sum += computerPattern[i] * x;
         sum -= playerPattern[i] * x*10 ;
     }
-
     return sum;
 }*/
 int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
@@ -718,7 +694,7 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
 
 bool ArtificialIntelligence::adjacentPlaced(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE] , int x, int y)
 {
-   // if(board[x][y] == 0 and x == GOMOKU_BOARD_SIZE / 2 and y == GOMOKU_BOARD_SIZE /2)
+    // if(board[x][y] == 0 and x == GOMOKU_BOARD_SIZE / 2 and y == GOMOKU_BOARD_SIZE /2)
     //    return true;
     bool value = false;
     if (board[x][y] != 0)
