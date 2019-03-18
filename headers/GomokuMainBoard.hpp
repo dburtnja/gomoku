@@ -26,12 +26,14 @@ public:
 
     bool win(int, int);
     bool draw();
-    int check_for_capture(GomokuMainBoard & board, int x_cor, int y_cor);
+    int check_for_capture(GomokuMainBoard & board, int x_cor, int y_cor, int, int, bool);
+    int ai_capture = 0;
+    int player_capture = 0;
 
-    bool rowOfTwo(int, int);
-    bool columnOfTwo(int, int);
-    bool mainDiagnolOfTwo(int, int);
-    bool reverseDiagnolOfTwo(int, int);
+    bool rowOfTwo(int, int, int, int, bool);
+    bool columnOfTwo(int, int, int, int, bool);
+    bool mainDiagnolOfTwo(int, int, int, int, bool);
+    bool reverseDiagnolOfTwo(int, int, int, int, bool);
 
     bool rowOfFive(int, int);
     bool columnOfFive(int, int);

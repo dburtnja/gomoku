@@ -304,86 +304,135 @@ bool GomokuMainBoard::win(int x, int y){
 }
 
 
-bool GomokuMainBoard::rowOfTwo(int x, int y)
+bool GomokuMainBoard::rowOfTwo(int x, int y, int attack, int feed, bool needToRemove)
 {
-    int temp = 0;
-    int i = 0;
-    int j = 0;
+    if (getValue(x,y) == attack and getValue(x,y - 1) == feed and getValue(x,y - 2) == feed and getValue(x,y - 3) == attack) {
+        if (needToRemove)
+        {
+            setValue(x, y - 1, 0);
+            setValue(x, y - 2, 0);
+            availablespots.push_back(new AvailableSpot(x, y - 1));
+            availablespots.push_back(new AvailableSpot(x, y - 2));
+        }
 
-    while (y - i >= 0 && board[x][y - i] == board[x][y]){
-        temp++;
-        i++;
+        return true;
+    }
+    else if (getValue(x,y) == attack and getValue(x,y + 1) == feed and getValue(x,y + 2) == feed and getValue(x,y + 3) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x, y + 1, 0);
+            setValue(x, y + 2, 0);
+            availablespots.push_back(new AvailableSpot(x, y + 1));
+            availablespots.push_back(new AvailableSpot(x, y + 2));
+        }
+        return true;
     }
 
-    while (y + j <= GOMOKU_BOARD_SIZE-1 && board[x][y + j] == board[x][y]){
-        temp++;
-        j++;
-    }
+    return false;}
 
-    return (temp == 2 && this->getValue(x, y - i) == HUMAN_PLAYER && this->getValue(x, y + i) == HUMAN_PLAYER);
-}
-
-bool GomokuMainBoard::columnOfTwo(int x, int y)
+bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needToRemove)
 {
-    int temp = 0;
-    int i = 0;
-    int j = 0;
-
-    while (x - i >= 0 && board[x - i][y] == board[x][y]){
-        temp++;
-        i++;
+    if (getValue(x,y) == attack and getValue(x - 1,y) == feed and getValue(x - 2,y) == feed and getValue(x - 3, y) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x - 1, y, 0);
+            setValue(x - 2, y, 0);
+            availablespots.push_back(new AvailableSpot(x - 1, y));
+            availablespots.push_back(new AvailableSpot(x - 2, y));
+        }
+        return true;
     }
-
-    while (x + j <= GOMOKU_BOARD_SIZE-1 && board[x + j][y] == board[x][y]){
-        temp++;
-        j++;
+    else if (getValue(x, y) == attack and getValue(x + 1, y) == feed and getValue(x + 2, y) == feed and getValue(x + 3,y) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x + 1, y, 0);
+            setValue(x + 2, y, 0);
+            availablespots.push_back(new AvailableSpot(x + 1, y));
+            availablespots.push_back(new AvailableSpot(x + 2, y));
+        }
+        return true;
     }
-
-    return (temp == 2 && this->getValue(x - i, y) == HUMAN_PLAYER && this->getValue(x + j, y) == HUMAN_PLAYER);
+    return false;
 }
 
-bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y){
-    int temp = 0;
-    int i = 0;
-    int j = 0;
-
-    while (x - i >= 0 && y - i >= 0 && board[x - i][y - i] == board[x][y]){
-        temp++;
-        i++;
-    }
-
-    while (x + j < GOMOKU_BOARD_SIZE && y + j < GOMOKU_BOARD_SIZE && board[x + j][y + j] == board[x][y]){
-        temp++;
-        j++;
-    }
-
-    return (temp == 2 && this->getValue(x - i, y - j) == HUMAN_PLAYER && this->getValue(x + j, y + j) == HUMAN_PLAYER);
-}
-
-bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y){
-    int temp = 0;
-    int i = 0;
-    int j = 0;
-
-    while (x - i >= 0 && y + i >= 0 && board[x - i][y + i] == board[x][y]){
-        temp++;
-        i++;
-    }
-
-    while (x + j < GOMOKU_BOARD_SIZE && y - j < GOMOKU_BOARD_SIZE && board[x + j][y - j] == board[x][y]){
-        temp++;
-        j++;
-    }
-
-    return (temp == 2 && this->getValue(x - i, y + j) == HUMAN_PLAYER && this->getValue(x - j, y + j) == HUMAN_PLAYER);
-}
-
-int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y)
+bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y, int attack, int feed, bool needToRemove)
 {
 
-    bool ready_for_capture = rowOfTwo(x,y) || columnOfTwo(x,y) || mainDiagnolOfTwo(x,y) || reverseDiagnolOfTwo(x,y);
-    if (ready_for_capture)
-        printf("CAPTURE %d, %d \n", x, y);
+    if (getValue(x, y) == attack and getValue(x - 1, y - 1) == feed and getValue(x - 2, y - 2) == feed and getValue(x - 3, y - 3) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x - 1, y - 1, 0);
+            setValue(x - 2, y - 2, 0);
+            availablespots.push_back(new AvailableSpot(x - 1, y - 1));
+            availablespots.push_back(new AvailableSpot(x - 2, y - 2));
+        }
+        return true;
+    }
+    else if (getValue(x, y) == attack and getValue(x + 1, y + 1) == feed and getValue(x + 2, y + 2) == feed and getValue(x + 3, y + 3) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x + 1, y + 1, 0);
+            setValue(x + 2, y + 2, 0);
+            availablespots.push_back(new AvailableSpot(x + 1, y + 1));
+            availablespots.push_back(new AvailableSpot(x + 2, y + 2));
+        }
+        return true;
+    }
+    return false;}
+
+bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bool needToRemove)
+{
+    if (getValue(x, y) == attack and getValue(x + 1, y - 1) == feed and getValue(x + 2, y - 2) == feed and getValue(x + 3, y - 3) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x + 1, y - 1, 0);
+            setValue(x + 2, y - 2, 0);
+            availablespots.push_back(new AvailableSpot(x + 1, y - 1));
+            availablespots.push_back(new AvailableSpot(x + 2, y - 2));
+        }
+        return true;
+    }
+    else if (getValue(x, y) == attack and getValue(x - 1, y + 1) == feed and getValue(x - 2, y + 2) == feed and getValue(x - 3, y + 3) == attack)
+    {
+        if (needToRemove)
+        {
+            setValue(x - 1, y + 1, 0);
+            setValue(x - 2, y + 2, 0);
+            availablespots.push_back(new AvailableSpot(x - 1, y + 1));
+            availablespots.push_back(new AvailableSpot(x - 2, y + 2));
+        }
+        return true;
+    }
+
+    return false;
+}
+
+int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y, int attack, int feed, bool needToRemove)
+{
+    bool ready_for_capture = rowOfTwo(x,y, attack, feed, needToRemove) || columnOfTwo(x,y, attack, feed, needToRemove) || mainDiagnolOfTwo(x,y, attack, feed, needToRemove) || reverseDiagnolOfTwo(x,y, attack, feed, needToRemove);
+    if (ready_for_capture && needToRemove == true)
+    {
+        if (attack == AI_PLAYER)
+            ai_capture++;
+        else
+            player_capture++;
+        //printf("CAPTURE %d, %d \n", x, y);
+    }
+    else if (ready_for_capture)
+    {
+        //printf("CAPTURE %d, %d \n", x, y);
+        if (attack == AI_PLAYER)
+            return 30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture);
+        else
+            return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
+    }
+    return INT_MIN;
 }
 bool GomokuMainBoard::draw(){
     if (count == GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE){

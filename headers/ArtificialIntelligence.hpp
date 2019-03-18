@@ -25,7 +25,7 @@ class ArtificialIntelligence {
         std::unordered_map<std::string, int> patternsHashMap;
 
 
-        int captured = 100000;
+
 
         AiMove runAI(GomokuMainBoard & mainBoard, int player) ;
         AiMove minmaxSearch(GomokuMainBoard & mainBoard, int player);

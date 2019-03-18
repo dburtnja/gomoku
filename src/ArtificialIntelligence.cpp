@@ -108,12 +108,13 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
         int y_cor = element->getY();
 
         //mainBoard.putStoneOnBoard(x_cor, y_cor, AI_PLAYER, 100);
-        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT, true, INT_MIN, INT_MAX, x_cor,y_cor);
+        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor);
         mainBoard.setValue(x_cor, y_cor, AI_PLAYER);
-        tmp = std::max(tmp, mainBoard.check_for_capture(mainBoard, x_cor, y_cor));
+        int capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false);
+        tmp = std::max(tmp, capture);
         mainBoard.setValue(x_cor, y_cor, 0);
         // mainBoard.clearStoneOnBoard(x_cor,y_cor);
-        //printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
+        printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
         if (tmp > value )
         {
             value = tmp;
@@ -169,7 +170,22 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 //    }
     if (depth == 0)
     {
-        value = evaluation(mainBoard, isMax);
+
+
+//        if (isMax)
+//        {
+//            int capture_value = INT_MIN;
+//            capture_value = mainBoard.check_for_capture(mainBoard, x, y, AI_PLAYER, HUMAN_PLAYER, false);
+//            value = std::max(capture_value,evaluation(mainBoard, isMax));
+//        }
+//        else
+//            {
+//                int capture_value = INT_MAX;
+//                capture_value = mainBoard.check_for_capture(mainBoard, x, y, HUMAN_PLAYER, AI_PLAYER, false);
+//                value = std::min(capture_value,evaluation(mainBoard, isMax));
+//            }
+
+       value = evaluation(mainBoard, isMax);
         mainBoard.setValue(x,y, 0);
         mainBoard.availablespots = tmp_vector_old;
         return value;
@@ -232,6 +248,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
             std::vector<AvailableSpot *> tmp_vector1;
             tmp_vector1 = mainBoard.availablespots;
             int temp = minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor);
+
             if (M < temp){
                 M = temp;
             }
