@@ -10,11 +10,14 @@ GomokuMainBoard::GomokuMainBoard() :
     int x;
     int y;
 
+    this->_players[0] = AI_PLAYER;
+    this->_players[1] = HUMAN_PLAYER;
+    this->_move = 0;
     for (x = 0; x < GOMOKU_BOARD_SIZE; x++)
     {
         for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
         {
-            board[x][y] = 0;
+            board[x][y] = EMPTY_CELL;
         }
     }
 }
@@ -33,13 +36,17 @@ GomokuMainBoard & GomokuMainBoard::operator = (const GomokuMainBoard & rhs) {
 //    board[newStone->getCordX()][newStone->getCordY()] = newStone->getPlayer();
 //}
 
-void GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth) {
+bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth) {
 
 //    std::cout << x << "|" <<y<<"||" << "\n";
 //    fflush(stdout);
+	if (board[x][y] != EMPTY_CELL)
+        return false;
     board[x][y] = plyaer;
+    (this->_move)++;
 
     this->addNewSpots(x, y, depth);
+    return true;
 }
 
 void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
@@ -306,4 +313,16 @@ std::string GomokuMainBoard::toString() {
         }
     }
     return s;
+}
+
+int GomokuMainBoard::getBoardSize() {
+    return this->_boardSize;
+}
+
+int GomokuMainBoard::getPlayer() {
+    return this->_players[this->_move % 2];
+}
+
+int GomokuMainBoard::getPlayer(int move) {
+    return this->_players[move % 2];
 }

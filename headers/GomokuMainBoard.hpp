@@ -34,7 +34,7 @@ public:
     long int recs = 0;
 
 
-    void putStoneOnBoard(int x, int y, int plyaer, int depth);
+    bool putStoneOnBoard(int x, int y, int plyaer, int depth);
     void addNewSpots(int x, int y, int depth);
 
     void clearStoneOnBoard(int x, int y);
@@ -51,8 +51,16 @@ public:
     std::vector<BoardState *> boardHash;
 
 
+	int getBoardSize();
+
+	int getPlayer();
+
+	int getPlayer(int move);
+
 private:
     unsigned int _boardSize;
+	int _players[2];
+	int _move;
 };
 
 
