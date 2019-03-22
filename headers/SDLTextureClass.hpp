@@ -10,7 +10,7 @@
 
 class SDLTextureClass {
 public:
-	explicit SDLTextureClass(SDL_Texture *texture);
+	explicit SDLTextureClass(SDL_Texture *texture, const char *name);
 
 	SDLTextureClass(const char *img_file_path, const SDL_Color *srcColor, const SDL_Color *destColor,
 						SDL_Renderer *renderer);
@@ -33,12 +33,14 @@ private:
 	bool		_srcExist;
 	bool		_dstExist;
 	bool		_showOnRender;
+	const char 	*_name;
 
 	void changeTextureColor(int srcColor, int dstColor);
 
 	void _changeColor(SDL_Surface *surface, const SDL_Color srcColor, const SDL_Color dstColor);
 
 	void _setProperties(SDL_Texture *texture);
+
 };
 
 

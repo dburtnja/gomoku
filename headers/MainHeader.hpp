@@ -40,6 +40,7 @@
 #include "ArtificialIntelligence.hpp"
 #include "AvailableSpot.hpp"
 #include "AiMove.hpp"
+#include "Coordinates.hpp"
 //#include "BoardState.hpp"
 #include "time.h"
 #endif //GOMOKU_MAINHEADER_HPP

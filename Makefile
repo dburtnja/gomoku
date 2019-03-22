@@ -1,31 +1,39 @@
+
 SDL_LIBS = -lSDL2 -lSDL2_image
 
 APP_NAME = gomoku
+
+OBJ_DIR = obj
 
 CXX = clang++
 
 CFLAGS = ""
 
-SRC = 	main.cpp \
-		src/GomokuMainBoard.cpp \
-		src/AiMove.cpp \
-		src/ArtificialIntelligence.cpp \
-		src/AvailableSpot.cpp \
-		src/BoardState.cpp \
-		src/SingleStone.cpp \
-		src/View.cpp \
-		src/SDLTextureClass.cpp
+SRC_DIR = src
 
+SRC_FILES =	main.cpp \
+			GomokuMainBoard.cpp \
+			AiMove.cpp \
+			ArtificialIntelligence.cpp \
+			AvailableSpot.cpp \
+			BoardState.cpp \
+			SingleStone.cpp \
+			View.cpp \
+			SDLTextureClass.cpp \
+			Coordinates.cpp
 
-OBJ = $(SRC:.cpp=.o)
+SRC = $(patsubst %,$(SRC_DIR)/%, $(SRC_FILES))
+
+OBJ = $(patsubst %,$(OBJ_DIR)/%, $(SRC_FILES:.cpp=.o))
 
 
 all:	$(APP_NAME)
 
 $(APP_NAME): $(OBJ)
 						@$(CXX) $(OBJ) -o $(APP_NAME) $(SDL_LIBS)
-%.o: %.cpp
-						@$(CXX) -c $(CFLAGS) -o $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+						$(CXX) -c $(CFLAGS) -o $@ $<
 
 
 clean:

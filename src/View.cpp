@@ -11,17 +11,14 @@
 
 
 View::View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time) {
-
+	this->_debug = true;
 	this->_width = width;
 	this->_height = height;
 	this->_name = name;
 	this->_sleep_time = sleep_time;
 	this->_running = true;
-	this->_coordinatesLength = board->getBoardSize();
-	this->_boardCoordinates = new int[this->_coordinatesLength]; //TODO check if size -1
-	this->_setBoardCoordinates();
-	this->_pointRadious = this->_distance * POINT_RADIUS_PERCENT_FROM_CELL_DISTANCE / 100;
 
+	this->_debugMessage("Initialising SDL.");
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		throw ("SDL_Init Error");
@@ -39,9 +36,51 @@ View::View(int width, int height, char const *name, GomokuMainBoard *board, int 
 	if (this->_renderer == nullptr){
 		throw ("SDL error: Can not create render.");
 	}
+
+	this->_setBoardValues(board);
+	this->_afterInitSDL();
+}
+
+void View::_setBoardValues(GomokuMainBoard *board) {
+	this->_debugMessage("Calcularing board values on View.");
+	this->_coordinatesLength = board->getBoardSize();
+	this->_boardCoordinates = new int[this->_coordinatesLength]; //TODO check if size -1
+	this->_setBoardCoordinates();
+	this->_pointRadious = this->_distance * POINT_RADIUS_PERCENT_FROM_CELL_DISTANCE / 100;
+}
+
+void View::_setBoardCoordinates() {
+	int thirdWindowSize;
+	int	boardWindowSize;
+	int startCoordinate;
+
+	thirdWindowSize = 2 * this->_width / 3;
+	boardWindowSize = (thirdWindowSize / this->_coordinatesLength) * (this->_coordinatesLength - 1);
+	this->_distance = boardWindowSize / this->_coordinatesLength;
+	startCoordinate = 2 * this->_distance;
+	for (int i = 0; i < this->_coordinatesLength; i++)
+		this->_boardCoordinates[i] = startCoordinate + (i * this->_distance);
+}
+
+void View::_afterInitSDL() {
+	this->_debugMessage("Creating textures");
+
+	SDL_Texture	*texture;
+	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+								this->_width, this->_height);
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	this->_textures[0] = new SDLTextureClass(texture, "Wining texture");
+}
+
+void View::_debugMessage(const char *message) {
+	if (this->_debug)
+		std::cout <<  message << std::endl;
 }
 
 View::~View() {
+	this->_debugMessage("Free View memory.");
+	for (SDLTextureClass *texture : this->_textures)
+		delete texture;
 	delete [] this->_boardCoordinates;
 	delete this->_firsPlayerHelperStoneTexture;
 	delete this->_secondPlayerHelperStoneTexture;
@@ -163,9 +202,9 @@ bool View::showGameBoard(const char *img_file_path) {
 	this->_setBoardBackground(img_file_path);
 
 	this->_firsPlayerHelperStoneTexture = new SDLTextureClass(HELPER_CIRCLE_IMAGE_BLACK,
-			nullptr, nullptr, this->_renderer);
+															  nullptr, nullptr, this->_renderer);
 	this->_secondPlayerHelperStoneTexture = new SDLTextureClass(HELPER_CIRCLE_IMAGE_BLACK,
-			&BLACK_COLOR_SDL, &WHITE_COLOR_SDL, this->_renderer);
+																&BLACK_COLOR_SDL, &WHITE_COLOR_SDL, this->_renderer);
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
 	return true;
@@ -187,19 +226,6 @@ void View::_renderBackgroundBoard() {
 				this->_boardCoordinates[i], lastCoordinate,
 				BLACK_COLOR_SDL, 255, BOARD_LINE_SIZE);
 	}
-}
-
-void View::_setBoardCoordinates() {
-	int thirdWindowSize;
-	int	boardWindowSize;
-	int startCoordinate;
-
-	thirdWindowSize = 2 * this->_width / 3;
-	boardWindowSize = (thirdWindowSize / this->_coordinatesLength) * (this->_coordinatesLength - 1);
-	this->_distance = boardWindowSize / this->_coordinatesLength;
-	startCoordinate = 2 * this->_distance;
-	for (int i = 0; i < this->_coordinatesLength; i++)
-		this->_boardCoordinates[i] = startCoordinate + (i * this->_distance);
 }
 
 bool View::getIndexesFromCoordinate(SDL_Point *index, int &x, int &y) {
@@ -257,24 +283,29 @@ void View::updateGameScreen() {
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->renderTexture(this->_renderer);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
+	for (SDLTextureClass *element : this->_textures) {
+		std::cout << "texture update" << std::endl;
+		element->renderTexture(this->_renderer);
+	}
 	SDL_RenderPresent(this->_renderer);
 }
 
 void View::_setBoardBackground(const char *img_file_path) {
 	SDL_Texture		*boardBackgroundTexture;
 	SDL_Texture		*boardTexture;
-	SDLTextureClass	imageTexture(img_file_path, NULL, NULL, this->_renderer);
+	SDLTextureClass imageTexture(img_file_path, NULL, NULL, this->_renderer);
+
+	this->_debugMessage("Setting up Board background.");
 
 	boardTexture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 			this->_width, this->_height);
 	SDL_SetTextureBlendMode(boardTexture, SDL_BLENDMODE_BLEND);
-	this->_boardTextureClass = new SDLTextureClass(boardTexture);
-	this->_boardTextureClass->setAsRenderTarget(this->_renderer);
+	this->_boardTextureClass = new SDLTextureClass(boardTexture, "Board texture");
 
 	boardBackgroundTexture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888,
 								SDL_TEXTUREACCESS_TARGET, this->_width, this->_height);
 
-	this->_boardBackground = new SDLTextureClass(boardBackgroundTexture);
+	this->_boardBackground = new SDLTextureClass(boardBackgroundTexture, "Board background");
 	this->_boardBackground->setAsRenderTarget(this->_renderer);
 	imageTexture.renderTexture(this->_renderer);
 	this->_renderBackgroundBoard();
@@ -287,7 +318,6 @@ void View::putStoneOnBoard(SDL_Point indexPoint, int playerNumber) {
 
 	texture = playerNumber == FIRST_PLAYER ? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
 	this->_placeTextureByIndexPoint(indexPoint, texture);
-	printf("%i %i \n", indexPoint.x, indexPoint.y);
 	this->_boardTextureClass->setAsRenderTarget(this->_renderer);
 	texture->renderTexture(this->_renderer);
 	SDL_SetRenderTarget(this->_renderer, NULL);
@@ -306,3 +336,15 @@ void View::_placeTextureByIndexPoint(SDL_Point indexPoint, SDLTextureClass *text
 	rect.h = this->_pointRadious * 2;
 	textureToPlace->setDstRenderRect(&rect);
 }
+
+void View::showWiningLine(Coordinates *coordinates, int size, const char *message) {
+	this->_debugMessage("Showing winning window.");
+	if (!this->_textures[0]->setAsRenderTarget(this->_renderer)) {
+		std::cout << "Winning window warning." << std::endl;
+	}
+	SDL_SetRenderDrawColor(this->_renderer, WHITE_COLOR_SDL.r, WHITE_COLOR_SDL.g, WHITE_COLOR_SDL.b, 200);
+	SDL_RenderDrawRect(this->_renderer, NULL);
+	SDL_RenderDrawRect(this->_renderer, NULL);
+	this->_drawLine(10, 10, 400, 400, BLACK_COLOR_SDL, 200, 5);
+}
+

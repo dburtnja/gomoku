@@ -35,27 +35,31 @@ public:
 	void		updateGameScreen();
 	void		putStoneOnBoard(SDL_Point indexPoint, int playerNumber);
 
+    void showWiningLine(Coordinates *coordinates, int size, const char *message);
+
 private:
 
-	int				_width;
-	int				_height;
-	const char		*_name;
-	int				_first_player;
-	int				_second_player;
-	int 			_sleep_time;
-	bool			_running;
-	SDL_Window		*_window;
-	SDL_Renderer	*_renderer;
-	SDLTextureClass	*_boardBackground;
-	SDLTextureClass *_firsPlayerHelperStoneTexture;
-	SDLTextureClass	*_secondPlayerHelperStoneTexture;
-	SDLTextureClass *_firstPlayerStoneTexture;
-	SDLTextureClass *_secondPlayerStoneTexture;
-	SDLTextureClass *_boardTextureClass;
-	int				*_boardCoordinates;
-	int				_coordinatesLength;
-	int				_distance;
-	int				_pointRadious;
+	int								_width;
+	int								_height;
+	const char						*_name;
+	int								_first_player;
+	int								_second_player;
+	int 							_sleep_time;
+	bool							_running;
+	SDL_Window						*_window;
+	SDL_Renderer					*_renderer;
+	SDLTextureClass					*_boardBackground;
+	SDLTextureClass 				*_firsPlayerHelperStoneTexture;
+	SDLTextureClass					*_secondPlayerHelperStoneTexture;
+	SDLTextureClass 				*_firstPlayerStoneTexture;
+	SDLTextureClass 				*_secondPlayerStoneTexture;
+	SDLTextureClass 				*_boardTextureClass;
+	std::array<SDLTextureClass*, 1>	_textures;
+	int								*_boardCoordinates;
+	int								_coordinatesLength;
+	int								_distance;
+	int								_pointRadious;
+    bool                            _debug;
 
 	SDL_Texture*	_loadImage(const char *img_file_path);
 	void 			_applyTexture(int x, int y, SDL_Texture *texture);
@@ -66,6 +70,9 @@ private:
 	bool 			_coordinatesOnBoard(int &x, int &y);
 	void 			_setBoardBackground(const char *img_file_path);
 	void 			_placeTextureByIndexPoint(SDL_Point indexPoint, SDLTextureClass *textureToPlace);
+    void            _debugMessage(const char *message);
+    void            _afterInitSDL();
+    void            _setBoardValues(GomokuMainBoard *board);
 };
 
 

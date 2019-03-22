@@ -1,0 +1,175 @@
+#include "../headers/MainHeader.hpp"
+#include "../headers/View.hpp"
+
+
+
+
+//int			main() {
+//    AiMove move{};
+//    GomokuMainBoard * mainBoard = new GomokuMainBoard;
+//
+//    ArtificialIntelligence * AI = new ArtificialIntelligence;
+//
+//    //mainBoard->availablespots.push_back(new AvailableSpot(GOMOKU_BOARD_SIZE / 2, GOMOKU_BOARD_SIZE / 2));
+//
+//    int i = 0;
+//    while(1) {
+//        if (i % 2   == AI_PLAYER)
+//        {
+//            move = AI->runAI(*mainBoard, AI_PLAYER );
+//            if (mainBoard->win(move.x, move.y))
+//            {
+//                std::cout << " AI_PLAYER WON !!! \n";
+//                break;
+//            }
+//            mainBoard->printBoard();
+////            int x;
+////            int y;
+////            std::cout <<"Enter x: ";
+////            std::cin >> x;
+////            std::cout <<"Enter y: ";
+////            std::cin >> y;
+////            mainBoard->putStoneOnBoard(x,y,AI_PLAYER, 100);
+//
+////            mainBoard->printBoard();
+////            if (mainBoard->win(x, y))
+////            {
+////                std::cout << " HUMAN_PLAYER WON !!! \n";
+////                break;
+////            }
+//        }
+//        else
+//        {
+//            int x;
+//            int y;
+//            std::cout <<"Enter x: ";
+//            std::cin >> x;
+//            std::cout <<"Enter y: ";
+//            std::cin >> y;
+//            mainBoard->putStoneOnBoard(x,y,HUMAN_PLAYER, 100);
+//
+//            mainBoard->printBoard();
+//            if (mainBoard->win(x, y))
+//            {
+//                std::cout << " HUMAN_PLAYER WON !!! \n";
+//                break;
+//            }
+////            move = AI->runAI(*mainBoard, HUMAN_PLAYER );
+////            if (mainBoard->win(move.x, move.y))
+////            {
+////                std::cout << " HUMEN_PYAYER WON !!! \n";
+////                break;
+////            }
+////            mainBoard->printBoard();
+//        }
+////        int score = AI->evaluation(*mainBoard, AI_PLAYER);
+////        printf("SCORE 1 = %d\n", score);
+////        score = AI->evaluation(*mainBoard, HUMAN_PLAYER);
+////        printf("SCORE 2 = %d\n", score);
+//        i++;
+//        mainBoard->count++;
+//    }
+//    mainBoard->printBoard();
+//    return 0;
+//}
+
+SDL_Event	mouse;
+SDL_Event	motion;
+
+bool 	motion_exist;
+bool	mouse_exist;
+
+static void	checkEvents(View *view) {
+	SDL_Event	event;
+	SDL_Point	indexesPoint;
+
+	while (view->pullEvent(&event)) {
+		if (event.type == SDL_MOUSEMOTION) {
+			motion = event;
+			motion_exist = true;
+		}
+		if (event.type == SDL_MOUSEBUTTONDOWN) {
+			mouse = event;
+			mouse_exist = true;
+		}
+	}
+}
+
+int main() {
+    View		*view;
+    int			moveCounter;
+    bool		gameOver;
+
+    GomokuMainBoard * mainBoard = new GomokuMainBoard;
+	ArtificialIntelligence * AI = new ArtificialIntelligence;
+	AiMove	move{};
+
+	gameOver = false;
+	try {
+        view = new View(1200, 900, "Gomocu", mainBoard, 0);
+    } catch (std::string &error) {
+        std::cout << error << std::endl;
+        return -1;
+    }
+
+    if (!view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE))
+    	std::cout << "Error on showStartWindowAndWaitForStart: " << SDL_GetError() << std::endl;
+
+    if (!view->showGameBoard(BACKGROUND_GAMEBOARD_IMAGE)) {
+    	std::cout << "Error on creation gameboard background." << std::endl;
+		return -1;
+    }
+
+    while (view->isRunning()) {
+		checkEvents(view);
+		if (motion_exist && false) {
+			SDL_Point	indexesPoint;
+
+			motion_exist = false;
+			if (view->getIndexesFromCoordinate(&indexesPoint, motion.button.x, motion.button.y)) {
+				view->showBoardHelper(indexesPoint, mainBoard->getPlayer());
+				view->updateGameScreen();
+			}
+		}
+		if (mainBoard->getPlayer(moveCounter) == AI_PLAYER && !gameOver) {
+			SDL_Point   indexesPoint;
+			Coordinates	winingCoords[1];
+
+			move = AI->runAI(*mainBoard, AI_PLAYER);
+			indexesPoint.x = move.x;
+			indexesPoint.y = move.y;
+			view->putStoneOnBoard(indexesPoint, AI_PLAYER);
+			if (mainBoard->win(move.x, move.y))
+			{
+			    winingCoords[0] = Coordinates(move.x, move.y);
+				std::cout << " AI_PLAYER WON !!! \n";
+				view->showWiningLine(winingCoords, 1, "AI Player WON!");
+				gameOver = true;
+			}
+            view->updateGameScreen();
+
+			mainBoard->printBoard();
+			moveCounter++;
+		}
+		if (mainBoard->getPlayer(moveCounter) == HUMAN_PLAYER && mouse_exist && !gameOver) {
+			SDL_Point	indexesPoint;
+			int			player;
+
+			mouse_exist = false;
+			if (view->getIndexesFromCoordinate(&indexesPoint, mouse.button.x, mouse.button.y)) {
+				player = mainBoard->getPlayer(moveCounter);
+
+				if (mainBoard->putStoneOnBoard(indexesPoint.x, indexesPoint.y, player, 100)) {
+					view->putStoneOnBoard(indexesPoint, player);
+					view->updateGameScreen();
+					if (mainBoard->win(indexesPoint.x, indexesPoint.y))
+					{
+						std::cout << " HUMAN WON !!! \n";
+						break;
+					}
+					moveCounter++;
+				}
+			}
+		}
+    }
+}

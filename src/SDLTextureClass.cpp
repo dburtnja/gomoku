@@ -5,12 +5,15 @@
 #include "../headers/SDLTextureClass.hpp"
 #include "../headers/View.hpp"
 
-SDLTextureClass::SDLTextureClass(SDL_Texture *texture) {
+SDLTextureClass::SDLTextureClass(SDL_Texture *texture, const char *name) {
+	if (!texture || !name)
+		throw "Both value are required.";
 	this->_setProperties(texture);
+	this->_name = name;
 }
 
 SDLTextureClass::~SDLTextureClass() {
-	printf("Texture destroyed");
+	std::cout << "Texture " << this->_name << " destroyed." << std::endl;
 	SDL_DestroyTexture(this->_texture);
 }
 
@@ -37,6 +40,7 @@ void SDLTextureClass::showOnRender(bool show) {
 
 SDLTextureClass::SDLTextureClass(const char *img_file_path, const SDL_Color *srcColor, const SDL_Color *destColor,
 								 SDL_Renderer *renderer) {
+	this->_name = img_file_path;
 	SDL_Surface	*loadedImage = nullptr;
 	SDL_Texture	*texture = nullptr;
 
@@ -71,6 +75,10 @@ void SDLTextureClass::_setProperties(SDL_Texture *texture) {
 }
 
 int SDLTextureClass::setAsRenderTarget(SDL_Renderer *renderer) {
-	return SDL_SetRenderTarget(renderer, this->_texture);
+	if (SDL_SetRenderTarget(renderer, this->_texture) == -1) {
+		std::cout << "WARNING: Can't set " << this->_name << " texture as render targer." << std::endl;
+		return false;
+	}
+	return true;
 }
 
