@@ -25,14 +25,15 @@ class ArtificialIntelligence {
         std::unordered_map<std::string, int> patternsHashMap;
 
 
-    AiMove runAI(GomokuMainBoard & mainBoard, int player) ;
+
+
+        AiMove runAI(GomokuMainBoard & mainBoard, int player) ;
         AiMove minmaxSearch(GomokuMainBoard & mainBoard, int player);
         int minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool player, int alpha, int beta , int x, int y);
         int evaluation(GomokuMainBoard & mainBoard, int  isMax);
         void insertToHashMap(GomokuMainBoard & board, int value);
         bool checkVisitedBoard(GomokuMainBoard & board);
         int getEvaluation (GomokuMainBoard & board);
-
         int getScoreByPatterns(GomokuMainBoard & board, int captured_nb, int player, int x, int y);
         int checkPatternWeight(std::string pattern, int player, int captured_nb);
 
