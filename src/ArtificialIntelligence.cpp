@@ -136,7 +136,6 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
     printf("%ld", mainBoard.recs);
     //printf("x=%d, y=%d -> score = %d\n", x,y,value);
     return move;
-
 }
 
 int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y)
