@@ -155,7 +155,7 @@ int main() {
 			indexesPoint.y = move.y;
 			view->putStoneOnBoard(indexesPoint, AI_PLAYER);
 			mainBoard->check_for_capture(*mainBoard, move.x, move.y, AI_PLAYER, HUMAN_PLAYER, true);
-			if (mainBoard->win(move.x, move.y))
+			if (mainBoard->win(move.x, move.y) || mainBoard->ai_capture >= 10)
 			{
 			    winingCoords[0] = Coordinates(move.x, move.y, AI_PLAYER);
 				std::cout << " AI_PLAYER WON !!! \n";
@@ -179,7 +179,7 @@ int main() {
 					mainBoard->check_for_capture(*mainBoard, indexesPoint.x, indexesPoint.y, HUMAN_PLAYER, AI_PLAYER, true);
 					view->putStoneOnBoard(indexesPoint, player);
 					view->updateGameScreen();
-					if (mainBoard->win(indexesPoint.x, indexesPoint.y))
+					if (mainBoard->win(indexesPoint.x, indexesPoint.y) || mainBoard->player_capture >= 10)
 					{
 						std::cout << " HUMAN WON !!! \n";
 						break;

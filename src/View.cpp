@@ -285,7 +285,7 @@ void View::updateGameScreen() {
 	this->_secondPlayerHelperStoneTexture->renderTexture(this->_renderer);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
 	for (SDLTextureClass *element : this->_textures) {
-		std::cout << "texture update" << std::endl;
+		//std::cout << "texture update" << std::endl;
 		element->renderTexture(this->_renderer);
 	}
 	SDL_RenderPresent(this->_renderer);
