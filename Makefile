@@ -13,7 +13,6 @@ SRC_DIR = src
 
 SRC_FILES =	main.cpp \
 			GomokuMainBoard.cpp \
-			AiMove.cpp \
 			ArtificialIntelligence.cpp \
 			AvailableSpot.cpp \
 			BoardState.cpp \

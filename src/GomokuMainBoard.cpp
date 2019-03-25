@@ -150,7 +150,7 @@ void GomokuMainBoard::printBoard() {
 
         for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
         {
-            std::cout << board[x][y] << " ";
+            std::cout << board[y][x] << " ";
         }
         std::cout << "\n";
     }
@@ -445,6 +445,7 @@ int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y, int
         return INT_MIN;
     return INT_MAX;
 }
+
 bool GomokuMainBoard::draw(){
     if (count == GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE){
         return true;

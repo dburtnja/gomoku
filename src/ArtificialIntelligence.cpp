@@ -111,7 +111,8 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
         int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor);
         mainBoard.setValue(x_cor, y_cor, AI_PLAYER);
         int capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false);
-        tmp = std::max(tmp, capture);
+        if (value > 0)
+            tmp = std::max(tmp, capture);
         mainBoard.setValue(x_cor, y_cor, 0);
         // mainBoard.clearStoneOnBoard(x_cor,y_cor);
         printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
@@ -122,7 +123,7 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
             y = y_cor;
         }
         if (tmp == INT_MAX )
-            break ;
+           break ;
     }
     if (x == -1 && y == -1 )
     {
@@ -157,11 +158,11 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 
         if (isMax)
         {
-            return INT_MAX;
+            return INT_MAX - 2 + depth;
         }
         else
             {
-                return INT_MIN;
+                return INT_MIN + 2 - depth;
             }
     }
 //    else
@@ -420,8 +421,9 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
             }
         }
     }
-    if (computerPattern[M] > 0) return INT_MAX;
-    if (playerPattern[M] > 0) return INT_MIN;
+    if (computerPattern[M] > 0) return INT_MAX - 100;
+    if (playerPattern[M] > 0) return INT_MIN + 100;
+
     int x = 1;
     sum += computerPattern[1];
     sum -= playerPattern[1] * 6 ;
