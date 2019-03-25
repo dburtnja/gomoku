@@ -82,3 +82,10 @@ int SDLTextureClass::setAsRenderTarget(SDL_Renderer *renderer) {
 	return true;
 }
 
+void SDLTextureClass::clearTexture(SDL_Renderer *renderer) {
+    this->setAsRenderTarget(renderer);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderTarget(renderer, NULL);
+}
+

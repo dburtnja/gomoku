@@ -11,6 +11,9 @@
 #include "SingleStone.hpp" //не бачить цей хедер з MainHeader.hpp ??????
 #include "AvailableSpot.hpp" //не бачить цей хедер з MainHeader.hpp ??????
 #include "BoardState.hpp" //не бачить цей хедер з MainHeader.hpp ??????
+#include "Coordinates.hpp"
+#include <list>
+
 
 
 class GomokuMainBoard {
@@ -65,6 +68,8 @@ public:
 	int getPlayer();
 
 	int getPlayer(int move);
+
+    std::list<Coordinates> * getPlacedCoordinates();
 
 private:
     unsigned int _boardSize;

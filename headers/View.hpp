@@ -5,6 +5,7 @@
 #ifndef GOMOKU_VIEW_HPP
 #define GOMOKU_VIEW_HPP
 
+#include <list>
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"
 
@@ -34,8 +35,13 @@ public:
 	void		showBoardHelper(SDL_Point indexPoint, int playerNumber);
 	void		updateGameScreen();
 	void		putStoneOnBoard(SDL_Point indexPoint, int playerNumber);
+	void		putStoneOnBoard(Coordinates coordinates);
 
     void showWiningLine(Coordinates *coordinates, int size, const char *message);
+
+    void updateAllBoard(GomokuMainBoard *board);
+
+    void setEventTypesToCheck(std::vector<Uint32> eventTypes);
 
 private:
 

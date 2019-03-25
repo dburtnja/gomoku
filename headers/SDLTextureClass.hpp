@@ -26,6 +26,8 @@ public:
 
 	int setAsRenderTarget(SDL_Renderer *renderer);
 
+    void clearTexture(SDL_Renderer *renderer);
+
 private:
 	SDL_Texture	*_texture;
 	SDL_Rect	_srcrect;

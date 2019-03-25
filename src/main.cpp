@@ -78,8 +78,11 @@ SDL_Event	motion;
 
 bool 	motion_exist;
 bool	mouse_exist;
+bool	f5;
 
 static void	checkEvents(View *view) {
+    std::vector<Uint32> eventTypes;
+
 	SDL_Event	event;
 	SDL_Point	indexesPoint;
 
@@ -92,8 +95,13 @@ static void	checkEvents(View *view) {
 			mouse = event;
 			mouse_exist = true;
 		}
+		if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.sym == SDLK_F5)
+				f5 = true;
+		}
 	}
 }
+
 
 int main() {
     View		*view;
@@ -120,9 +128,16 @@ int main() {
 		return -1;
     }
 
+//    setEventTypesToCheck(view);
+
     while (view->isRunning()) {
 		checkEvents(view);
-		if (motion_exist && false) {
+		if (f5) {
+			f5 = false;
+			view->updateAllBoard(mainBoard);
+			view->updateGameScreen();
+		}
+		if (motion_exist) {
 			SDL_Point	indexesPoint;
 
 			motion_exist = false;
@@ -139,9 +154,10 @@ int main() {
 			indexesPoint.x = move.x;
 			indexesPoint.y = move.y;
 			view->putStoneOnBoard(indexesPoint, AI_PLAYER);
+			mainBoard->check_for_capture(*mainBoard, move.x, move.y, AI_PLAYER, HUMAN_PLAYER, true);
 			if (mainBoard->win(move.x, move.y))
 			{
-			    winingCoords[0] = Coordinates(move.x, move.y);
+			    winingCoords[0] = Coordinates(move.x, move.y, AI_PLAYER);
 				std::cout << " AI_PLAYER WON !!! \n";
 				view->showWiningLine(winingCoords, 1, "AI Player WON!");
 				gameOver = true;
@@ -160,6 +176,7 @@ int main() {
 				player = mainBoard->getPlayer(moveCounter);
 
 				if (mainBoard->putStoneOnBoard(indexesPoint.x, indexesPoint.y, player, 100)) {
+					mainBoard->check_for_capture(*mainBoard, indexesPoint.x, indexesPoint.y, HUMAN_PLAYER, AI_PLAYER, true);
 					view->putStoneOnBoard(indexesPoint, player);
 					view->updateGameScreen();
 					if (mainBoard->win(indexesPoint.x, indexesPoint.y))

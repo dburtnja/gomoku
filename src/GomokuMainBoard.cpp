@@ -3,6 +3,7 @@
 //
 
 #include "../headers/MainHeader.hpp"
+#include "../headers/GomokuMainBoard.hpp"
 
 GomokuMainBoard::GomokuMainBoard() :
         _boardSize (GOMOKU_BOARD_SIZE)
@@ -439,7 +440,10 @@ int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y, int
         else
             return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
     }
-    return INT_MIN;
+
+    if (attack == AI_PLAYER)
+        return INT_MIN;
+    return INT_MAX;
 }
 bool GomokuMainBoard::draw(){
     if (count == GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE){
@@ -469,3 +473,19 @@ int GomokuMainBoard::getPlayer() {
 int GomokuMainBoard::getPlayer(int move) {
     return this->_players[move % 2];
 }
+
+std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
+    std::list<Coordinates> *coordinates;
+    int                     value;
+
+    coordinates = new std::list<Coordinates>;
+    for (int x = 0; x < this->_boardSize; x++) {
+        for (int y = 0; y < this->_boardSize; y++) {
+            value = this->getValue(x, y);
+            if (value != EMPTY_CELL)
+                coordinates->push_back(Coordinates(x, y, value));
+        }
+    }
+    return coordinates;
+}
+

@@ -10,15 +10,17 @@ class Coordinates {
 
 public:
     Coordinates();
-    Coordinates(int x, int y);
+    Coordinates(int x, int y, int player);
     ~Coordinates();
 
     int getX();
     int getY();
+    int getPlayer();
 
 private:
     int _x;
     int _y;
+    int _player;
 };
 
 

@@ -85,6 +85,7 @@ View::~View() {
 	delete this->_firsPlayerHelperStoneTexture;
 	delete this->_secondPlayerHelperStoneTexture;
 	delete this->_boardBackground;
+	delete this->_boardTextureClass;
 	SDL_DestroyRenderer(this->_renderer);
 	SDL_DestroyWindow(this->_window);
 	IMG_Quit();
@@ -346,5 +347,32 @@ void View::showWiningLine(Coordinates *coordinates, int size, const char *messag
 	SDL_RenderDrawRect(this->_renderer, NULL);
 	SDL_RenderDrawRect(this->_renderer, NULL);
 	this->_drawLine(10, 10, 400, 400, BLACK_COLOR_SDL, 200, 5);
+}
+
+void View::updateAllBoard(GomokuMainBoard *board) {
+	std::list<Coordinates>	            *coordinates;
+	std::list<Coordinates>::iterator    iterator;
+
+	this->_debugMessage("Updating all board.");
+	coordinates = board->getPlacedCoordinates();
+	this->_boardTextureClass->clearTexture(this->_renderer);
+	for (iterator = coordinates->begin(); iterator != coordinates->end(); ++iterator) {
+	    std::cout << iterator->getY() << std::endl;
+	    this->putStoneOnBoard(*iterator);
+	}
+
+	delete coordinates;
+}
+
+void View::putStoneOnBoard(Coordinates coordinates) {
+    SDL_Point   point;
+
+    point.x = coordinates.getX();
+    point.y = coordinates.getY();
+    this->putStoneOnBoard(point, coordinates.getPlayer());
+}
+
+void View::setEventTypesToCheck(std::vector<Uint32> eventTypes) {
+
 }
 

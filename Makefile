@@ -33,11 +33,11 @@ $(APP_NAME): $(OBJ)
 						@$(CXX) $(OBJ) -o $(APP_NAME) $(SDL_LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+						@mkdir -p $(OBJ_DIR)
 						$(CXX) -c $(CFLAGS) -o $@ $<
 
-
 clean:
-						@rm -f $(OBJ)
+						@rm -rf $(OBJ_DIR)
 
 fclean:
 						@make clean
