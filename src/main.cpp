@@ -170,6 +170,8 @@ int main() {
 		if (mainBoard->getPlayer(moveCounter) == HUMAN_PLAYER && mouse_exist && !gameOver) {
 			SDL_Point	indexesPoint;
 			int			player;
+			Coordinates	winingCoords[1];
+
 
 			mouse_exist = false;
 			if (view->getIndexesFromCoordinate(&indexesPoint, mouse.button.x, mouse.button.y)) {
@@ -182,7 +184,9 @@ int main() {
 					if (mainBoard->win(indexesPoint.x, indexesPoint.y) || mainBoard->player_capture >= 10)
 					{
 						std::cout << " HUMAN WON !!! \n";
-						break;
+						winingCoords[0] = Coordinates(move.x, move.y, HUMAN_PLAYER);
+						view->showWiningLine(winingCoords, 1, "Human Player WON!");
+						gameOver = true;
 					}
 					moveCounter++;
 				}

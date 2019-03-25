@@ -21,6 +21,10 @@
 #define CIRCLE_IMAGE_WHITE			"media/white-basic-plate-topview-115309816956uh4u3kfo4.png"
 #define CIRCLE_IMAGE_BLACK			"media/black-sphere-png-7.png"
 
+#define FONT_FILE                   "media/OpenSans-Bold.ttf"
+#define FONT_SIZE_24                24
+#define FONT_SIZE_46                46
+
 #include <limits>
 #include <climits>
 #include "iostream"
@@ -35,6 +39,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 
 #include "GomokuMainBoard.hpp"

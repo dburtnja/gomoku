@@ -1,5 +1,5 @@
 
-SDL_LIBS = -lSDL2 -lSDL2_image
+SDL_LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
 APP_NAME = gomoku
 

@@ -16,6 +16,7 @@
 
 const SDL_Color	WHITE_COLOR_SDL = {255, 255, 255, 255};
 const SDL_Color	BLACK_COLOR_SDL = {0, 0, 0, 255};
+const SDL_Color	GREY_COLOR_SDL = {128, 128, 128, 255};
 
 
 
@@ -60,6 +61,8 @@ private:
 	SDLTextureClass 				*_firstPlayerStoneTexture;
 	SDLTextureClass 				*_secondPlayerStoneTexture;
 	SDLTextureClass 				*_boardTextureClass;
+	TTF_Font                        *_font24;
+	TTF_Font                        *_font46;
 	std::array<SDLTextureClass*, 1>	_textures;
 	int								*_boardCoordinates;
 	int								_coordinatesLength;
@@ -79,6 +82,8 @@ private:
     void            _debugMessage(const char *message);
     void            _afterInitSDL();
     void            _setBoardValues(GomokuMainBoard *board);
+
+    void _renderText(const char *message, TTF_Font *font, int x, int y);
 };
 
 

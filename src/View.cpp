@@ -18,10 +18,10 @@ View::View(int width, int height, char const *name, GomokuMainBoard *board, int 
 	this->_sleep_time = sleep_time;
 	this->_running = true;
 
-	this->_debugMessage("Initialising SDL.");
+    this->_debugMessage("Initialising SDL.");
 
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-		throw ("SDL_Init Error");
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0 || TTF_Init())
+		throw ("SDL_Init/TTF_Init Error");
 
 	this->_window = SDL_CreateWindow(
 			this->_name,
@@ -65,7 +65,9 @@ void View::_setBoardCoordinates() {
 void View::_afterInitSDL() {
 	this->_debugMessage("Creating textures");
 
-	SDL_Texture	*texture;
+    this->_font24 = TTF_OpenFont(FONT_FILE, FONT_SIZE_24);
+    this->_font46 = TTF_OpenFont(FONT_FILE, FONT_SIZE_46);
+    SDL_Texture	*texture;
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
@@ -79,6 +81,7 @@ void View::_debugMessage(const char *message) {
 
 View::~View() {
 	this->_debugMessage("Free View memory.");
+	TTF_CloseFont(this->_font24);
 	for (SDLTextureClass *texture : this->_textures)
 		delete texture;
 	delete [] this->_boardCoordinates;
@@ -89,6 +92,7 @@ View::~View() {
 	SDL_DestroyRenderer(this->_renderer);
 	SDL_DestroyWindow(this->_window);
 	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }
 
@@ -212,12 +216,18 @@ bool View::showGameBoard(const char *img_file_path) {
 }
 
 void View::_renderBackgroundBoard() {
-	int	firstCoordinate;
-	int lastCoordinate;
+	int     firstCoordinate;
+	int     lastCoordinate;
+	int     textFirstCoordinate;
+	char    message[3];
 
 	firstCoordinate = this->_boardCoordinates[0];
 	lastCoordinate = this->_boardCoordinates[this->_coordinatesLength - 1]; //todo check index
+	textFirstCoordinate = firstCoordinate - this->_distance;
 	for (int i = 0; i < this->_coordinatesLength; i++) {
+		sprintf(message, "%d", i + 1);
+        this->_renderText(message, this->_font24, textFirstCoordinate, this->_boardCoordinates[i]);
+        this->_renderText(message, this->_font24, this->_boardCoordinates[i], textFirstCoordinate);
 		this->_drawLine(
 				firstCoordinate, this->_boardCoordinates[i],
 				lastCoordinate, this->_boardCoordinates[i],
@@ -338,14 +348,15 @@ void View::_placeTextureByIndexPoint(SDL_Point indexPoint, SDLTextureClass *text
 }
 
 void View::showWiningLine(Coordinates *coordinates, int size, const char *message) {
-	this->_debugMessage("Showing winning window.");
-	if (!this->_textures[0]->setAsRenderTarget(this->_renderer)) {
-		std::cout << "Winning window warning." << std::endl;
-	}
-	SDL_SetRenderDrawColor(this->_renderer, WHITE_COLOR_SDL.r, WHITE_COLOR_SDL.g, WHITE_COLOR_SDL.b, 200);
-	SDL_RenderDrawRect(this->_renderer, NULL);
-	SDL_RenderDrawRect(this->_renderer, NULL);
-	this->_drawLine(10, 10, 400, 400, BLACK_COLOR_SDL, 200, 5);
+    SDL_Color   color;
+
+    this->_debugMessage("Showing winning window.");
+    color = GREY_COLOR_SDL;
+    color.a = 150;
+	this->_textures[0]->clearTexture(this->_renderer, color);
+	this->_textures[0]->setAsRenderTarget(this->_renderer);
+	this->_renderText(message, this->_font46, 40, 40);
+	this->putStoneOnBoard(*coordinates);
 }
 
 void View::updateAllBoard(GomokuMainBoard *board) {
@@ -370,7 +381,17 @@ void View::putStoneOnBoard(Coordinates coordinates) {
     this->putStoneOnBoard(point, coordinates.getPlayer());
 }
 
-void View::setEventTypesToCheck(std::vector<Uint32> eventTypes) {
+void View::_renderText(const char *message, TTF_Font *font, int x, int y) {
+	SDL_Rect	rect;
+	SDL_Surface	*surfaceMessage;
+	SDL_Texture	*texture;
 
+	surfaceMessage = TTF_RenderText_Solid(font, message, BLACK_COLOR_SDL);
+	texture = SDL_CreateTextureFromSurface(this->_renderer, surfaceMessage);
+	SDL_QueryTexture(texture, NULL, NULL, &(rect.w), &(rect.h));
+	rect.x = x;
+	rect.y = y;
+	SDL_RenderCopy(this->_renderer, texture, NULL, &rect);
+	SDL_DestroyTexture(texture);
+	SDL_FreeSurface(surfaceMessage);
 }
-

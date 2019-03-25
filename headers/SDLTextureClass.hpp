@@ -27,6 +27,7 @@ public:
 	int setAsRenderTarget(SDL_Renderer *renderer);
 
     void clearTexture(SDL_Renderer *renderer);
+    void clearTexture(SDL_Renderer *renderer, SDL_Color color);
 
 private:
 	SDL_Texture	*_texture;
@@ -37,7 +38,6 @@ private:
 	bool		_showOnRender;
 	const char 	*_name;
 
-	void changeTextureColor(int srcColor, int dstColor);
 
 	void _changeColor(SDL_Surface *surface, const SDL_Color srcColor, const SDL_Color dstColor);
 
