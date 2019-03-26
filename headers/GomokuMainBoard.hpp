@@ -69,6 +69,8 @@ public:
 
 	int getPlayer(int move);
 
+	void setMoveCounter(int move);
+
     std::list<Coordinates> * getPlacedCoordinates();
 
 private:

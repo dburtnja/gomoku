@@ -129,6 +129,7 @@ int main() {
     }
 
 //    setEventTypesToCheck(view);
+	moveCounter++;
 
     while (view->isRunning()) {
 		checkEvents(view);
@@ -157,7 +158,7 @@ int main() {
 			mainBoard->check_for_capture(*mainBoard, move.x, move.y, AI_PLAYER, HUMAN_PLAYER, true);
 			if (mainBoard->win(move.x, move.y) || mainBoard->ai_capture >= 10)
 			{
-			    winingCoords[0] = Coordinates(move.x, move.y, AI_PLAYER);
+			    winingCoords[0] = Coordinates(move.x, move.y, HUMAN_PLAYER);
 				std::cout << " AI_PLAYER WON !!! \n";
 				view->showWiningLine(winingCoords, 1, "AI Player WON!");
 				gameOver = true;
@@ -184,7 +185,7 @@ int main() {
 					if (mainBoard->win(indexesPoint.x, indexesPoint.y) || mainBoard->player_capture >= 10)
 					{
 						std::cout << " HUMAN WON !!! \n";
-						winingCoords[0] = Coordinates(move.x, move.y, HUMAN_PLAYER);
+						winingCoords[0] = Coordinates(move.x, move.y, AI_PLAYER);
 						view->showWiningLine(winingCoords, 1, "Human Player WON!");
 						gameOver = true;
 					}

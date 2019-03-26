@@ -436,9 +436,9 @@ int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y, int
     {
         //printf("CAPTURE %d, %d \n", x, y);
         if (attack == AI_PLAYER)
-            return 30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture);
+            return 300 * (ai_capture + 1);// + (int) std::pow(8, ai_capture);
         else
-            return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
+            return -(300 * (ai_capture + 1));// + (int) std::pow(8, ai_capture));
     }
 
     if (attack == AI_PLAYER)
@@ -473,6 +473,11 @@ int GomokuMainBoard::getPlayer() {
 
 int GomokuMainBoard::getPlayer(int move) {
     return this->_players[move % 2];
+}
+
+void GomokuMainBoard::setMoveCounter(int move)
+{
+    _move = move;
 }
 
 std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
