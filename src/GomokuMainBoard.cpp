@@ -63,10 +63,11 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     and checkForSameSpot(x + i,y + j)
                     and this->board[x + i][y + j] == 0)
                     this->availablespots.push_back(new AvailableSpot(x + i, y + j));
+                    //this->availablespots.insert(this->availablespots.begin(),  new AvailableSpot(x + i, y + j));
             }
         }
     }
-    if (depth > 1)
+    if (depth > 3)
     {
         for (int i = -1; i<= 1; i++)
         {
@@ -78,6 +79,7 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     and checkForSameSpot(x + i,y + j)
                     and this->board[x + i][y + j] == 0)
                     this->availablespots.push_back(new AvailableSpot(x + i, y + j));
+                    //this->availablespots.insert(this->availablespots.begin(),new AvailableSpot(x + i, y + j));
             }
         }
     }
@@ -218,7 +220,7 @@ bool GomokuMainBoard::checkEmpty(int x, int y) {
         return false;
     if (y < 0 || y > GOMOKU_BOARD_SIZE)
         return false;
-    return this->board[x][y] == 0;
+    return this->board[x][y] == EMPTY_CELL;
 }
 
 void GomokuMainBoard::setValue(int x, int y, int c) {
@@ -435,15 +437,12 @@ int GomokuMainBoard::check_for_capture(GomokuMainBoard &board, int x, int y, int
     else if (ready_for_capture)
     {
         //printf("CAPTURE %d, %d \n", x, y);
-        if (attack == AI_PLAYER)
+       // if (attack == AI_PLAYER)
             return 30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture);
-        else
-            return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
+        //else
+            //return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
     }
-
-    if (attack == AI_PLAYER)
-        return INT_MIN;
-    return INT_MAX;
+    return 0;
 }
 
 bool GomokuMainBoard::draw(){
@@ -473,6 +472,11 @@ int GomokuMainBoard::getPlayer() {
 
 int GomokuMainBoard::getPlayer(int move) {
     return this->_players[move % 2];
+}
+
+void GomokuMainBoard::setMoveCounter(int move)
+{
+    _move = move;
 }
 
 std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
