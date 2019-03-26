@@ -132,6 +132,7 @@ int main() {
 	moveCounter++;
 
     while (view->isRunning()) {
+    	//std::reverse(mainBoard->availablespots.begin(), mainBoard->availablespots.end());
 		checkEvents(view);
 		if (f5) {
 			f5 = false;

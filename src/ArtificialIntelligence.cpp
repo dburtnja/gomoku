@@ -69,8 +69,7 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
     AiMove move{};
 
     clock_t start = clock();
-    clock_t end = clock();
-    double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    double seconds = 0;
 
     int value = INT_MIN;
     int x = -1;
@@ -90,20 +89,19 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
         mainBoard.setValue(x_cor, y_cor, AI_PLAYER);
         int capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false);
         mainBoard.setValue(x_cor, y_cor, 0);
-        if (capture != INT_MIN)
-            printf("Oponent capture = %d\n", capture);
-        //if (value > 0)
-        //    tmp = std::max(tmp, capture);
-        tmp += capture;
 
+        if (capture !=0)
+            printf("Computer capture = %d\n", capture);
+
+        tmp += capture;
         mainBoard.setValue(x_cor, y_cor, HUMAN_PLAYER);
         capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, HUMAN_PLAYER, AI_PLAYER, false);
-        if (capture != INT_MAX)
-            printf("Oponent capture = %d\n", capture);
-        tmp += capture;
         mainBoard.setValue(x_cor, y_cor, 0);
 
-        // mainBoard.clearStoneOnBoard(x_cor,y_cor);
+        if (capture !=0)
+            printf("Oponent capture = %d\n", capture);
+
+        tmp += capture * 2;
         printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
         if (tmp > value )
         {
@@ -111,8 +109,12 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
             x = x_cor;
             y = y_cor;
         }
-        if (tmp == INT_MAX )
-           break ;
+
+        clock_t end = clock();
+        seconds = (double)(end - start) / CLOCKS_PER_SEC;
+        if (tmp == INT_MAX)
+            break ;
+        //printf("TIME = %f\n", seconds);
     }
     if (x == -1 && y == -1 )
     {
@@ -123,7 +125,8 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
     move.y = y;
     mainBoard.availablespots = tmp_vector;
     printf("%ld", mainBoard.recs);
-    //printf("x=%d, y=%d -> score = %d\n", x,y,value);
+    printf("x=%d, y=%d -> score = %d\n", x,y,value);
+    //printf("time = %d\n", seconds);
     return move;
 }
 
@@ -143,18 +146,17 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     if (mainBoard.win(x,y))
     {
         mainBoard.availablespots = tmp_vector_old;
-        value = evaluation(mainBoard, isMax);
 
         mainBoard.setValue(x,y, 0);
-        return value;
 
         if (isMax)
         {
-            return INT_MAX - 2 + depth;
+            return INT_MAX - REC_DEPT + depth;
         }
         else
             {
-                return INT_MIN + 2 - depth;
+
+                return INT_MIN + REC_DEPT - depth;
             }
     }
 //    else
@@ -164,21 +166,22 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     if (depth == 0)
     {
 
+        int capture_value = 0;
 
-//        if (isMax)
-//        {
-//            int capture_value = INT_MIN;
-//            capture_value = mainBoard.check_for_capture(mainBoard, x, y, AI_PLAYER, HUMAN_PLAYER, false);
-//            value = std::max(capture_value,evaluation(mainBoard, isMax));
-//        }
-//        else
-//            {
-//                int capture_value = INT_MAX;
-//                capture_value = mainBoard.check_for_capture(mainBoard, x, y, HUMAN_PLAYER, AI_PLAYER, false);
-//                value = std::min(capture_value,evaluation(mainBoard, isMax));
-//            }
+        /*if (isMax)
+        {
+            capture_value = INT_MIN;
+            capture_value = mainBoard.check_for_capture(mainBoard, x, y, AI_PLAYER, HUMAN_PLAYER, false);
+            capture_value = std::max(capture_value,evaluation(mainBoard, isMax));
+        }
+        else
+            {
+                capture_value = INT_MAX;
+                capture_value = mainBoard.check_for_capture(mainBoard, x, y, HUMAN_PLAYER, AI_PLAYER, false);
+                capture_value = std::min(capture_value,evaluation(mainBoard, isMax));
+            }*/
 
-       value = evaluation(mainBoard, isMax);
+        value = evaluation(mainBoard, isMax) + capture_value;
         mainBoard.setValue(x,y, 0);
         mainBoard.availablespots = tmp_vector_old;
         return value;
@@ -360,7 +363,7 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
 
                 sameSymbol = 1;// count same symbols in main diagnol
                 k = 1;
-                while (i - k >= 0 && j - k >= 0 && mainBoard.getValue(i-k, j- k)  == c){
+                while (i - k >= 0 && j - k >= 0 && mainBoard.getValue(i - k, j- k)  == c){
                     sameSymbol++;
                     k++;
                 }
@@ -368,7 +371,7 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
 
                 //consider value at i - k later to see if it's blocked or not
                 l = 1;
-                while (i + l <= N-1 && j + l <= N-1 && mainBoard.getValue(i+l, j+l ) == c){
+                while (i + l < N && j + l < N && mainBoard.getValue(i + l, j + l ) == c){
                     sameSymbol++;
                     l++;
                 }
@@ -379,12 +382,12 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
                 }else if (sameSymbol == M - 1 && (mainBoard.checkEmpty(i-k,j-k) || mainBoard.checkEmpty(i+l,j+l))){
                     if (needMax) computerPattern[M-1]++;
                     else playerPattern[M-1]++;
-                }else if (sameSymbol == M - 2 && (mainBoard.checkEmpty(i-k,j-k) && mainBoard.checkEmpty(i+l,j+l)))
+                }else if (sameSymbol == M - 2 && (mainBoard.checkEmpty(i - k,j - k) && mainBoard.checkEmpty(i + l,j + l)))
                 {
                     if (needMax)
-                        computerPattern[M-2] ++;
+                        computerPattern[M - 2] ++;
                     else
-                        playerPattern[M-2] ++;
+                        playerPattern[M - 2] ++;
                 }
                 else if (sameSymbol == M - 2 && (mainBoard.checkEmpty(i-k,j-k) || mainBoard.checkEmpty(i+l,j+l))){
                     if (needMax) computerPattern[M-3]++;
@@ -438,11 +441,11 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
         }
     }
     if (computerPattern[M] > 0)
-        computerPattern[M]*=1000;
-        //return INT_MAX - 100;
+        //computerPattern[M]*=100;
+        return INT_MAX - 100;
     if (playerPattern[M] > 0)
-        playerPattern[M]*=1000;
-       //return INT_MIN + 100;
+        //playerPattern[M]*=100;
+       return INT_MIN + 100;
 
     int x = 1;
     sum += computerPattern[1];
