@@ -8,12 +8,10 @@
 #define GOMOKU_GOMOKUMAINBOARD_HPP
 
 #include "MainHeader.hpp"
-#include "SingleStone.hpp" //не бачить цей хедер з MainHeader.hpp ??????
-#include "AvailableSpot.hpp" //не бачить цей хедер з MainHeader.hpp ??????
-#include "BoardState.hpp" //не бачить цей хедер з MainHeader.hpp ??????
+#include "AvailableSpot.hpp"
+#include "BoardState.hpp"
 #include "Coordinates.hpp"
 #include <list>
-
 
 
 class GomokuMainBoard {
@@ -29,14 +27,14 @@ public:
 
     bool win(int, int);
     bool draw();
-    int check_for_capture(GomokuMainBoard & board, int x_cor, int y_cor, int, int, bool);
+    int check_for_capture( int x_cor, int y_cor, int, int, bool, std::vector<Coordinates*> &);
     int ai_capture = 0;
     int player_capture = 0;
 
-    bool rowOfTwo(int, int, int, int, bool);
-    bool columnOfTwo(int, int, int, int, bool);
-    bool mainDiagnolOfTwo(int, int, int, int, bool);
-    bool reverseDiagnolOfTwo(int, int, int, int, bool);
+    bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+    bool columnOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+    bool mainDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+    bool reverseDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
 
     bool rowOfFive(int, int);
     bool columnOfFive(int, int);

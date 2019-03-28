@@ -16,7 +16,6 @@ SRC_FILES =	main.cpp \
 			ArtificialIntelligence.cpp \
 			AvailableSpot.cpp \
 			BoardState.cpp \
-			SingleStone.cpp \
 			View.cpp \
 			SDLTextureClass.cpp \
 			Coordinates.cpp

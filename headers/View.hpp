@@ -8,7 +8,7 @@
 #include <list>
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"
-
+#include "GomokuMainBoard.hpp"
 #define HELPER_ALPHA	150
 
 #define BOARD_LINE_SIZE							3

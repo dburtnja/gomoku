@@ -35,6 +35,7 @@
 #include "algorithm"
 #include <unordered_map>
 #include <cmath>
+#include "time.h"
 
 
 #include <SDL2/SDL.h>
@@ -42,12 +43,12 @@
 #include <SDL2/SDL_ttf.h>
 
 
-#include "GomokuMainBoard.hpp"
-#include "SingleStone.hpp"
-#include "ArtificialIntelligence.hpp"
-#include "AvailableSpot.hpp"
-#include "AiMove.hpp"
-#include "Coordinates.hpp"
+//#include "GomokuMainBoard.hpp"
+//#include "ArtificialIntelligence.hpp"
+//#include "AvailableSpot.hpp"
+//#include "AiMove.hpp"
+//#include "Coordinates.hpp"
 //#include "BoardState.hpp"
-#include "time.h"
+
+
 #endif //GOMOKU_MAINHEADER_HPP

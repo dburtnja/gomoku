@@ -1,72 +1,58 @@
 #include "../headers/MainHeader.hpp"
+#include "../headers/ArtificialIntelligence.hpp"
+
+#include "../headers/GomokuMainBoard.hpp"
 
 #include <algorithm>    // std::max
 
 
-ArtificialIntelligence::ArtificialIntelligence() {
-    patternsHashMap = {
-            {"11111", 99999},
-            {"22222", -99999},
-            {"011110", 7000},
-            {"022220", -7500},
-            {"01111", 4000},
-            {"02222", -4500},
-            {"010111", 2000},
-            {"020222", -2500},
-            {"011011", 2000},
-            {"022022", -2500},
-            {"011101", 2000},
-            {"022202", -2500},
-            {"111010", 2000},
-            {"222020", -2500},
-            {"110110", 2000},
-            {"220220", -2500},
-            {"101110", 2000},
-            {"202220", -2500},
-            {"0111", 1500},
-            {"0222", -1550},
-            {"1110", 1500},
-            {"2220", -1550},
-            {"01101", 800},
-            {"02202", -850},
-            {"01011", 800},
-            {"0202", -850},
-            {"11010", 800},
-            {"22020", -850},
-            {"10110", 800},
-            {"20220", -850},
-            {"0110", 200},
-            {"0220", -250},
-    };
+ArtificialIntelligence::ArtificialIntelligence()
+{
+
 }
 
-ArtificialIntelligence::~ArtificialIntelligence() {}
+ArtificialIntelligence::~ArtificialIntelligence()
+{
 
-ArtificialIntelligence::ArtificialIntelligence(const ArtificialIntelligence &toCopy) {
+}
+
+ArtificialIntelligence::ArtificialIntelligence(const ArtificialIntelligence &toCopy)
+{
     * this = toCopy;
-
 }
-ArtificialIntelligence& ArtificialIntelligence::operator=(const ArtificialIntelligence &rhs) {
+
+ArtificialIntelligence& ArtificialIntelligence::operator=(const ArtificialIntelligence &rhs)
+{
+    this->hashMap = rhs.hashMap;
     return  (* this);
 }
 
-AiMove ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, int player) {
+Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, int player_1, int player_2)
+{
+    //TODO
+    player_1 = 0;
+    player_2 = 0;
 
-    AiMove move{};
+    Move move{};
     clock_t start = clock();
 
-    move = minmaxSearch(mainBoard, player);
+    move = minmaxSearch(mainBoard, player_1, player_2);
 
     clock_t end = clock();
     double seconds = (double)(end - start) / CLOCKS_PER_SEC;
     printf("The time: %f seconds\n", seconds);
 
-    mainBoard.putStoneOnBoard(move.x, move.y, player, 100);
+
     return move;
 }
 
-AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int player) {
-    AiMove move{};
+Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int player_1, int player_2)
+{
+    //TODO
+    player_1 = 0;
+    player_2 = 0;
+
+    Move move{};
 
     clock_t start = clock();
     double seconds = 0;
@@ -84,25 +70,25 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
         int y_cor = element->getY();
 
         //mainBoard.putStoneOnBoard(x_cor, y_cor, AI_PLAYER, 100);
-        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor);
+        int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor, player_1, player_2);
 
         mainBoard.setValue(x_cor, y_cor, AI_PLAYER);
-        int capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false);
+        int capture = mainBoard.check_for_capture(x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false, move.coordinatesList);
         mainBoard.setValue(x_cor, y_cor, 0);
 
-        if (capture !=0)
-            printf("Computer capture = %d\n", capture);
+        //if (capture !=0)
+       //     printf("Computer capture = %d\n", capture);
 
         tmp += capture;
         mainBoard.setValue(x_cor, y_cor, HUMAN_PLAYER);
-        capture = mainBoard.check_for_capture(mainBoard, x_cor, y_cor, HUMAN_PLAYER, AI_PLAYER, false);
+        capture = mainBoard.check_for_capture(x_cor, y_cor, HUMAN_PLAYER, AI_PLAYER, false, move.coordinatesList);
         mainBoard.setValue(x_cor, y_cor, 0);
 
-        if (capture !=0)
-            printf("Oponent capture = %d\n", capture);
+        //if (capture !=0)
+           // printf("Oponent capture = %d\n", capture);
 
         tmp += capture * 2;
-        printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
+        //printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
         if (tmp > value )
         {
             value = tmp;
@@ -112,7 +98,7 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
 
         clock_t end = clock();
         seconds = (double)(end - start) / CLOCKS_PER_SEC;
-        if (tmp == INT_MAX)
+        if (tmp == INT_MAX )//|| seconds > 0.4999)
             break ;
         //printf("TIME = %f\n", seconds);
     }
@@ -127,14 +113,18 @@ AiMove ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int pla
     printf("%ld", mainBoard.recs);
     printf("x=%d, y=%d -> score = %d\n", x,y,value);
     //printf("time = %d\n", seconds);
+
+    move.coordinatesList.push_back(new Coordinates(x, y, AI_PLAYER));
+    move.moveTime = seconds;
     return move;
 }
 
-int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y)
+int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, int player_1, int player_2)
 {
     std::vector<AvailableSpot *> tmp_vector_old;
     int c = isMax ?  AI_PLAYER  : HUMAN_PLAYER;
     int value = 0;
+    Move move{};
 
     mainBoard.recs++;
 
@@ -168,24 +158,16 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 
         int capture_value = 0;
 
-        /*if (isMax)
-        {
-            capture_value = INT_MIN;
-            capture_value = mainBoard.check_for_capture(mainBoard, x, y, AI_PLAYER, HUMAN_PLAYER, false);
-            capture_value = std::max(capture_value,evaluation(mainBoard, isMax));
-        }
+        if (isMax)
+            capture_value = mainBoard.check_for_capture(x, y, AI_PLAYER, HUMAN_PLAYER, false, move.coordinatesList);
         else
-            {
-                capture_value = INT_MAX;
-                capture_value = mainBoard.check_for_capture(mainBoard, x, y, HUMAN_PLAYER, AI_PLAYER, false);
-                capture_value = std::min(capture_value,evaluation(mainBoard, isMax));
-            }*/
+            capture_value = mainBoard.check_for_capture(x, y, HUMAN_PLAYER, AI_PLAYER, false, move.coordinatesList) * 2;
 
-        value = evaluation(mainBoard, isMax) + capture_value;
+        value = evaluation(mainBoard, isMax, player_1, player_2) + capture_value;
         mainBoard.setValue(x,y, 0);
         mainBoard.availablespots = tmp_vector_old;
         return value;
-        if (checkVisitedBoard(mainBoard))
+        /*if (checkVisitedBoard(mainBoard))
         {
             value = getEvaluation(mainBoard);
         }
@@ -195,7 +177,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
             //value = getScoreByPatterns(mainBoard,0,0,x,y);
             insertToHashMap(mainBoard, value);
         }
-        return value;
+        return value;*/
     }
 
     if (isMax)
@@ -213,7 +195,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
             std::vector<AvailableSpot *> tmp_vector1;
             tmp_vector1 = mainBoard.availablespots;
 
-            int temp = minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor);
+            int temp = minimaxAlphaBeta(mainBoard, depth - 1, false, alpha, beta, x_cor, y_cor, player_1, player_2);
             if (m > temp)
                 m = temp;
             if (beta > m)
@@ -243,7 +225,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 
             std::vector<AvailableSpot *> tmp_vector1;
             tmp_vector1 = mainBoard.availablespots;
-            int temp = minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor);
+            int temp = minimaxAlphaBeta(mainBoard, depth - 1, true, alpha, beta, x_cor, y_cor, player_1, player_2);
 
             if (M < temp){
                 M = temp;
@@ -264,13 +246,17 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     }
 }
 
-int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
+int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax, int player_1, int player_2)
+{
     int M = 5;
     int N = GOMOKU_BOARD_SIZE;
     int sum = 0;
     std::vector<int> computerPattern(M + 1, 0);
     std::vector<int> playerPattern(M + 1, 0);
+    isMax = false;
 
+    player_1 = 0;
+    player_2 = 0;
     for (int  i = 0 ; i < N; i++){
         for (int j = 0; j < N ; j++){
             if (mainBoard.getValue(i,j) != 0){
@@ -441,10 +427,8 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
         }
     }
     if (computerPattern[M] > 0)
-        //computerPattern[M]*=100;
         return INT_MAX - 100;
     if (playerPattern[M] > 0)
-        //playerPattern[M]*=100;
        return INT_MIN + 100;
 
     int x = 1;
@@ -456,25 +440,6 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax){
         sum -= playerPattern[i] * x * 10;
     }
     return sum;
-}
-
-
-bool ArtificialIntelligence::adjacentPlaced(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE] , int x, int y)
-{
-    // if(board[x][y] == 0 and x == GOMOKU_BOARD_SIZE / 2 and y == GOMOKU_BOARD_SIZE /2)
-    //    return true;
-    bool value = false;
-    if (board[x][y] != 0)
-        return false;
-    std::vector<std::vector<int>> adjacent = {{-1,-1},{-1,0}, {-1,1},{0,1},{0,-1},{1,-1},{1,0},{1,1}};
-
-    for (auto d:adjacent){
-
-        if (x+d[0] >=0 && y+d[1]>=0 && x+d[0] <= GOMOKU_BOARD_SIZE-1 && y + d[1] <= GOMOKU_BOARD_SIZE-1){
-            value = value || (board[x+d[0]][y+d[1]] != 0);
-        }
-    }
-    return value;
 }
 
 
@@ -493,76 +458,4 @@ bool ArtificialIntelligence::checkVisitedBoard(GomokuMainBoard &board) {
 
 int ArtificialIntelligence::getEvaluation(GomokuMainBoard &board) {
     return hashMap[board.toString()];
-}
-
-int ArtificialIntelligence::getScoreByPatterns(GomokuMainBoard & board, int captured_nb, int player, int x, int y) {
-    std::string pattern = "";
-    //char pattern[9];
-    int total_weight = 0;
-    //memset(pattern, 111 ,9);
-
-    //1 діагональ
-    for (int i = -4; i < 5; ++i) {
-        if (x + i >= 0 and y + i >= 0 and x + i < GOMOKU_BOARD_SIZE and y + i < GOMOKU_BOARD_SIZE)
-        {
-            if (board.getValue(x + i,y + i) == 0)
-                pattern+= '0';
-            else
-                pattern+= '0' + board.getValue(x + i,y + i);
-        }
-
-    }
-    total_weight += checkPatternWeight(pattern,captured_nb, player);
-    pattern = "";
-    for (int i = -4; i < 5; ++i) {
-        if (x + i >= 0 and y - i >= 0 and x - i < GOMOKU_BOARD_SIZE and y + i < GOMOKU_BOARD_SIZE)
-        {
-            if (board.getValue(x + i,y - i) == 0)
-                pattern+= '0';
-            else
-                pattern+= '0' + char(board.getValue(x + i,y + i));
-        }
-    }
-    total_weight += checkPatternWeight(pattern,captured_nb, player);
-    pattern = "";
-
-    //вертикаль
-    for (int i = -4; i < 5; ++i) {
-        if (x + i >= 0 and x + i < GOMOKU_BOARD_SIZE)
-        {
-            if (board.getValue(x + i,y) == 0)
-                pattern+= '0';
-            else
-                pattern+= '0' + char(board.getValue(x + i,y));
-        }
-    }
-    total_weight += checkPatternWeight(pattern,captured_nb, player);
-    pattern = "";
-
-    //горизонталь
-    for (int i = -4; i < 5; ++i) {
-        if (y + i >= 0 and y + i < GOMOKU_BOARD_SIZE)
-        {
-            if (board.getValue(x,y + i) == 0)
-                pattern+= '0';
-            else
-                pattern+= '0' + board.getValue(x,y + i);
-        }
-    }
-    total_weight += checkPatternWeight(pattern,captured_nb, player);
-
-    return total_weight;
-}
-
-int ArtificialIntelligence::checkPatternWeight(std::string pattern, int player, int captured_nb) {
-    int ret = 0;
-    std::string toFind;
-
-    for( auto it = patternsHashMap.begin(); it != patternsHashMap.end(); ++it)
-    {
-        toFind = it->first;
-        if (pattern.find(toFind) != -1)
-            ret = it->second;
-    }
-    return ret;
 }

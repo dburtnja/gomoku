@@ -7,11 +7,16 @@
 
 
 #include "MainHeader.hpp"
+#include "GomokuMainBoard.hpp"
 
-
-struct AiMove{
+struct Move{
     int x;
     int y;
+
+    std::vector<Coordinates*> coordinatesList;
+    double moveTime;
+    int capturePlayer_1;
+    int capturePlayer_2;
 };
 
 class ArtificialIntelligence {
@@ -22,15 +27,15 @@ class ArtificialIntelligence {
         ArtificialIntelligence &operator = (const ArtificialIntelligence & rhs);
 
         std::unordered_map<std::string, int> hashMap;
-        std::unordered_map<std::string, int> patternsHashMap;
+        //std::unordered_map<std::string, int> patternsHashMap;
 
 
 
 
-        AiMove runAI(GomokuMainBoard & mainBoard, int player) ;
-        AiMove minmaxSearch(GomokuMainBoard & mainBoard, int player);
-        int minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool player, int alpha, int beta , int x, int y);
-        int evaluation(GomokuMainBoard & mainBoard, int  isMax);
+        Move runAI(GomokuMainBoard & mainBoard, int player_1, int player_2) ;
+        Move minmaxSearch(GomokuMainBoard & mainBoard, int player_1, int player_2);
+        int minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool player, int alpha, int beta , int x, int y, int player_1, int player_2);
+        int evaluation(GomokuMainBoard & mainBoard, int  isMax, int player_1, int player_2);
         void insertToHashMap(GomokuMainBoard & board, int value);
         bool checkVisitedBoard(GomokuMainBoard & board);
         int getEvaluation (GomokuMainBoard & board);
