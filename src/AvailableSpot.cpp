@@ -3,6 +3,7 @@
 //
 
 #include "../headers/MainHeader.hpp"
+#include "../headers/AvailableSpot.hpp"
 
 
 AvailableSpot::AvailableSpot() : _x(0), _y(0) {}
@@ -16,13 +17,16 @@ AvailableSpot::AvailableSpot(const AvailableSpot &toCopy) {
 }
 
 AvailableSpot& AvailableSpot::operator=(const AvailableSpot &rhs) {
+    this->_x = rhs._x;
+    this->_y = rhs._y;
+
     return (* this);
 }
 
-int const AvailableSpot::getX() {
+int  AvailableSpot::getX() {
     return this->_x;
 }
 
-int const AvailableSpot::getY() {
+int  AvailableSpot::getY() {
     return this->_y;
 }

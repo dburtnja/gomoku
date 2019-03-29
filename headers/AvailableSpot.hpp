@@ -14,8 +14,9 @@ class AvailableSpot {
 
         AvailableSpot (const AvailableSpot & toCopy);
         AvailableSpot &operator = (const AvailableSpot & rhs);
-        int const getX( void );
-        int const getY( void );
+
+        int  getX( void );
+        int  getY( void );
 
 private:
         int _x;

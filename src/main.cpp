@@ -1,77 +1,6 @@
 #include "../headers/MainHeader.hpp"
 #include "../headers/View.hpp"
-
-
-
-
-//int			main() {
-//    AiMove move{};
-//    GomokuMainBoard * mainBoard = new GomokuMainBoard;
-//
-//    ArtificialIntelligence * AI = new ArtificialIntelligence;
-//
-//    //mainBoard->availablespots.push_back(new AvailableSpot(GOMOKU_BOARD_SIZE / 2, GOMOKU_BOARD_SIZE / 2));
-//
-//    int i = 0;
-//    while(1) {
-//        if (i % 2   == AI_PLAYER)
-//        {
-//            move = AI->runAI(*mainBoard, AI_PLAYER );
-//            if (mainBoard->win(move.x, move.y))
-//            {
-//                std::cout << " AI_PLAYER WON !!! \n";
-//                break;
-//            }
-//            mainBoard->printBoard();
-////            int x;
-////            int y;
-////            std::cout <<"Enter x: ";
-////            std::cin >> x;
-////            std::cout <<"Enter y: ";
-////            std::cin >> y;
-////            mainBoard->putStoneOnBoard(x,y,AI_PLAYER, 100);
-//
-////            mainBoard->printBoard();
-////            if (mainBoard->win(x, y))
-////            {
-////                std::cout << " HUMAN_PLAYER WON !!! \n";
-////                break;
-////            }
-//        }
-//        else
-//        {
-//            int x;
-//            int y;
-//            std::cout <<"Enter x: ";
-//            std::cin >> x;
-//            std::cout <<"Enter y: ";
-//            std::cin >> y;
-//            mainBoard->putStoneOnBoard(x,y,HUMAN_PLAYER, 100);
-//
-//            mainBoard->printBoard();
-//            if (mainBoard->win(x, y))
-//            {
-//                std::cout << " HUMAN_PLAYER WON !!! \n";
-//                break;
-//            }
-////            move = AI->runAI(*mainBoard, HUMAN_PLAYER );
-////            if (mainBoard->win(move.x, move.y))
-////            {
-////                std::cout << " HUMEN_PYAYER WON !!! \n";
-////                break;
-////            }
-////            mainBoard->printBoard();
-//        }
-////        int score = AI->evaluation(*mainBoard, AI_PLAYER);
-////        printf("SCORE 1 = %d\n", score);
-////        score = AI->evaluation(*mainBoard, HUMAN_PLAYER);
-////        printf("SCORE 2 = %d\n", score);
-//        i++;
-//        mainBoard->count++;
-//    }
-//    mainBoard->printBoard();
-//    return 0;
-//}
+#include "../headers/ArtificialIntelligence.hpp"
 
 SDL_Event	mouse;
 SDL_Event	motion;
@@ -84,7 +13,7 @@ static void	checkEvents(View *view) {
     std::vector<Uint32> eventTypes;
 
 	SDL_Event	event;
-	SDL_Point	indexesPoint;
+	//SDL_Point	indexesPoint;
 
 	while (view->pullEvent(&event)) {
 		if (event.type == SDL_MOUSEMOTION) {
@@ -105,12 +34,12 @@ static void	checkEvents(View *view) {
 
 int main() {
     View		*view;
-    int			moveCounter;
+    int			moveCounter = 0;
     bool		gameOver;
 
     GomokuMainBoard * mainBoard = new GomokuMainBoard;
 	ArtificialIntelligence * AI = new ArtificialIntelligence;
-	AiMove	move{};
+	Move	oneMove{};
 
 	gameOver = false;
 	try {
@@ -132,7 +61,7 @@ int main() {
 	moveCounter++;
 
     while (view->isRunning()) {
-    	//std::reverse(mainBoard->availablespots.begin(), mainBoard->availablespots.end());
+    	std::reverse(mainBoard->availablespots.begin(), mainBoard->availablespots.end());
 		checkEvents(view);
 		if (f5) {
 			f5 = false;
@@ -152,18 +81,31 @@ int main() {
 			SDL_Point   indexesPoint;
 			Coordinates	winingCoords[1];
 
-			move = AI->runAI(*mainBoard, AI_PLAYER);
-			indexesPoint.x = move.x;
-			indexesPoint.y = move.y;
+            oneMove = AI->runAI(*mainBoard, AI_PLAYER, HUMAN_PLAYER);
+			mainBoard->putStoneOnBoard(oneMove.x, oneMove.y, AI_PLAYER, GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter);
+
+			indexesPoint.x = oneMove.x;
+			indexesPoint.y = oneMove.y;
+
 			view->putStoneOnBoard(indexesPoint, AI_PLAYER);
-			mainBoard->check_for_capture(*mainBoard, move.x, move.y, AI_PLAYER, HUMAN_PLAYER, true);
-			if (mainBoard->win(move.x, move.y) || mainBoard->ai_capture >= 10)
+
+			mainBoard->check_for_capture(oneMove.x, oneMove.y, AI_PLAYER, HUMAN_PLAYER, true, oneMove.coordinatesList);
+			oneMove.capturePlayer_1 = mainBoard->ai_capture;
+			oneMove.capturePlayer_2 = mainBoard->player_capture;
+			//how to get structures info
+            for(auto & element: oneMove.coordinatesList)
+            {
+                printf("COORDS TO UPDATE = %d, %d, SYMBOL = %d\n", element->getX(), element->getY(), element->getPlayer());
+            }
+                if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->ai_capture >= 10)
 			{
-			    winingCoords[0] = Coordinates(move.x, move.y, HUMAN_PLAYER);
-				std::cout << " AI_PLAYER WON !!! \n";
-				view->showWiningLine(winingCoords, 1, "AI Player WON!");
+			    winingCoords[0] = Coordinates(oneMove.x, oneMove.y, HUMAN_PLAYER);
+                printf(" AI_PLAYER WON !!! in %d moves \n", moveCounter);
+
+                view->showWiningLine(winingCoords, 1, "AI Player WON!");
 				gameOver = true;
 			}
+            //end
             view->updateGameScreen();
 
 			mainBoard->printBoard();
@@ -179,14 +121,14 @@ int main() {
 			if (view->getIndexesFromCoordinate(&indexesPoint, mouse.button.x, mouse.button.y)) {
 				player = mainBoard->getPlayer(moveCounter);
 
-				if (mainBoard->putStoneOnBoard(indexesPoint.x, indexesPoint.y, player, 100)) {
-					mainBoard->check_for_capture(*mainBoard, indexesPoint.x, indexesPoint.y, HUMAN_PLAYER, AI_PLAYER, true);
+				if (mainBoard->putStoneOnBoard(indexesPoint.x, indexesPoint.y, player, GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter)) {
+					mainBoard->check_for_capture(indexesPoint.x, indexesPoint.y, HUMAN_PLAYER, AI_PLAYER, true, oneMove.coordinatesList);
 					view->putStoneOnBoard(indexesPoint, player);
 					view->updateGameScreen();
 					if (mainBoard->win(indexesPoint.x, indexesPoint.y) || mainBoard->player_capture >= 10)
 					{
-						std::cout << " HUMAN WON !!! \n";
-						winingCoords[0] = Coordinates(move.x, move.y, AI_PLAYER);
+						printf(" HUMAN WON !!! in %d moves \n", moveCounter);
+						winingCoords[0] = Coordinates(oneMove.x, oneMove.y, AI_PLAYER);
 						view->showWiningLine(winingCoords, 1, "Human Player WON!");
 						gameOver = true;
 					}
@@ -194,5 +136,6 @@ int main() {
 				}
 			}
 		}
+		//TODO free(move)
     }
 }

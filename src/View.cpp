@@ -132,7 +132,7 @@ SDL_Texture *View::_loadImage(const char *img_file_path) {
 
 void View::_applyTexture(int x, int y, SDL_Texture *texture) {
 	SDL_Rect	position;
-	SDL_Texture	*texture1;
+	//SDL_Texture	*texture1;
 
 	position.x = x;
 	position.y = y;
@@ -349,6 +349,8 @@ void View::_placeTextureByIndexPoint(SDL_Point indexPoint, SDLTextureClass *text
 
 void View::showWiningLine(Coordinates *coordinates, int size, const char *message) {
     SDL_Color   color;
+
+	size = 0; //TODO DENYS ???
 
     this->_debugMessage("Showing winning window.");
     color = GREY_COLOR_SDL;
