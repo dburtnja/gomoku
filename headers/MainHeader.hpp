@@ -8,7 +8,7 @@
 #define GOMOKU_BOARD_SIZE 19
 #define AI_PLAYER 1
 #define HUMAN_PLAYER 2
-#define REC_DEPT 3
+#define REC_DEPT 1
 #define POINTS_TO_WIN 5
 
 #define FIRST_PLAYER	1
@@ -43,12 +43,16 @@
 #include <SDL2/SDL_ttf.h>
 
 
-//#include "GomokuMainBoard.hpp"
-//#include "ArtificialIntelligence.hpp"
-//#include "AvailableSpot.hpp"
-//#include "AiMove.hpp"
-//#include "Coordinates.hpp"
-//#include "BoardState.hpp"
+/*#include "GomokuMainBoard.hpp"
+#include "ArtificialIntelligence.hpp"
+#include "AvailableSpot.hpp"
+#include "AiMove.hpp"
+#include "Coordinates.hpp"
+#include "BoardState.hpp"
+#include "APlayer.hpp"
+#include "HumanPlayer.hpp"
+#include "ComputerPlayer.hpp"
+#include "View.hpp"*/
 
 
 #endif //GOMOKU_MAINHEADER_HPP

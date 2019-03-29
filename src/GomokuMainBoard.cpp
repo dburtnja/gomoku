@@ -2,8 +2,9 @@
 // Created by mirex on 04.07.2018.
 //
 
-#include "../headers/MainHeader.hpp"
 #include "../headers/GomokuMainBoard.hpp"
+#include "../headers/APlayer.hpp"
+class APlayer;
 
 GomokuMainBoard::GomokuMainBoard() :
         _boardSize (GOMOKU_BOARD_SIZE)
@@ -409,24 +410,22 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
     return false;
 }
 
-int GomokuMainBoard::check_for_capture(int x, int y, int attack, int feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
+int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer * feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
 {
-    bool ready_for_capture = rowOfTwo(x,y, attack, feed, needToRemove, coordinatesList) || columnOfTwo(x,y, attack, feed, needToRemove, coordinatesList)
-            || mainDiagnolOfTwo(x,y, attack, feed, needToRemove ,coordinatesList) || reverseDiagnolOfTwo(x,y, attack, feed, needToRemove ,coordinatesList);
+    bool ready_for_capture =
+            rowOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove, coordinatesList)
+            || columnOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove, coordinatesList)
+            || mainDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList)
+            || reverseDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList);
     if (ready_for_capture && needToRemove == true)
     {
-        if (attack == AI_PLAYER)
-            ai_capture++;
-        else
-            player_capture++;
+        attack->increaseCapture(2);
     }
     else if (ready_for_capture)
     {
-        //printf("CAPTURE %d, %d \n", x, y);
-       // if (attack == AI_PLAYER)
-            return 2500000 * (ai_capture + 1) + (int) std::pow(8, ai_capture);
-        //else
-            //return -(30000 * (ai_capture + 1) + (int) std::pow(8, ai_capture));
+
+            return 2500000 * (attack->getPlayerCapture() + 1) + (int) std::pow(8, attack->getPlayerCapture());
+
     }
     return 0;
 }

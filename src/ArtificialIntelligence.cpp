@@ -1,9 +1,6 @@
-#include "../headers/MainHeader.hpp"
+
 #include "../headers/ArtificialIntelligence.hpp"
 
-#include "../headers/GomokuMainBoard.hpp"
-
-#include <algorithm>    // std::max
 
 
 ArtificialIntelligence::ArtificialIntelligence()
@@ -27,12 +24,8 @@ ArtificialIntelligence& ArtificialIntelligence::operator=(const ArtificialIntell
     return  (* this);
 }
 
-Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, int player_1, int player_2)
+Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, APlayer * player_1, APlayer * player_2)
 {
-    //TODO
-    player_1 = 0;
-    player_2 = 0;
-
     Move move{};
     clock_t start = clock();
 
@@ -46,12 +39,8 @@ Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, int player_1, in
     return move;
 }
 
-Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int player_1, int player_2)
+Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer * player_1, APlayer * player_2)
 {
-    //TODO
-    player_1 = 0;
-    player_2 = 0;
-
     Move move{};
 
     clock_t start = clock();
@@ -69,26 +58,25 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int playe
         int x_cor = element->getX();
         int y_cor = element->getY();
 
-        //mainBoard.putStoneOnBoard(x_cor, y_cor, AI_PLAYER, 100);
         int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor, player_1, player_2);
 
-        mainBoard.setValue(x_cor, y_cor, AI_PLAYER);
-        int capture = mainBoard.check_for_capture(x_cor, y_cor, AI_PLAYER, HUMAN_PLAYER, false, move.coordinatesList);
-        mainBoard.setValue(x_cor, y_cor, 0);
+        mainBoard.setValue(x_cor, y_cor, player_1->getplayerSymbol());
+        int capture = mainBoard.check_for_capture(x_cor, y_cor, player_1, player_2, false, move.coordinatesList);
+        mainBoard.setValue(x_cor, y_cor, EMPTY_CELL);
 
         //if (capture !=0)
        //     printf("Computer capture = %d\n", capture);
 
         tmp += capture;
-        mainBoard.setValue(x_cor, y_cor, HUMAN_PLAYER);
-        capture = mainBoard.check_for_capture(x_cor, y_cor, HUMAN_PLAYER, AI_PLAYER, false, move.coordinatesList);
-        mainBoard.setValue(x_cor, y_cor, 0);
+        mainBoard.setValue(x_cor, y_cor, player_2->getplayerSymbol());
+        capture = mainBoard.check_for_capture(x_cor, y_cor, player_2, player_1, false, move.coordinatesList);
+        mainBoard.setValue(x_cor, y_cor, EMPTY_CELL);
 
         //if (capture !=0)
            // printf("Oponent capture = %d\n", capture);
 
         tmp += capture * 2;
-        //printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
+        printf("x=%d, y=%d -> score = %d\n", x_cor,y_cor,tmp);
         if (tmp > value )
         {
             value = tmp;
@@ -114,15 +102,15 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, int playe
     printf("x=%d, y=%d -> score = %d\n", x,y,value);
     //printf("time = %d\n", seconds);
 
-    move.coordinatesList.push_back(new Coordinates(x, y, AI_PLAYER));
+    move.coordinatesList.push_back(new Coordinates(x, y, player_1->getplayerSymbol()));
     move.moveTime = seconds;
     return move;
 }
 
-int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, int player_1, int player_2)
+int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, APlayer * player_1, APlayer * player_2)
 {
     std::vector<AvailableSpot *> tmp_vector_old;
-    int c = isMax ?  AI_PLAYER  : HUMAN_PLAYER;
+    int c = isMax ?  player_1->getplayerSymbol()  : player_2->getplayerSymbol();
     int value = 0;
     Move move{};
 
@@ -132,12 +120,11 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     mainBoard.putStoneOnBoard(x, y, c, depth);
 
 
-    //mainBoard.printBoard();
     if (mainBoard.win(x,y))
     {
         mainBoard.availablespots = tmp_vector_old;
 
-        mainBoard.setValue(x,y, 0);
+        mainBoard.setValue(x,y, EMPTY_CELL);
 
         if (isMax)
         {
@@ -159,12 +146,12 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         int capture_value = 0;
 
         if (isMax)
-            capture_value = mainBoard.check_for_capture(x, y, AI_PLAYER, HUMAN_PLAYER, false, move.coordinatesList);
+            capture_value = mainBoard.check_for_capture(x, y, player_1, player_2, false, move.coordinatesList);
         else
-            capture_value = mainBoard.check_for_capture(x, y, HUMAN_PLAYER, AI_PLAYER, false, move.coordinatesList) * 2;
+            capture_value = mainBoard.check_for_capture(x, y, player_2, player_1, false, move.coordinatesList) * 2;
 
-        value = evaluation(mainBoard, isMax, player_1, player_2) + capture_value;
-        mainBoard.setValue(x,y, 0);
+        value = evaluation(mainBoard, isMax, player_1->getplayerSymbol(), player_2->getplayerSymbol()) + capture_value;
+        mainBoard.setValue(x,y, EMPTY_CELL);
         mainBoard.availablespots = tmp_vector_old;
         return value;
         /*if (checkVisitedBoard(mainBoard))
@@ -209,7 +196,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         }
         mainBoard.availablespots = tmp_vector_old;
 
-        mainBoard.setValue(x,y, 0);
+        mainBoard.setValue(x,y, EMPTY_CELL);
         return m;
     }
     else
@@ -240,7 +227,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
             }
         }
         mainBoard.availablespots = tmp_vector_old;
-        mainBoard.setValue(x,y, 0);
+        mainBoard.setValue(x,y, EMPTY_CELL);
 
         return M;
     }
@@ -255,13 +242,11 @@ int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax, i
     std::vector<int> playerPattern(M + 1, 0);
     isMax = false;
 
-    player_1 = 0;
-    player_2 = 0;
     for (int  i = 0 ; i < N; i++){
         for (int j = 0; j < N ; j++){
             if (mainBoard.getValue(i,j) != 0){
                 int c = mainBoard.getValue(i,j);
-                bool needMax = c == AI_PLAYER;
+                bool needMax = c == player_1;
 
 
 

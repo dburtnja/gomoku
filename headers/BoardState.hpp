@@ -5,7 +5,7 @@
 #ifndef GOMOKU_BOARDSTATE_HPP
 #define GOMOKU_BOARDSTATE_HPP
 
-//#include "MainHeader.hpp"
+#include "MainHeader.hpp"
 
 class BoardState {
 public:

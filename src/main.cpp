@@ -1,6 +1,9 @@
+
 #include "../headers/MainHeader.hpp"
+#include "../headers/APlayer.hpp"
+#include "../headers/ComputerPlayer.hpp"
+#include "../headers/HumanPlayer.hpp"
 #include "../headers/View.hpp"
-#include "../headers/ArtificialIntelligence.hpp"
 
 SDL_Event	mouse;
 SDL_Event	motion;
@@ -33,6 +36,8 @@ static void	checkEvents(View *view) {
 
 
 int main() {
+
+
     View		*view;
     int			moveCounter = 0;
     bool		gameOver;
@@ -60,14 +65,21 @@ int main() {
 //    setEventTypesToCheck(view);
 	moveCounter++;
 
+
+    int player_1 = AI_PLAYER;
+    int player_2 = HUMAN_PLAYER;
+
+    APlayer *  FirstPlayer = new ComputerPlayer(0, player_1);
+    APlayer * SecondPlayer = new ComputerPlayer(1, player_2);
+
+
     while (view->isRunning()) {
+        view->updateAllBoard(mainBoard);
+        view->updateGameScreen();
+
     	std::reverse(mainBoard->availablespots.begin(), mainBoard->availablespots.end());
+
 		checkEvents(view);
-		if (f5) {
-			f5 = false;
-			view->updateAllBoard(mainBoard);
-			view->updateGameScreen();
-		}
 		if (motion_exist) {
 			SDL_Point	indexesPoint;
 
@@ -77,65 +89,74 @@ int main() {
 				view->updateGameScreen();
 			}
 		}
-		if (mainBoard->getPlayer(moveCounter) == AI_PLAYER && !gameOver) {
+		if (moveCounter % 2 == FirstPlayer->getPlayerNumber() && !gameOver && f5) {
+		    f5 = false;
+
 			SDL_Point   indexesPoint;
 			Coordinates	winingCoords[1];
 
-            oneMove = AI->runAI(*mainBoard, AI_PLAYER, HUMAN_PLAYER);
-			mainBoard->putStoneOnBoard(oneMove.x, oneMove.y, AI_PLAYER, GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter);
+            oneMove =  FirstPlayer->makeMove(* mainBoard, view, FirstPlayer, SecondPlayer);
+            mainBoard->putStoneOnBoard(oneMove.x, oneMove.y, FirstPlayer->getplayerSymbol(), GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter);
 
 			indexesPoint.x = oneMove.x;
 			indexesPoint.y = oneMove.y;
 
-			view->putStoneOnBoard(indexesPoint, AI_PLAYER);
+			view->putStoneOnBoard(indexesPoint, FirstPlayer->getplayerSymbol());
 
-			mainBoard->check_for_capture(oneMove.x, oneMove.y, AI_PLAYER, HUMAN_PLAYER, true, oneMove.coordinatesList);
-			oneMove.capturePlayer_1 = mainBoard->ai_capture;
-			oneMove.capturePlayer_2 = mainBoard->player_capture;
-			//how to get structures info
-            for(auto & element: oneMove.coordinatesList)
+			mainBoard->check_for_capture(oneMove.x, oneMove.y, FirstPlayer, SecondPlayer, true, oneMove.coordinatesList);
+
+            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
             {
-                printf("COORDS TO UPDATE = %d, %d, SYMBOL = %d\n", element->getX(), element->getY(), element->getPlayer());
+                printf(" Player %d WIN!!!!!", FirstPlayer->getPlayerNumber() );
+                gameOver = true;
             }
-                if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->ai_capture >= 10)
-			{
-			    winingCoords[0] = Coordinates(oneMove.x, oneMove.y, HUMAN_PLAYER);
-                printf(" AI_PLAYER WON !!! in %d moves \n", moveCounter);
 
-                view->showWiningLine(winingCoords, 1, "AI Player WON!");
-				gameOver = true;
-			}
-            //end
             view->updateGameScreen();
 
 			mainBoard->printBoard();
 			moveCounter++;
 		}
-		if (mainBoard->getPlayer(moveCounter) == HUMAN_PLAYER && mouse_exist && !gameOver) {
-			SDL_Point	indexesPoint;
-			int			player;
-			Coordinates	winingCoords[1];
+        else if (moveCounter % 2 == SecondPlayer->getPlayerNumber() && !gameOver && f5)
+        {
+            f5 = false;
 
+            SDL_Point   indexesPoint;
+            Coordinates	winingCoords[1];
 
-			mouse_exist = false;
-			if (view->getIndexesFromCoordinate(&indexesPoint, mouse.button.x, mouse.button.y)) {
-				player = mainBoard->getPlayer(moveCounter);
+            oneMove =  SecondPlayer->makeMove(* mainBoard, view, SecondPlayer, FirstPlayer);
+            mainBoard->putStoneOnBoard(oneMove.x, oneMove.y, SecondPlayer->getplayerSymbol(), GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter);
 
-				if (mainBoard->putStoneOnBoard(indexesPoint.x, indexesPoint.y, player, GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - moveCounter)) {
-					mainBoard->check_for_capture(indexesPoint.x, indexesPoint.y, HUMAN_PLAYER, AI_PLAYER, true, oneMove.coordinatesList);
-					view->putStoneOnBoard(indexesPoint, player);
-					view->updateGameScreen();
-					if (mainBoard->win(indexesPoint.x, indexesPoint.y) || mainBoard->player_capture >= 10)
-					{
-						printf(" HUMAN WON !!! in %d moves \n", moveCounter);
-						winingCoords[0] = Coordinates(oneMove.x, oneMove.y, AI_PLAYER);
-						view->showWiningLine(winingCoords, 1, "Human Player WON!");
-						gameOver = true;
-					}
-					moveCounter++;
-				}
-			}
-		}
-		//TODO free(move)
+            indexesPoint.x = oneMove.x;
+            indexesPoint.y = oneMove.y;
+
+            view->putStoneOnBoard(indexesPoint, SecondPlayer->getplayerSymbol());
+
+            mainBoard->check_for_capture(oneMove.x, oneMove.y, SecondPlayer, FirstPlayer, true, oneMove.coordinatesList);
+            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
+            {
+                printf(" Player %d WIN!!!!!", SecondPlayer->getPlayerNumber() );
+
+                gameOver = true;
+            }
+            //how to get structures info
+            /*for(auto & element: oneMove.coordinatesList)
+            {
+                printf("COORDS TO UPDATE = %d, %d, SYMBOL = %d\n", element->getX(), element->getY(), element->getPlayer());
+            }
+            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->ai_capture >= 10)
+            {
+                winingCoords[0] = Coordinates(oneMove.x, oneMove.y, SecondPlayer->getplayerSymbol());
+                printf(" AI_PLAYER WON !!! in %d moves \n", moveCounter);
+
+                view->showWiningLine(winingCoords, 1, "AI Player WON!");
+                gameOver = true;
+            }*/
+            //end
+
+            view->updateGameScreen();
+
+            mainBoard->printBoard();
+            moveCounter++;
+        }
     }
 }

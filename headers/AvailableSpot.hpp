@@ -5,6 +5,7 @@
 #ifndef GOMOKU_AVAIBLESPOT_HPP
 #define GOMOKU_AVAIBLESPOT_HPP
 
+#include "MainHeader.hpp"
 
 class AvailableSpot {
     public:
