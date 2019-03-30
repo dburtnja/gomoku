@@ -35,12 +35,14 @@ static void	checkEvents(View *view) {
 }
 
 
-int main() {
+int main()
+{
 
 
     View		*view;
     int			moveCounter = 0;
     bool		gameOver;
+    int         coordCounter = 0;
 
     GomokuMainBoard * mainBoard = new GomokuMainBoard;
 	ArtificialIntelligence * AI = new ArtificialIntelligence;
@@ -66,8 +68,8 @@ int main() {
 	moveCounter++;
 
 
-    int player_1 = AI_PLAYER;
-    int player_2 = HUMAN_PLAYER;
+    int player_1 = FIRST_PLAYER;
+    int player_2 = SECOND_PLAYER;
 
     APlayer *  FirstPlayer = new ComputerPlayer(0, player_1);
     APlayer * SecondPlayer = new ComputerPlayer(1, player_2);
@@ -105,6 +107,10 @@ int main() {
 
 			mainBoard->check_for_capture(oneMove.x, oneMove.y, FirstPlayer, SecondPlayer, true, oneMove.coordinatesList);
 
+			oneMove.moveTime = FirstPlayer->getTimeLastMove();
+			oneMove.capturePlayer_1 = FirstPlayer->getPlayerCapture();
+
+
             if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
             {
                 printf(" Player %d WIN!!!!!", FirstPlayer->getPlayerNumber() );
@@ -115,6 +121,14 @@ int main() {
 
 			mainBoard->printBoard();
 			moveCounter++;
+
+            coordCounter = 0;
+            for(auto & element: oneMove.coordinatesList)
+            {
+                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
+                coordCounter++;
+
+            }
 		}
         else if (moveCounter % 2 == SecondPlayer->getPlayerNumber() && !gameOver && f5)
         {
@@ -138,25 +152,25 @@ int main() {
 
                 gameOver = true;
             }
-            //how to get structures info
-            /*for(auto & element: oneMove.coordinatesList)
-            {
-                printf("COORDS TO UPDATE = %d, %d, SYMBOL = %d\n", element->getX(), element->getY(), element->getPlayer());
-            }
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->ai_capture >= 10)
-            {
-                winingCoords[0] = Coordinates(oneMove.x, oneMove.y, SecondPlayer->getplayerSymbol());
-                printf(" AI_PLAYER WON !!! in %d moves \n", moveCounter);
-
-                view->showWiningLine(winingCoords, 1, "AI Player WON!");
-                gameOver = true;
-            }*/
-            //end
 
             view->updateGameScreen();
 
             mainBoard->printBoard();
             moveCounter++;
+            //how to get structures info
+            coordCounter = 0;
+            for(auto & element: oneMove.coordinatesList)
+            {
+                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
+                coordCounter++;
+
+            }
+
+            //end
         }
     }
+    free(FirstPlayer);
+    free(SecondPlayer);
+    free(mainBoard);
+    free(AI);
 }

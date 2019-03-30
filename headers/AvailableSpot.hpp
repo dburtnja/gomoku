@@ -19,9 +19,13 @@ class AvailableSpot {
         int  getX( void );
         int  getY( void );
 
+        int p1_score = 0;
+        int p2_score = 0;
+
 private:
         int _x;
         int _y;
+
 };
 
 
