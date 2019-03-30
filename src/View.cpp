@@ -8,6 +8,9 @@
 
 
 #include "../headers/View.hpp"
+#include "../headers/Widget.hpp"
+#include "../headers/WidgetButton.hpp"
+#include "../headers/WidgetButtonGroup.hpp"
 
 
 View::View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time) {
@@ -71,7 +74,7 @@ void View::_afterInitSDL() {
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	this->_textures[0] = new SDLTextureClass(texture, "Wining texture");
+	this->_textures[0] = new SDLTextureClass(texture);
 }
 
 void View::_debugMessage(const char *message) {
@@ -96,23 +99,57 @@ View::~View() {
 	SDL_Quit();
 }
 
-bool	View::showStartWindowAndWaitForStart(const char *img_file_path) {
-	SDL_Texture	*texture = nullptr;
-	SDL_Event	event;
+bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *players) {
+	SDL_Texture				*texture = nullptr;
+	SDL_Event				event;
+	WidgetButton    		*startButton;
+	WidgetButtonGroup		*firstPlayerSelection;
+	WidgetButtonGroup		*secondPlayerSelection;
+	std::vector<Widget*>	widgets;
+
+	startButton = new WidgetButton(CENTER(this->_width, 100), this->_height - 100, 50, 100);
+	startButton->setBackgroundColor(RED_COLOR_SDL);
+	startButton->setBackgroundAlphaColor(150);
+	startButton->setText("RUN!", WHITE_COLOR_SDL);
+
+	firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
+	firstPlayerSelection->setBackgroundAlphaColor(50);
+	firstPlayerSelection->addButton(10, 10, 50, 380, "Human");
+	firstPlayerSelection->addButton(10, 70, 50, 380, "Computer");
+	firstPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
+
+	secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
+	secondPlayerSelection->setBackgroundAlphaColor(50);
+	secondPlayerSelection->addButton(10, 10, 50, 380, "Human");
+	secondPlayerSelection->addButton(10, 70, 50, 380, "Computer");
+	secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
 	texture = this->_loadImage(img_file_path);
 	if (texture == nullptr) {
 		std::cout << "Empty texture." << std::endl;
 		return false;
 	}
-	this->_applyTexture(0, 0, texture);
+	SDL_RenderCopy(this->_renderer, texture, NULL, NULL);
+	widgets = {startButton, firstPlayerSelection, secondPlayerSelection};
+	SDL_RenderPresent(this->_renderer);
 
 	while (this->waitEvent(&event)) {
-		if (event.type == SDL_MOUSEBUTTONDOWN) {
-			SDL_DestroyTexture(texture);
+        if (startButton->isClicked()) {
+            SDL_DestroyTexture(texture);
 			return true;
+        }
+		for (auto *widget : widgets) {
+			widget->checkEvent(&event);
 		}
+		SDL_RenderClear(this->_renderer);
+		SDL_RenderCopy(this->_renderer, texture, NULL, NULL);
+		for (auto *widget : widgets) {
+			widget->render(this->_renderer);
+		}
+		startButton->render(this->_renderer);
+		SDL_RenderPresent(this->_renderer);
 	}
+	SDL_DestroyTexture(texture);
 	return true;
 }
 
@@ -128,18 +165,6 @@ SDL_Texture *View::_loadImage(const char *img_file_path) {
 	texture = SDL_CreateTextureFromSurface(this->_renderer, loadedImage);
 	SDL_FreeSurface(loadedImage);
 	return texture;
-}
-
-void View::_applyTexture(int x, int y, SDL_Texture *texture) {
-	SDL_Rect	position;
-	//SDL_Texture	*texture1;
-
-	position.x = x;
-	position.y = y;
-	SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
-	SDL_RenderCopy(this->_renderer, texture, NULL, &position);
-
-	SDL_RenderPresent(this->_renderer);
 }
 
 bool	View::isRunning(void) {
@@ -277,7 +302,7 @@ bool View::_coordinatesOnBoard(int &x, int &y) {
 void View::showBoardHelper(SDL_Point indexPoint, int playerNumber) {
 	SDLTextureClass	*texture;
 
-	texture = playerNumber == FIRST_PLAYER ? this->_firsPlayerHelperStoneTexture : this->_secondPlayerHelperStoneTexture;
+	texture = playerNumber == FIRST_PLAYER_ON_MAP ? this->_firsPlayerHelperStoneTexture : this->_secondPlayerHelperStoneTexture;
 	this->_placeTextureByIndexPoint(indexPoint, texture);
 	texture->showOnRender(true);
 }
@@ -310,12 +335,12 @@ void View::_setBoardBackground(const char *img_file_path) {
 	boardTexture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 			this->_width, this->_height);
 	SDL_SetTextureBlendMode(boardTexture, SDL_BLENDMODE_BLEND);
-	this->_boardTextureClass = new SDLTextureClass(boardTexture, "Board texture");
+	this->_boardTextureClass = new SDLTextureClass(boardTexture);
 
 	boardBackgroundTexture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888,
 								SDL_TEXTUREACCESS_TARGET, this->_width, this->_height);
 
-	this->_boardBackground = new SDLTextureClass(boardBackgroundTexture, "Board background");
+	this->_boardBackground = new SDLTextureClass(boardBackgroundTexture);
 	this->_boardBackground->setAsRenderTarget(this->_renderer);
 	imageTexture.renderTexture(this->_renderer);
 	this->_renderBackgroundBoard();
@@ -326,7 +351,7 @@ void View::_setBoardBackground(const char *img_file_path) {
 void View::putStoneOnBoard(SDL_Point indexPoint, int playerNumber) {
 	SDLTextureClass	*texture;
 
-	texture = playerNumber == FIRST_PLAYER ? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
+	texture = playerNumber == FIRST_PLAYER_ON_MAP ? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
 	this->_placeTextureByIndexPoint(indexPoint, texture);
 	this->_boardTextureClass->setAsRenderTarget(this->_renderer);
 	texture->renderTexture(this->_renderer);

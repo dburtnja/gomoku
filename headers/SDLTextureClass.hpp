@@ -10,7 +10,7 @@
 
 class SDLTextureClass {
 public:
-	explicit SDLTextureClass(SDL_Texture *texture, const char *name);
+	explicit SDLTextureClass(SDL_Texture *texture);
 
 	SDLTextureClass(const char *img_file_path, const SDL_Color *srcColor, const SDL_Color *destColor,
 						SDL_Renderer *renderer);

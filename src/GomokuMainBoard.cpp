@@ -19,7 +19,7 @@ GomokuMainBoard::GomokuMainBoard() :
     {
         for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
         {
-            board[x][y] = EMPTY_CELL;
+            board[x][y] = EMPTY_CELL_ON_MAP;
         }
     }
 }
@@ -38,7 +38,7 @@ GomokuMainBoard & GomokuMainBoard::operator = (const GomokuMainBoard & rhs)
 bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth)
 {
 
-	if (board[x][y] != EMPTY_CELL)
+	if (board[x][y] != EMPTY_CELL_ON_MAP)
         return false;
     board[x][y] = plyaer;
     (this->_move)++;
@@ -179,7 +179,7 @@ bool GomokuMainBoard::checkEmpty(int x, int y) {
         return false;
     if (y < 0 || y > GOMOKU_BOARD_SIZE)
         return false;
-    return this->board[x][y] == EMPTY_CELL;
+    return this->board[x][y] == EMPTY_CELL_ON_MAP;
 }
 
 void GomokuMainBoard::setValue(int x, int y, int c) {
@@ -279,9 +279,9 @@ bool GomokuMainBoard::rowOfTwo(int x, int y, int attack, int feed, bool needToRe
             setValue(x, y - 1, 0);
             setValue(x, y - 2, 0);
             availablespots.push_back(new AvailableSpot(x, y - 1));
-            coordinatesList.push_back(new Coordinates(x, y - 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x, y - 1, EMPTY_CELL_ON_MAP));
             availablespots.push_back(new AvailableSpot(x, y - 2));
-            coordinatesList.push_back(new Coordinates(x, y - 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x, y - 2, EMPTY_CELL_ON_MAP));
 
         }
 
@@ -294,10 +294,10 @@ bool GomokuMainBoard::rowOfTwo(int x, int y, int attack, int feed, bool needToRe
             setValue(x, y + 1, 0);
             setValue(x, y + 2, 0);
             availablespots.push_back(new AvailableSpot(x, y + 1));
-            coordinatesList.push_back(new Coordinates(x, y + 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x, y + 1, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x, y + 2));
-            coordinatesList.push_back(new Coordinates(x, y + 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x, y + 2, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -314,9 +314,9 @@ bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needT
             setValue(x - 1, y, 0);
             setValue(x - 2, y, 0);
             availablespots.push_back(new AvailableSpot(x - 1, y));
-            coordinatesList.push_back(new Coordinates(x - 1, y, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 1, y, EMPTY_CELL_ON_MAP));
             availablespots.push_back(new AvailableSpot(x - 2, y));
-            coordinatesList.push_back(new Coordinates(x - 2, y, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 2, y, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -328,10 +328,10 @@ bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needT
             setValue(x + 1, y, 0);
             setValue(x + 2, y, 0);
             availablespots.push_back(new AvailableSpot(x + 1, y));
-            coordinatesList.push_back(new Coordinates(x + 1, y, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 1, y, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x + 2, y));
-            coordinatesList.push_back(new Coordinates(x + 2, y, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 2, y, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -349,10 +349,10 @@ bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y, int attack, int feed, bool 
             setValue(x - 1, y - 1, 0);
             setValue(x - 2, y - 2, 0);
             availablespots.push_back(new AvailableSpot(x - 1, y - 1));
-            coordinatesList.push_back(new Coordinates(x - 1, y - 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 1, y - 1, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x - 2, y - 2));
-            coordinatesList.push_back(new Coordinates(x - 2, y - 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 2, y - 2, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -364,10 +364,10 @@ bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y, int attack, int feed, bool 
             setValue(x + 1, y + 1, 0);
             setValue(x + 2, y + 2, 0);
             availablespots.push_back(new AvailableSpot(x + 1, y + 1));
-            coordinatesList.push_back(new Coordinates(x + 1, y + 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 1, y + 1, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x + 2, y + 2));
-            coordinatesList.push_back(new Coordinates(x + 2, y + 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 2, y + 2, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -383,10 +383,10 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
             setValue(x + 1, y - 1, 0);
             setValue(x + 2, y - 2, 0);
             availablespots.push_back(new AvailableSpot(x + 1, y - 1));
-            coordinatesList.push_back(new Coordinates(x + 1, y - 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 1, y - 1, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x + 2, y - 2));
-            coordinatesList.push_back(new Coordinates(x + 2, y - 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x + 2, y - 2, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -398,10 +398,10 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
             setValue(x - 1, y + 1, 0);
             setValue(x - 2, y + 2, 0);
             availablespots.push_back(new AvailableSpot(x - 1, y + 1));
-            coordinatesList.push_back(new Coordinates(x - 1, y + 1, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 1, y + 1, EMPTY_CELL_ON_MAP));
 
             availablespots.push_back(new AvailableSpot(x - 2, y + 2));
-            coordinatesList.push_back(new Coordinates(x - 2, y + 2, EMPTY_CELL));
+            coordinatesList.push_back(new Coordinates(x - 2, y + 2, EMPTY_CELL_ON_MAP));
 
         }
         return true;
@@ -472,7 +472,7 @@ std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
     for (unsigned int x = 0; x < this->_boardSize; x++) {
         for (unsigned int y = 0; y < this->_boardSize; y++) {
             value = this->getValue(x, y);
-            if (value != EMPTY_CELL)
+            if (value != EMPTY_CELL_ON_MAP)
                 coordinates->push_back(Coordinates(x, y, value));
         }
     }

@@ -21,7 +21,10 @@ SRC_FILES =	main.cpp \
 			Coordinates.cpp\
 			APlayer.cpp \
 			ComputerPlayer.cpp \
-			HumanPlayer.cpp
+			HumanPlayer.cpp \
+			Widget.cpp \
+			WidgetButton.cpp \
+			WidgetButtonGroup.cpp
 
 SRC = $(patsubst %,$(SRC_DIR)/%, $(SRC_FILES))
 

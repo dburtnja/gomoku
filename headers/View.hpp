@@ -12,12 +12,15 @@
 
 #define HELPER_ALPHA	150
 
+#define CENTER(size, minsize)	((size / 2) - (minsize / 2))
+
 #define BOARD_LINE_SIZE							3
 #define POINT_RADIUS_PERCENT_FROM_CELL_DISTANCE	40
 
 const SDL_Color	WHITE_COLOR_SDL = {255, 255, 255, 255};
 const SDL_Color	BLACK_COLOR_SDL = {0, 0, 0, 255};
 const SDL_Color	GREY_COLOR_SDL = {128, 128, 128, 255};
+const SDL_Color	RED_COLOR_SDL = {255, 0, 0, 255};
 
 
 
@@ -28,7 +31,7 @@ public:
 	View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time);
 	~View();
 
-	bool		showStartWindowAndWaitForStart(const char *img_file_path);
+	bool		showStartWindowAndWaitForStart(const char *img_file_path, int *players);
 	bool		isRunning();
 	bool 		pullEvent(SDL_Event *event);
 	bool 		waitEvent(SDL_Event *event);

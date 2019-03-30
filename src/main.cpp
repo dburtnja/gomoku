@@ -41,6 +41,7 @@ int main() {
     View		*view;
     int			moveCounter = 0;
     bool		gameOver;
+    int         players[2];
 
     GomokuMainBoard * mainBoard = new GomokuMainBoard;
 	ArtificialIntelligence * AI = new ArtificialIntelligence;
@@ -54,7 +55,7 @@ int main() {
         return -1;
     }
 
-    if (!view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE))
+    if (!view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE, &players[0]))
     	std::cout << "Error on showStartWindowAndWaitForStart: " << SDL_GetError() << std::endl;
 
     if (!view->showGameBoard(BACKGROUND_GAMEBOARD_IMAGE)) {
@@ -66,10 +67,11 @@ int main() {
 	moveCounter++;
 
 
-    int player_1 = AI_PLAYER;
-    int player_2 = HUMAN_PLAYER;
+    int player_1 = FIRST_PLAYER_ON_MAP;
+    int player_2 = SECOND_PLAYER_ON_MAP;
 
     APlayer *  FirstPlayer = new ComputerPlayer(0, player_1);
+//    APlayer *  FirstPlayer = new HumanPlayer(0, player_1);
     APlayer * SecondPlayer = new ComputerPlayer(1, player_2);
 
 
