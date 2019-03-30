@@ -18,7 +18,10 @@ SRC_FILES =	main.cpp \
 			BoardState.cpp \
 			View.cpp \
 			SDLTextureClass.cpp \
-			Coordinates.cpp
+			Coordinates.cpp\
+			APlayer.cpp \
+			ComputerPlayer.cpp \
+			HumanPlayer.cpp
 
 SRC = $(patsubst %,$(SRC_DIR)/%, $(SRC_FILES))
 

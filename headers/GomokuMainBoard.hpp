@@ -2,80 +2,82 @@
 // Created by mirex on 04.07.2018.
 //
 
-
-
-#ifndef GOMOKU_GOMOKUMAINBOARD_HPP
-#define GOMOKU_GOMOKUMAINBOARD_HPP
+#ifndef GOMOKUMAINBOARD_HPP
+#define GOMOKUMAINBOARD_HPP
 
 #include "MainHeader.hpp"
+
 #include "AvailableSpot.hpp"
 #include "BoardState.hpp"
-#include "Coordinates.hpp"
 #include <list>
+#include "Coordinates.hpp"
 
+
+class APlayer;
 
 class GomokuMainBoard {
-public:
-    GomokuMainBoard();
-    GomokuMainBoard(const GomokuMainBoard & toCopy);
-    ~GomokuMainBoard();
-    GomokuMainBoard & operator = (const GomokuMainBoard & rhs);
-    int getValue(int x, int y);
-    bool checkEmpty(int x, int y);
-    void setValue(int x,int y, int c);
-    std::string toString();
+    public:
+        GomokuMainBoard();
+        GomokuMainBoard(const GomokuMainBoard & toCopy);
+        ~GomokuMainBoard();
+        GomokuMainBoard & operator = (const GomokuMainBoard & rhs);
+        int getValue(int x, int y);
+        bool checkEmpty(int x, int y);
+        void setValue(int x,int y, int c);
+        std::string toString();
 
-    bool win(int, int);
-    bool draw();
-    int check_for_capture( int x_cor, int y_cor, int, int, bool, std::vector<Coordinates*> &);
-    int ai_capture = 0;
-    int player_capture = 0;
+        bool win(int, int);
+        bool draw();
+        int check_for_capture( int x_cor, int y_cor, APlayer * attack, APlayer * feed, bool, std::vector<Coordinates*> &);
 
-    bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
-    bool columnOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
-    bool mainDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
-    bool reverseDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+        int ai_capture = 0;
+        int player_capture = 0;
 
-    bool rowOfFive(int, int);
-    bool columnOfFive(int, int);
-    bool mainDiagnolOfFive(int, int);
-    bool reverseDiagnolOfFive(int, int);
-    int count = 0;
-    long int recs = 0;
+        bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+        bool columnOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+        bool mainDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
+        bool reverseDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
 
-
-    bool putStoneOnBoard(int x, int y, int plyaer, int depth);
-    void addNewSpots(int x, int y, int depth);
-
-    void clearStoneOnBoard(int x, int y);
-    void dellOldSpots(int x, int y);
-
-    bool checkForSameSpot(int x, int y);
-    void deleteUsedSpot(int x, int y);
-    int board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
-    void printBoard();
-
-    //int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
-
-    std::vector<AvailableSpot*> availablespots;
-    std::vector<BoardState *> boardHash;
+        bool rowOfFive(int, int);
+        bool columnOfFive(int, int);
+        bool mainDiagnolOfFive(int, int);
+        bool reverseDiagnolOfFive(int, int);
+        int count = 0;
+        long int recs = 0;
 
 
-	int getBoardSize();
+        bool putStoneOnBoard(int x, int y, int plyaer, int depth);
+        void addNewSpots(int x, int y, int depth);
 
-	int getPlayer();
+        void clearStoneOnBoard(int x, int y);
+        void dellOldSpots(int x, int y);
 
-	int getPlayer(int move);
+        bool checkForSameSpot(int x, int y);
+        void deleteUsedSpot(int x, int y);
+        int board[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE];
+        void printBoard();
 
-	void setMoveCounter(int move);
+        //int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
 
-    std::list<Coordinates> * getPlacedCoordinates();
+        std::vector<AvailableSpot*> availablespots;
+        std::vector<BoardState *> boardHash;
 
-private:
-    unsigned int _boardSize;
-	int _players[2];
-	int _move;
+
+        int getBoardSize();
+
+        int getPlayer();
+
+        int getPlayer(int move);
+
+        void setMoveCounter(int move);
+
+        std::list<Coordinates> * getPlacedCoordinates();
+
+    private:
+        unsigned int _boardSize;
+        int _players[2];
+        int _move;
 };
 
+#endif
 
-#endif //GOMOKU_GOMOKUMAINBOARD_HPP

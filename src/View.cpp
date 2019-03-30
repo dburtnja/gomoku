@@ -365,7 +365,7 @@ void View::updateAllBoard(GomokuMainBoard *board) {
 	std::list<Coordinates>	            *coordinates;
 	std::list<Coordinates>::iterator    iterator;
 
-	this->_debugMessage("Updating all board.");
+	//this->_debugMessage("Updating all board.");
 	coordinates = board->getPlacedCoordinates();
 	this->_boardTextureClass->clearTexture(this->_renderer);
 	for (iterator = coordinates->begin(); iterator != coordinates->end(); ++iterator) {

@@ -5,6 +5,7 @@
 #ifndef GOMOKU_COORDINATES_HPP
 #define GOMOKU_COORDINATES_HPP
 
+#include "MainHeader.hpp"
 
 class Coordinates {
 
