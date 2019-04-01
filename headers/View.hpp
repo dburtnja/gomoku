@@ -6,6 +6,7 @@
 #define GOMOKU_VIEW_HPP
 
 #include <list>
+#include <array>
 #include <functional>
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"

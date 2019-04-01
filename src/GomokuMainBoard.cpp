@@ -431,9 +431,6 @@ int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer *
 }
 
 bool GomokuMainBoard::draw(){
-    if (count == GOMOKU_BOARD_SIZE*GOMOKU_BOARD_SIZE){
-        return true;
-    }
     return false;
 }
 

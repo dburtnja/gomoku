@@ -98,7 +98,6 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
     move.x = x;
     move.y = y;
     mainBoard.availablespots = tmp_vector;
-    printf("%ld", mainBoard.recs);
     printf("x=%d, y=%d -> score = %d\n", x,y,value);
     //printf("time = %d\n", seconds);
 
@@ -113,8 +112,6 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     int c = isMax ?  player_1->getplayerSymbol()  : player_2->getplayerSymbol();
     int value = 0;
     Move move{};
-
-    mainBoard.recs++;
 
     tmp_vector_old = mainBoard.availablespots;
     mainBoard.putStoneOnBoard(x, y, c, depth);
