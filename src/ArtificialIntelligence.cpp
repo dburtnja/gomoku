@@ -150,7 +150,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         else
             capture_value = mainBoard.check_for_capture(x, y, player_2, player_1, false, move.coordinatesList) * 2;
 
-        value = evaluation(mainBoard, isMax, player_1->getplayerSymbol(), player_2->getplayerSymbol()) + capture_value;
+        value = evaluation(mainBoard, isMax, player_1->getplayerSymbol()) + capture_value;
         mainBoard.setValue(x,y, EMPTY_CELL_ON_MAP);
         mainBoard.availablespots = tmp_vector_old;
         return value;
@@ -233,7 +233,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     }
 }
 
-int ArtificialIntelligence::evaluation(GomokuMainBoard & mainBoard, int isMax, int player_1, int player_2)
+int ArtificialIntelligence::evaluation(GomokuMainBoard &mainBoard, int isMax, int player_1)
 {
     int M = 5;
     int N = GOMOKU_BOARD_SIZE;

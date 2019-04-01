@@ -9,18 +9,18 @@
 WidgetButton::WidgetButton(int x, int y, int h, int w) : Widget(x, y, h, w) {
     this->_clicked = false;
     this->addEventHandler([](Widget *button, SDL_Event *event){
-//        if (event->type == SDL_MOUSEMOTION) {
-//            if (button->visibleCoordinates(event->motion.x, event->motion.y)) {
-//                ((WidgetButton*)button)->_currentBackgroundColor = {
-//                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.r),
-//                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.g),
-//                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.b),
-//                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.r - 50)
-//                };
-//            } else {
-//                ((WidgetButton*)button)->_currentBackgroundColor = ((WidgetButton*)button)->_originalBackgroundColor;
-//            }
-//        } else
+        if (event->type == SDL_MOUSEMOTION) {
+            if (button->visibleCoordinates(event->motion.x, event->motion.y)) {
+                ((WidgetButton*)button)->_currentBackgroundColor = {
+                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.r),
+                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.g),
+                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.b),
+                        (Uint8)(((WidgetButton*)button)->_originalBackgroundColor.r - 50)
+                };
+            } else {
+                ((WidgetButton*)button)->_currentBackgroundColor = ((WidgetButton*)button)->_originalBackgroundColor;
+            }
+        } else
         if (event->type == SDL_MOUSEBUTTONDOWN and button->visibleCoordinates(event->motion.x, event->motion.y)) {
             ((WidgetButton*)button)->setClicked();
             return true;
@@ -34,7 +34,6 @@ WidgetButton::WidgetButton(int x, int y, int h, int w) : Widget(x, y, h, w) {
 }
 
 WidgetButton::~WidgetButton() {
-    SDL_FreeSurface(this->_buttonNameSurface);
 }
 
 bool WidgetButton::isClicked() {

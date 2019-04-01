@@ -15,6 +15,7 @@ public:
     ~WidgetButtonGroup();
 
     void    addButton(int x, int y, int h, int w, char const *name);
+    void    addButton(int x, int y, int h, int w, char const *name, bool setAsDefault);
     int     getSelected();
     void    render(SDL_Renderer *render) override;
 

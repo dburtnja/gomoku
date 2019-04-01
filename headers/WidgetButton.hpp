@@ -19,7 +19,6 @@ public:
 
 private:
     bool            _clicked;
-    SDL_Surface     *_buttonNameSurface;
 
     void setUnclicked();
 };

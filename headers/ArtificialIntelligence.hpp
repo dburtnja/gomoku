@@ -38,7 +38,7 @@ class ArtificialIntelligence {
         Move runAI(GomokuMainBoard & mainBoard, APlayer * player_1, APlayer * player_2) ;
         Move minmaxSearch(GomokuMainBoard & mainBoard, APlayer * player_1, APlayer * player_2);
         int minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool player, int alpha, int beta , int x, int y, APlayer * player_1, APlayer * player_2);
-        int evaluation(GomokuMainBoard & mainBoard, int  isMax, int player_1, int player_2);
+        int evaluation(GomokuMainBoard &mainBoard, int isMax, int player_1);
         void insertToHashMap(GomokuMainBoard & board, int value);
         bool checkVisitedBoard(GomokuMainBoard & board);
         int getEvaluation (GomokuMainBoard & board);

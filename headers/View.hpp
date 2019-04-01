@@ -6,6 +6,7 @@
 #define GOMOKU_VIEW_HPP
 
 #include <list>
+#include <functional>
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"
 #include "GomokuMainBoard.hpp"
@@ -28,7 +29,7 @@ class View {
 
 public:
 
-	View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time);
+	View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time);
 	~View();
 
 	bool		showStartWindowAndWaitForStart(const char *img_file_path, int *players);
@@ -47,6 +48,7 @@ public:
     void updateAllBoard(GomokuMainBoard *board);
 
     void setEventTypesToCheck(std::vector<Uint32> eventTypes);
+    void addEventHandler(std::function<bool(View *view, SDL_Event *event)>);
 
 private:
 
@@ -68,6 +70,7 @@ private:
 	TTF_Font                        *_font24;
 	TTF_Font                        *_font46;
 	std::array<SDLTextureClass*, 1>	_textures;
+	std::list<std::function<bool(View*, SDL_Event*)>>	_eventHandlers;
 	int								*_boardCoordinates;
 	int								_coordinatesLength;
 	int								_distance;

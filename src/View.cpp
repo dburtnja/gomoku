@@ -13,7 +13,7 @@
 #include "../headers/WidgetButtonGroup.hpp"
 
 
-View::View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time) {
+View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time) {
 	this->_debug = true;
 	this->_width = width;
 	this->_height = height;
@@ -114,14 +114,14 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 
 	firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
 	firstPlayerSelection->setBackgroundAlphaColor(50);
-	firstPlayerSelection->addButton(10, 10, 50, 380, "Human");
+	firstPlayerSelection->addButton(10, 10, 50, 380, "Human", true);
 	firstPlayerSelection->addButton(10, 70, 50, 380, "Computer");
 	firstPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
 	secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
 	secondPlayerSelection->setBackgroundAlphaColor(50);
 	secondPlayerSelection->addButton(10, 10, 50, 380, "Human");
-	secondPlayerSelection->addButton(10, 70, 50, 380, "Computer");
+	secondPlayerSelection->addButton(10, 70, 50, 380, "Computer", true);
 	secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
 	texture = this->_loadImage(img_file_path);
@@ -133,21 +133,26 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 	widgets = {startButton, firstPlayerSelection, secondPlayerSelection};
 	SDL_RenderPresent(this->_renderer);
 
-	while (this->waitEvent(&event)) {
-        if (startButton->isClicked()) {
-            SDL_DestroyTexture(texture);
-			return true;
+	while (this->isRunning()) {
+        while (this->pullEvent(&event)) {
+            if (startButton->isClicked()) {
+            	players[FIRST_PLAYER_POSITION] = firstPlayerSelection->getSelected();
+            	players[SECOND_PLAYER_POSITION] = secondPlayerSelection->getSelected();
+                SDL_DestroyTexture(texture);
+                return true;
+            }
+            for (auto *widget : widgets) {
+                widget->checkEvent(&event);
+            }
+            SDL_RenderClear(this->_renderer);
+            SDL_RenderCopy(this->_renderer, texture, NULL, NULL);
+            for (auto *widget : widgets) {
+                widget->render(this->_renderer);
+            }
+            startButton->render(this->_renderer);
+            SDL_RenderPresent(this->_renderer);
         }
-		for (auto *widget : widgets) {
-			widget->checkEvent(&event);
-		}
-		SDL_RenderClear(this->_renderer);
-		SDL_RenderCopy(this->_renderer, texture, NULL, NULL);
-		for (auto *widget : widgets) {
-			widget->render(this->_renderer);
-		}
-		startButton->render(this->_renderer);
-		SDL_RenderPresent(this->_renderer);
+        SDL_Delay(this->_sleep_time);
 	}
 	SDL_DestroyTexture(texture);
 	return true;
@@ -219,6 +224,8 @@ bool View::waitEvent(SDL_Event *event) {
 }
 
 bool View::_checkViewEvent(SDL_Event *event) {
+	for (const auto &eventHandler : this->_eventHandlers)
+		eventHandler(this, event);
 	if (event->type == SDL_QUIT) {
 		this->_running = false;
 		return false;
@@ -421,4 +428,8 @@ void View::_renderText(const char *message, TTF_Font *font, int x, int y) {
 	SDL_RenderCopy(this->_renderer, texture, NULL, &rect);
 	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(surfaceMessage);
+}
+
+void View::addEventHandler(std::function<bool(View *view, SDL_Event *event)> eventHandler) {
+	this->_eventHandlers.push_back(eventHandler);
 }

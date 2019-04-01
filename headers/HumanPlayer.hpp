@@ -22,7 +22,7 @@ class HumanPlayer : public APlayer
         //ComputerPlayer & operator=(ComputerPlayer const &rhs);
 
 
-        Move makeMove(GomokuMainBoard & bord, View *view,  APlayer * player_1, APlayer * player_2) override ;
+        Move makeMove(GomokuMainBoard & board, View *view,  APlayer * player_1, APlayer * player_2) override ;
 };
 
 #endif //GOMOKU_HUMANPLAYER_HPP

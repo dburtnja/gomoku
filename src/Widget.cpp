@@ -75,7 +75,7 @@ void Widget::addEventHandler(std::function<bool(Widget*, SDL_Event*)> eventHandl
 
 bool Widget::visibleCoordinates(int x, int y) {
     return this->_rect.x < x && x < (this->_rect.x + this->_rect.w) &&
-    this->_rect.y < y && y < (this->_rect.y + this->_rect.w);
+    this->_rect.y < y && y < (this->_rect.y + this->_rect.h);
 }
 
 void Widget::setText(const char *message, SDL_Color textColor) {
@@ -99,5 +99,7 @@ void Widget::setDisableValue(bool disable) {
                 (Uint8) (this->_originalBackgroundColor.b / 2),
                 this->_originalBackgroundColor.r
         };
+    } else {
+        this->_currentBackgroundColor = this->_originalBackgroundColor;
     }
 }
