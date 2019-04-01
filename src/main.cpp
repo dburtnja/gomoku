@@ -35,7 +35,8 @@ static void	checkEvents(View *view) {
 }
 
 
-int main() {
+int main()
+{
 
 
     View		*view;
@@ -65,6 +66,7 @@ int main() {
 
 //    setEventTypesToCheck(view);
 	moveCounter++;
+
 
 
     int player_1 = FIRST_PLAYER_ON_MAP;
@@ -107,6 +109,10 @@ int main() {
 
 			mainBoard->check_for_capture(oneMove.x, oneMove.y, FirstPlayer, SecondPlayer, true, oneMove.coordinatesList);
 
+			oneMove.moveTime = FirstPlayer->getTimeLastMove();
+			oneMove.capturePlayer_1 = FirstPlayer->getPlayerCapture();
+
+
             if (mainBoard->win(oneMove.x, oneMove.y) || FirstPlayer->getPlayerCapture() >= 10)
             {
                 printf(" Player %d WIN!!!!!", FirstPlayer->getPlayerNumber() );
@@ -117,6 +123,14 @@ int main() {
 
 			mainBoard->printBoard();
 			moveCounter++;
+
+            coordCounter = 0;
+            for(auto & element: oneMove.coordinatesList)
+            {
+                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
+                coordCounter++;
+
+            }
 		}
         else if (moveCounter % 2 == SecondPlayer->getPlayerNumber() && !gameOver && f5)
         {
@@ -140,25 +154,25 @@ int main() {
 
                 gameOver = true;
             }
-            //how to get structures info
-            /*for(auto & element: oneMove.coordinatesList)
-            {
-                printf("COORDS TO UPDATE = %d, %d, SYMBOL = %d\n", element->getX(), element->getY(), element->getPlayer());
-            }
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->ai_capture >= 10)
-            {
-                winingCoords[0] = Coordinates(oneMove.x, oneMove.y, SecondPlayer->getplayerSymbol());
-                printf(" AI_PLAYER WON !!! in %d moves \n", moveCounter);
-
-                view->showWiningLine(winingCoords, 1, "AI Player WON!");
-                gameOver = true;
-            }*/
-            //end
 
             view->updateGameScreen();
 
             mainBoard->printBoard();
             moveCounter++;
+            //how to get structures info
+            coordCounter = 0;
+            for(auto & element: oneMove.coordinatesList)
+            {
+                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
+                coordCounter++;
+
+            }
+
+            //end
         }
     }
+    free(FirstPlayer);
+    free(SecondPlayer);
+    free(mainBoard);
+    free(AI);
 }

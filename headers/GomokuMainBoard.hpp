@@ -42,6 +42,7 @@ class GomokuMainBoard {
         bool reverseDiagnolOfFive(int, int);
 
 
+
         bool putStoneOnBoard(int x, int y, int plyaer, int depth);
         void addNewSpots(int x, int y, int depth);
 

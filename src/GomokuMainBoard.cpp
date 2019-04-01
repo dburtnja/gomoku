@@ -12,8 +12,8 @@ GomokuMainBoard::GomokuMainBoard() :
     int x;
     int y;
 
-    this->_players[0] = AI_PLAYER;
-    this->_players[1] = HUMAN_PLAYER;
+    this->_players[0] = FIRST_PLAYER;
+    this->_players[1] = SECOND_PLAYER;
     this->_move = 0;
     for (x = 0; x < GOMOKU_BOARD_SIZE; x++)
     {
@@ -48,7 +48,7 @@ bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth)
 }
 
 void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
-    if (depth >= GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - 2)
+    /*if (depth >= GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - 2)
     {
         for (int i = -2; i<= 2; i++)
         {
@@ -63,7 +63,7 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     //this->availablespots.insert(this->availablespots.begin(),  new AvailableSpot(x + i, y + j));
             }
         }
-    }
+    }*/
     if (depth > 0)
     {
         for (int i = -1; i<= 1; i++)
@@ -418,15 +418,9 @@ int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer *
             || mainDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList)
             || reverseDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList);
     if (ready_for_capture && needToRemove == true)
-    {
         attack->increaseCapture(2);
-    }
     else if (ready_for_capture)
-    {
-
-            return 2500000 * (attack->getPlayerCapture() + 1) + (int) std::pow(8, attack->getPlayerCapture());
-
-    }
+        return 25000 * (attack->getPlayerCapture() + 1) + (int) std::pow(7, attack->getPlayerCapture());
     return 0;
 }
 
