@@ -273,7 +273,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
     }
 }
 
-int ArtificialIntelligence::evaluation(GomokuMainBoard &mainBoard, int isMax, int player_1)
+int ArtificialIntelligence::evaluation(GomokuMainBoard &mainBoard, int isMax, int player_1, int player_2)
 {
     int M = 5;
     int N = GOMOKU_BOARD_SIZE;

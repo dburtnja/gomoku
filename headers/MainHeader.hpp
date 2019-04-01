@@ -12,12 +12,12 @@
 #define AI_PLAYER 1
 #define HUMAN_PLAYER 2
 #define DEBUG_PLAYER 3
-#define REC_DEPT 1
 #define POINTS_TO_WIN 5
 
 #define FIRST_PLAYER_ON_MAP     1
 #define SECOND_PLAYER_ON_MAP	2
 #define EMPTY_CELL_ON_MAP		0
+#define EMPTY_CELL              0
 
 #define FIRST_PLAYER_POSITION   0
 #define SECOND_PLAYER_POSITION  1

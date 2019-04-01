@@ -73,11 +73,12 @@ int main()
     int player_2 = SECOND_PLAYER_ON_MAP;
 
     APlayer *  FirstPlayer = new ComputerPlayer(0, player_1);
-//    APlayer *  FirstPlayer = new HumanPlayer(0, player_1);
     APlayer * SecondPlayer = new ComputerPlayer(1, player_2);
-
-
-    while (view->isRunning()) {
+    
+    SDL_Event   event;
+    
+    while (view->waitEvent(&event)) {
+        
         view->updateAllBoard(mainBoard);
         view->updateGameScreen();
 
@@ -124,13 +125,6 @@ int main()
 			mainBoard->printBoard();
 			moveCounter++;
 
-            coordCounter = 0;
-            for(auto & element: oneMove.coordinatesList)
-            {
-                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
-                coordCounter++;
-
-            }
 		}
         else if (moveCounter % 2 == SecondPlayer->getPlayerNumber() && !gameOver && f5)
         {
@@ -159,16 +153,6 @@ int main()
 
             mainBoard->printBoard();
             moveCounter++;
-            //how to get structures info
-            coordCounter = 0;
-            for(auto & element: oneMove.coordinatesList)
-            {
-                //oneMove.coordinatesList.erase(oneMove.coordinatesList.begin() + coordCounter);
-                coordCounter++;
-
-            }
-
-            //end
         }
     }
     free(FirstPlayer);
