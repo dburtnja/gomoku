@@ -30,8 +30,6 @@ class GomokuMainBoard {
         bool draw();
         int check_for_capture( int x_cor, int y_cor, APlayer * attack, APlayer * feed, bool, std::vector<Coordinates*> &);
 
-        int ai_capture = 0;
-        int player_capture = 0;
 
         bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
         bool columnOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
@@ -42,8 +40,6 @@ class GomokuMainBoard {
         bool columnOfFive(int, int);
         bool mainDiagnolOfFive(int, int);
         bool reverseDiagnolOfFive(int, int);
-        int count = 0;
-        long int recs = 0;
 
 
         bool putStoneOnBoard(int x, int y, int plyaer, int depth);

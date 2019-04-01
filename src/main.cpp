@@ -107,7 +107,7 @@ int main() {
 
 			mainBoard->check_for_capture(oneMove.x, oneMove.y, FirstPlayer, SecondPlayer, true, oneMove.coordinatesList);
 
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
+            if (mainBoard->win(oneMove.x, oneMove.y) || FirstPlayer->getPlayerCapture() >= 10)
             {
                 printf(" Player %d WIN!!!!!", FirstPlayer->getPlayerNumber() );
                 gameOver = true;
@@ -134,7 +134,7 @@ int main() {
             view->putStoneOnBoard(indexesPoint, SecondPlayer->getplayerSymbol());
 
             mainBoard->check_for_capture(oneMove.x, oneMove.y, SecondPlayer, FirstPlayer, true, oneMove.coordinatesList);
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
+            if (mainBoard->win(oneMove.x, oneMove.y) || SecondPlayer->getPlayerCapture() >= 10)
             {
                 printf(" Player %d WIN!!!!!", SecondPlayer->getPlayerNumber() );
 
