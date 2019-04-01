@@ -5,11 +5,11 @@
 #include "../headers/SDLTextureClass.hpp"
 #include "../headers/View.hpp"
 
-SDLTextureClass::SDLTextureClass(SDL_Texture *texture, const char *name) {
-	if (!texture || !name)
+SDLTextureClass::SDLTextureClass(SDL_Texture *texture) {
+	if (!texture)
 		throw "Both value are required.";
 	this->_setProperties(texture);
-	this->_name = name;
+	this->_name = "";
 }
 
 SDLTextureClass::~SDLTextureClass() {

@@ -17,8 +17,7 @@ ComputerPlayer::~ComputerPlayer() {}
 
 //AIPlayer& AIPlayer::operator=(AIPlayer const &rhs) {}
 
-Move ComputerPlayer::makeMove(GomokuMainBoard & bord, View *view, APlayer * player_1, APlayer * player_2)
-{
+Move ComputerPlayer::makeMove(GomokuMainBoard &bord, View *, APlayer *player_1, APlayer *player_2) {
     ArtificialIntelligence * AI = new ArtificialIntelligence;
 
 

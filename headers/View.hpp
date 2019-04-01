@@ -6,11 +6,15 @@
 #define GOMOKU_VIEW_HPP
 
 #include <list>
+#include <array>
+#include <functional>
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"
 #include "GomokuMainBoard.hpp"
 
 #define HELPER_ALPHA	150
+
+#define CENTER(size, minsize)	((size / 2) - (minsize / 2))
 
 #define BOARD_LINE_SIZE							3
 #define POINT_RADIUS_PERCENT_FROM_CELL_DISTANCE	40
@@ -18,6 +22,7 @@
 const SDL_Color	WHITE_COLOR_SDL = {255, 255, 255, 255};
 const SDL_Color	BLACK_COLOR_SDL = {0, 0, 0, 255};
 const SDL_Color	GREY_COLOR_SDL = {128, 128, 128, 255};
+const SDL_Color	RED_COLOR_SDL = {255, 0, 0, 255};
 
 
 
@@ -25,10 +30,10 @@ class View {
 
 public:
 
-	View(int width, int height, char const *name, GomokuMainBoard *board, int sleep_time);
+	View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time);
 	~View();
 
-	bool		showStartWindowAndWaitForStart(const char *img_file_path);
+	bool		showStartWindowAndWaitForStart(const char *img_file_path, int *players);
 	bool		isRunning();
 	bool 		pullEvent(SDL_Event *event);
 	bool 		waitEvent(SDL_Event *event);
@@ -44,6 +49,7 @@ public:
     void updateAllBoard(GomokuMainBoard *board);
 
     void setEventTypesToCheck(std::vector<Uint32> eventTypes);
+    void addEventHandler(std::function<bool(View *view, SDL_Event *event)>);
 
 private:
 
@@ -65,6 +71,7 @@ private:
 	TTF_Font                        *_font24;
 	TTF_Font                        *_font46;
 	std::array<SDLTextureClass*, 1>	_textures;
+	std::list<std::function<bool(View*, SDL_Event*)>>	_eventHandlers;
 	int								*_boardCoordinates;
 	int								_coordinatesLength;
 	int								_distance;

@@ -9,11 +9,19 @@
 #define FIRST_PLAYER 1
 #define SECOND_PLAYER 2
 #define REC_DEPT 3
+#define AI_PLAYER 1
+#define HUMAN_PLAYER 2
+#define DEBUG_PLAYER 3
+#define REC_DEPT 1
 #define POINTS_TO_WIN 5
 
-#define FIRST_PLAYER	1
-#define SECOND_PLAYER	2
-#define EMPTY_CELL		0
+#define FIRST_PLAYER_ON_MAP     1
+#define SECOND_PLAYER_ON_MAP	2
+#define EMPTY_CELL_ON_MAP		0
+
+#define FIRST_PLAYER_POSITION   0
+#define SECOND_PLAYER_POSITION  1
+
 
 #define START_GAMEBOARD_IMAGE		"media/start-game-nachat-igru-start-start-the-game.jpg"
 #define BACKGROUND_GAMEBOARD_IMAGE	"media/wildtextures-wooden-chopping-board-texture.jpg"
@@ -39,9 +47,8 @@
 
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
 
 /*#include "GomokuMainBoard.hpp"
 #include "ArtificialIntelligence.hpp"

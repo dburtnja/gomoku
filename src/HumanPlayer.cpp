@@ -19,25 +19,22 @@ HumanPlayer::~HumanPlayer() {}
 
 
 
-Move HumanPlayer::makeMove(GomokuMainBoard & bord, View *view,  APlayer * player_1, APlayer * player_2)
+Move HumanPlayer::makeMove(GomokuMainBoard & board, View *view,  APlayer * player_1, APlayer * player_2)
 {
 
     SDL_Event	mouse;
-    SDL_Event	motion;
-
-    bool 	motion_exist;
-    bool	mouse_exist;
-
     Move oneMove;
     SDL_Point indexesPoint;
 
-    while (view->isRunning())
+    while (view->waitEvent(&mouse))
     {
         if (view->getIndexesFromCoordinate(&indexesPoint, mouse.button.x, mouse.button.y))
         {
             oneMove.x = indexesPoint.x;
             oneMove.y = indexesPoint.y;
-            break ;
+            board.putStoneOnBoard(oneMove.x, oneMove.y, this->getplayerSymbol(), GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - 0);
+            board.check_for_capture(oneMove.x, oneMove.y, player_1, player_2, true, oneMove.coordinatesList);
+            return oneMove;
         }
     }
     return oneMove;

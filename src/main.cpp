@@ -42,7 +42,7 @@ int main()
     View		*view;
     int			moveCounter = 0;
     bool		gameOver;
-    int         coordCounter = 0;
+    int         players[2];
 
     GomokuMainBoard * mainBoard = new GomokuMainBoard;
 	ArtificialIntelligence * AI = new ArtificialIntelligence;
@@ -56,7 +56,7 @@ int main()
         return -1;
     }
 
-    if (!view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE))
+    if (!view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE, &players[0]))
     	std::cout << "Error on showStartWindowAndWaitForStart: " << SDL_GetError() << std::endl;
 
     if (!view->showGameBoard(BACKGROUND_GAMEBOARD_IMAGE)) {
@@ -68,10 +68,12 @@ int main()
 	moveCounter++;
 
 
-    int player_1 = FIRST_PLAYER;
-    int player_2 = SECOND_PLAYER;
+
+    int player_1 = FIRST_PLAYER_ON_MAP;
+    int player_2 = SECOND_PLAYER_ON_MAP;
 
     APlayer *  FirstPlayer = new ComputerPlayer(0, player_1);
+//    APlayer *  FirstPlayer = new HumanPlayer(0, player_1);
     APlayer * SecondPlayer = new ComputerPlayer(1, player_2);
 
 
@@ -111,7 +113,7 @@ int main()
 			oneMove.capturePlayer_1 = FirstPlayer->getPlayerCapture();
 
 
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
+            if (mainBoard->win(oneMove.x, oneMove.y) || FirstPlayer->getPlayerCapture() >= 10)
             {
                 printf(" Player %d WIN!!!!!", FirstPlayer->getPlayerNumber() );
                 gameOver = true;
@@ -146,7 +148,7 @@ int main()
             view->putStoneOnBoard(indexesPoint, SecondPlayer->getplayerSymbol());
 
             mainBoard->check_for_capture(oneMove.x, oneMove.y, SecondPlayer, FirstPlayer, true, oneMove.coordinatesList);
-            if (mainBoard->win(oneMove.x, oneMove.y) || mainBoard->player_capture >= 10)
+            if (mainBoard->win(oneMove.x, oneMove.y) || SecondPlayer->getPlayerCapture() >= 10)
             {
                 printf(" Player %d WIN!!!!!", SecondPlayer->getPlayerNumber() );
 
