@@ -5,32 +5,24 @@
 
 #include "../headers/APlayer.hpp"
 
-APlayer::APlayer() {
-
-}
-
-//APlayer::APlayer(APlayer &toCopy) {}
 
 APlayer::APlayer(int playerNumber, int playerSymbol) {
     _playerNumber = playerNumber;
     _playerSymbol = playerSymbol;
 }
 
-//APlayer& APlayer::operator=(APlayer const &rhs) {}
-
-APlayer::~APlayer() {
-
-}
+APlayer::~APlayer() = default;
 
 int APlayer::getPlayerCapture() {
     return _capture;
 }
 
 int APlayer::getPlayerNumber() {
+    std::cout << "getPlayer number" << std::endl;
     return _playerNumber;
 }
 
-int APlayer::getplayerSymbol() {
+int APlayer::getPlayerSymbol() {
     return _playerSymbol;
 }
 

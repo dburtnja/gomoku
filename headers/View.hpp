@@ -11,6 +11,7 @@
 #include "MainHeader.hpp"
 #include "SDLTextureClass.hpp"
 #include "GomokuMainBoard.hpp"
+#include "ArtificialIntelligence.hpp"
 
 #define HELPER_ALPHA	150
 
@@ -42,9 +43,9 @@ public:
 	void		showBoardHelper(SDL_Point indexPoint, int playerNumber);
 	void		updateGameScreen();
 	void		putStoneOnBoard(SDL_Point indexPoint, int playerNumber);
-	void		putStoneOnBoard(Coordinates coordinates);
+	void		putStoneOnBoard(Coordinates *coordinates);
 
-    void showWiningLine(Coordinates *coordinates, int size, const char *message);
+    void showWiningLine(const char *message, Move *winingMove);
 
     void updateAllBoard(GomokuMainBoard *board);
 
@@ -92,6 +93,8 @@ private:
     void            _setBoardValues(GomokuMainBoard *board);
 
     void _renderText(const char *message, TTF_Font *font, int x, int y);
+
+	void _renderStone(Coordinates *coordinates);
 };
 
 

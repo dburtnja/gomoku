@@ -13,16 +13,9 @@
 
 class HumanPlayer : public APlayer
 {
-    public:
-
-        HumanPlayer(void);
-        HumanPlayer(int playerNumber, int playerSymbol);
-        //AComputerPlayer(ComputerPlayer &toCopy);
-        ~HumanPlayer();
-        //ComputerPlayer & operator=(ComputerPlayer const &rhs);
-
-
-        Move makeMove(GomokuMainBoard & board, View *view,  APlayer * player_1, APlayer * player_2) override ;
+public:
+    explicit HumanPlayer(int playerNumber);
+    Move makeMove(GomokuMainBoard &board, APlayer *player_1, APlayer *player_2) override ;
 };
 
 #endif //GOMOKU_HUMANPLAYER_HPP

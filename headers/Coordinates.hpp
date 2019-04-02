@@ -24,5 +24,16 @@ private:
     int _player;
 };
 
+struct Move{
+    int x;
+    int y;
+
+    std::vector<Coordinates*> coordinatesList;
+    double moveTime;
+    int capturePlayer_1;
+    int capturePlayer_2;
+};
+
+
 
 #endif //GOMOKU_COORDINATES_HPP

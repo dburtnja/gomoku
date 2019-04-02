@@ -40,7 +40,7 @@ Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, APlayer * player
     clock_t start = clock();
     srand(time(NULL));
 
-    if (player_1->getplayerSymbol() == FIRST_PLAYER)
+    if (player_1->getPlayerSymbol() == FIRST_PLAYER)
         std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer1);
     else
         std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);
@@ -80,7 +80,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
 
         int tmp = minimaxAlphaBeta (mainBoard, REC_DEPT - 1, true, INT_MIN, INT_MAX, x_cor,y_cor, player_1, player_2);
 
-        mainBoard.setValue(x_cor, y_cor, player_1->getplayerSymbol());
+        mainBoard.setValue(x_cor, y_cor, player_1->getPlayerSymbol());
         int capture = mainBoard.check_for_capture(x_cor, y_cor, player_1, player_2, false, move.coordinatesList);
         mainBoard.setValue(x_cor, y_cor, EMPTY_CELL_ON_MAP);
 
@@ -89,7 +89,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
 
         if (tmp > 0)
             tmp += capture;
-        mainBoard.setValue(x_cor, y_cor, player_2->getplayerSymbol());
+        mainBoard.setValue(x_cor, y_cor, player_2->getPlayerSymbol());
         capture = mainBoard.check_for_capture(x_cor, y_cor, player_2, player_1, false, move.coordinatesList);
         mainBoard.setValue(x_cor, y_cor, EMPTY_CELL_ON_MAP);
 
@@ -107,7 +107,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
             y = y_cor;
         }
 
-        if (player_1->getplayerSymbol() == FIRST_PLAYER)
+        if (player_1->getPlayerSymbol() == FIRST_PLAYER)
             element->p1_score = tmp;
         else
             element->p2_score = tmp;
@@ -131,7 +131,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
     printf("x=%d, y=%d -> score = %d\n", x,y,value);
     //printf("time = %d\n", seconds);
 
-    move.coordinatesList.push_back(new Coordinates(x, y, player_1->getplayerSymbol()));
+    move.coordinatesList.push_back(new Coordinates(x, y, player_1->getPlayerSymbol()));
     player_1->setTimeLastMove(seconds);
     return move;
 }
@@ -139,7 +139,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
 int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, APlayer * player_1, APlayer * player_2)
 {
     std::vector<AvailableSpot *> tmp_vector_old;
-    int c = isMax ?  player_1->getplayerSymbol()  : player_2->getplayerSymbol();
+    int c = isMax ? player_1->getPlayerSymbol()  : player_2->getPlayerSymbol();
     int value = 0;
     Move move{};
 
@@ -177,7 +177,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         else
             capture_value = mainBoard.check_for_capture(x, y, player_2, player_1, false, move.coordinatesList) * 2;
 
-        value = evaluation(mainBoard, isMax, player_1->getplayerSymbol(), player_2->getplayerSymbol());
+        value = evaluation(mainBoard, isMax, player_1->getPlayerSymbol(), player_2->getPlayerSymbol());
 
         if (value > 0)
             value+=capture_value;

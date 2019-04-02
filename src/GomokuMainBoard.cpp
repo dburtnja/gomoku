@@ -413,10 +413,10 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
 int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer * feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
 {
     bool ready_for_capture =
-            rowOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove, coordinatesList)
-            || columnOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove, coordinatesList)
-            || mainDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList)
-            || reverseDiagnolOfTwo(x,y, attack->getplayerSymbol(), feed->getplayerSymbol(), needToRemove ,coordinatesList);
+            rowOfTwo(x,y, attack->getPlayerSymbol(), feed->getPlayerSymbol(), needToRemove, coordinatesList)
+            || columnOfTwo(x,y, attack->getPlayerSymbol(), feed->getPlayerSymbol(), needToRemove, coordinatesList)
+            || mainDiagnolOfTwo(x,y, attack->getPlayerSymbol(), feed->getPlayerSymbol(), needToRemove ,coordinatesList)
+            || reverseDiagnolOfTwo(x,y, attack->getPlayerSymbol(), feed->getPlayerSymbol(), needToRemove ,coordinatesList);
     if (ready_for_capture && needToRemove == true)
         attack->increaseCapture(2);
     else if (ready_for_capture)
@@ -468,5 +468,9 @@ std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
         }
     }
     return coordinates;
+}
+
+GomokuMainBoard::~GomokuMainBoard() {
+
 }
 

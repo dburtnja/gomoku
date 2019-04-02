@@ -11,6 +11,7 @@
 #include "../headers/Widget.hpp"
 #include "../headers/WidgetButton.hpp"
 #include "../headers/WidgetButtonGroup.hpp"
+#include "../headers/ArtificialIntelligence.hpp"
 
 
 View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time) {
@@ -136,8 +137,8 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 	while (this->isRunning()) {
         while (this->pullEvent(&event)) {
             if (startButton->isClicked()) {
-            	players[FIRST_PLAYER_POSITION] = firstPlayerSelection->getSelected();
-            	players[SECOND_PLAYER_POSITION] = secondPlayerSelection->getSelected();
+            	players[FIRST_PLAYER_POSITION] = firstPlayerSelection->getSelected() + 1;
+            	players[SECOND_PLAYER_POSITION] = secondPlayerSelection->getSelected() + 1;
                 SDL_DestroyTexture(texture);
                 return true;
             }
@@ -155,7 +156,7 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
         SDL_Delay(this->_sleep_time);
 	}
 	SDL_DestroyTexture(texture);
-	return true;
+	return false;
 }
 
 SDL_Texture *View::_loadImage(const char *img_file_path) {
@@ -244,6 +245,7 @@ bool View::showGameBoard(const char *img_file_path) {
 																&BLACK_COLOR_SDL, &WHITE_COLOR_SDL, this->_renderer);
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
+	this->updateGameScreen();
 	return true;
 }
 
@@ -379,10 +381,9 @@ void View::_placeTextureByIndexPoint(SDL_Point indexPoint, SDLTextureClass *text
 	textureToPlace->setDstRenderRect(&rect);
 }
 
-void View::showWiningLine(Coordinates *coordinates, int size, const char *message) {
+void View::showWiningLine(const char *message, Move *winingMove) {
     SDL_Color   color;
-
-	size = 0; //TODO DENYS ???
+    SDL_Event	event;
 
     this->_debugMessage("Showing winning window.");
     color = GREY_COLOR_SDL;
@@ -390,29 +391,32 @@ void View::showWiningLine(Coordinates *coordinates, int size, const char *messag
 	this->_textures[0]->clearTexture(this->_renderer, color);
 	this->_textures[0]->setAsRenderTarget(this->_renderer);
 	this->_renderText(message, this->_font46, 40, 40);
-	this->putStoneOnBoard(*coordinates);
+	for (auto coordinate : winingMove->coordinatesList)
+		this->_renderStone(coordinate);
+	SDL_SetRenderTarget(this->_renderer, NULL);
+	this->updateGameScreen();
+	while (waitEvent(&event));
 }
 
 void View::updateAllBoard(GomokuMainBoard *board) {
 	std::list<Coordinates>	            *coordinates;
 	std::list<Coordinates>::iterator    iterator;
 
-	//this->_debugMessage("Updating all board.");
+	this->_debugMessage("Updating all board.");
 	coordinates = board->getPlacedCoordinates();
 	this->_boardTextureClass->clearTexture(this->_renderer);
-	for (iterator = coordinates->begin(); iterator != coordinates->end(); ++iterator) {
-	    this->putStoneOnBoard(*iterator);
-	}
 
+	for (auto coordinate : *coordinates)
+		this->putStoneOnBoard(&coordinate);
 	delete coordinates;
 }
 
-void View::putStoneOnBoard(Coordinates coordinates) {
+void View::putStoneOnBoard(Coordinates *coordinates) {
     SDL_Point   point;
 
-    point.x = coordinates.getX();
-    point.y = coordinates.getY();
-    this->putStoneOnBoard(point, coordinates.getPlayer());
+    point.x = coordinates->getX();
+    point.y = coordinates->getY();
+    this->putStoneOnBoard(point, coordinates->getPlayer());
 }
 
 void View::_renderText(const char *message, TTF_Font *font, int x, int y) {
@@ -432,4 +436,16 @@ void View::_renderText(const char *message, TTF_Font *font, int x, int y) {
 
 void View::addEventHandler(std::function<bool(View *view, SDL_Event *event)> eventHandler) {
 	this->_eventHandlers.push_back(eventHandler);
+}
+
+void View::_renderStone(Coordinates *coordinates) {
+	SDL_Point   	point;
+	SDLTextureClass	*stoneTexture;
+
+	point.x = coordinates->getX();
+	point.y = coordinates->getY();
+	stoneTexture = coordinates->getPlayer() == FIRST_PLAYER_ON_MAP
+			? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
+	this->_placeTextureByIndexPoint(point, stoneTexture);
+	stoneTexture->renderTexture(this->_renderer);
 }
