@@ -3,12 +3,13 @@
 //
 
 #include "../headers/ComputerPlayer.hpp"
+#include "../headers/View.hpp"
 
-ComputerPlayer::ComputerPlayer(int playerNumber) : APlayer(playerNumber, AI_PLAYER) {
+ComputerPlayer::ComputerPlayer(int playerNumber, int playerSymbol) : APlayer(playerNumber, playerSymbol) {
 }
 
-Move ComputerPlayer::makeMove(GomokuMainBoard &bord, APlayer *player_1, APlayer *player_2) {
+Move ComputerPlayer::makeMove(GomokuMainBoard &bord, APlayer *otherPlayer) {
     ArtificialIntelligence * AI = new ArtificialIntelligence;
 
-    return AI->runAI(bord, player_1, player_2);
+    return AI->runAI(bord, this, otherPlayer);
 }

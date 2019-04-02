@@ -14,8 +14,8 @@
 class HumanPlayer : public APlayer
 {
 public:
-    explicit HumanPlayer(int playerNumber);
-    Move makeMove(GomokuMainBoard &board, APlayer *player_1, APlayer *player_2) override ;
+    HumanPlayer(int playerNumber, int playerSymbol);
+    Move makeMove(GomokuMainBoard &board, APlayer *otherPlayer) override ;
 };
 
 #endif //GOMOKU_HUMANPLAYER_HPP

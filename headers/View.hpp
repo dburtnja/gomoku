@@ -34,6 +34,8 @@ public:
 	View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time);
 	~View();
 
+	static View	*getInstance();
+
 	bool		showStartWindowAndWaitForStart(const char *img_file_path, int *players);
 	bool		isRunning();
 	bool 		pullEvent(SDL_Event *event);
@@ -78,6 +80,7 @@ private:
 	int								_distance;
 	int								_pointRadious;
     bool                            _debug;
+    static View						*_selfInstance;
 
 	SDL_Texture*	_loadImage(const char *img_file_path);
 	void 			_applyTexture(int x, int y, SDL_Texture *texture);

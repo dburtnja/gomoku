@@ -18,7 +18,6 @@ int APlayer::getPlayerCapture() {
 }
 
 int APlayer::getPlayerNumber() {
-    std::cout << "getPlayer number" << std::endl;
     return _playerNumber;
 }
 

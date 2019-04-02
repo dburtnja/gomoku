@@ -23,9 +23,13 @@ private:
 
     void _setPlayers();
 
-    APlayer *_getPlayerObj(int playerType, int playerNumber);
+    APlayer *_getPlayerObj(int playerType, int playerNumber, int playerSymbol);
 
     int _startGomokuGame(Move &winningMove);
+
+    APlayer * _getCurrentPlayer();
+
+    APlayer *_getOppositePlayer();
 };
 
 

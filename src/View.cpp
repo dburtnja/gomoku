@@ -13,8 +13,10 @@
 #include "../headers/WidgetButtonGroup.hpp"
 #include "../headers/ArtificialIntelligence.hpp"
 
+View	*View::_selfInstance = nullptr;
 
 View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time) {
+	View::_selfInstance = this;
 	this->_debug = true;
 	this->_width = width;
 	this->_height = height;
@@ -115,14 +117,14 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 
 	firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
 	firstPlayerSelection->setBackgroundAlphaColor(50);
-	firstPlayerSelection->addButton(10, 10, 50, 380, "Human", true);
-	firstPlayerSelection->addButton(10, 70, 50, 380, "Computer");
+	firstPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
+	firstPlayerSelection->addButton(10, 70, 50, 380, "Human");
 	firstPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
 	secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
 	secondPlayerSelection->setBackgroundAlphaColor(50);
-	secondPlayerSelection->addButton(10, 10, 50, 380, "Human");
-	secondPlayerSelection->addButton(10, 70, 50, 380, "Computer", true);
+	secondPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
+	secondPlayerSelection->addButton(10, 70, 50, 380, "Human");
 	secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
 	texture = this->_loadImage(img_file_path);
@@ -235,6 +237,8 @@ bool View::_checkViewEvent(SDL_Event *event) {
 }
 
 bool View::showGameBoard(const char *img_file_path) {
+	SDL_Event	event;
+
 	this->_firstPlayerStoneTexture = new SDLTextureClass(CIRCLE_IMAGE_BLACK, nullptr, nullptr, this->_renderer);
 	this->_secondPlayerStoneTexture = new SDLTextureClass(CIRCLE_IMAGE_WHITE, nullptr, nullptr, this->_renderer);
 	this->_setBoardBackground(img_file_path);
@@ -245,6 +249,7 @@ bool View::showGameBoard(const char *img_file_path) {
 																&BLACK_COLOR_SDL, &WHITE_COLOR_SDL, this->_renderer);
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
+	while (this->pullEvent(&event));
 	this->updateGameScreen();
 	return true;
 }
@@ -448,4 +453,8 @@ void View::_renderStone(Coordinates *coordinates) {
 			? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
 	this->_placeTextureByIndexPoint(point, stoneTexture);
 	stoneTexture->renderTexture(this->_renderer);
+}
+
+View *View::getInstance() {
+	return View::_selfInstance;
 }
