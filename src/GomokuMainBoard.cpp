@@ -12,8 +12,8 @@ GomokuMainBoard::GomokuMainBoard() :
     int x;
     int y;
 
-    this->_players[0] = FIRST_PLAYER;
-    this->_players[1] = SECOND_PLAYER;
+    this->_players[0] = FIRST_PLAYER_ON_MAP;
+    this->_players[1] = SECOND_PLAYER_ON_MAP;
     this->_move = 0;
     for (x = 0; x < GOMOKU_BOARD_SIZE; x++)
     {

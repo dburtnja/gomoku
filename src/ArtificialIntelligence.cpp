@@ -40,7 +40,7 @@ Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, APlayer * player
     clock_t start = clock();
     srand(time(NULL));
 
-    if (player_1->getPlayerSymbol() == FIRST_PLAYER)
+    if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
         std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer1);
     else
         std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);
@@ -107,7 +107,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
             y = y_cor;
         }
 
-        if (player_1->getPlayerSymbol() == FIRST_PLAYER)
+        if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
             element->p1_score = tmp;
         else
             element->p2_score = tmp;
@@ -241,7 +241,7 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
         tmp_vector = mainBoard.availablespots;
         int M = INT_MIN;
 
-       /* if (player_1->getplayerSymbol() == FIRST_PLAYER)
+       /* if (player_1->getplayerSymbol() == FIRST_PLAYER_ON_MAP)
             std::sort(tmp_vector.begin(), tmp_vector.end(), mySortPlayer1);
         else
             std::sort(tmp_vector.begin(), tmp_vector.end(), mySortPlayer2);*/

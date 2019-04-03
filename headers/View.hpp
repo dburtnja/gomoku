@@ -20,6 +20,9 @@
 #define BOARD_LINE_SIZE							3
 #define POINT_RADIUS_PERCENT_FROM_CELL_DISTANCE	40
 
+#define MENU_TEXTURE            0
+#define WIN_MESSAGE_TEXTURE     1
+
 const SDL_Color	WHITE_COLOR_SDL = {255, 255, 255, 255};
 const SDL_Color	BLACK_COLOR_SDL = {0, 0, 0, 255};
 const SDL_Color	GREY_COLOR_SDL = {128, 128, 128, 255};
@@ -51,8 +54,9 @@ public:
 
     void updateAllBoard(GomokuMainBoard *board);
 
-    void setEventTypesToCheck(std::vector<Uint32> eventTypes);
     void addEventHandler(std::function<bool(View *view, SDL_Event *event)>);
+
+    void updateMove(Move &move);
 
 private:
 
@@ -73,7 +77,7 @@ private:
 	SDLTextureClass 				*_boardTextureClass;
 	TTF_Font                        *_font24;
 	TTF_Font                        *_font46;
-	std::array<SDLTextureClass*, 1>	_textures;
+	std::vector<SDLTextureClass*>	_textures;
 	std::list<std::function<bool(View*, SDL_Event*)>>	_eventHandlers;
 	int								*_boardCoordinates;
 	int								_coordinatesLength;
@@ -83,7 +87,6 @@ private:
     static View						*_selfInstance;
 
 	SDL_Texture*	_loadImage(const char *img_file_path);
-	void 			_applyTexture(int x, int y, SDL_Texture *texture);
 	void			_drawLine(int x1, int y1, int x2, int y2, const SDL_Color color, Uint8 alpha, int w);
 	bool			_checkViewEvent(SDL_Event *event);
 	void			_renderBackgroundBoard();
@@ -98,6 +101,10 @@ private:
     void _renderText(const char *message, TTF_Font *font, int x, int y);
 
 	void _renderStone(Coordinates *coordinates);
+
+    SDLTextureClass *_getPlayerView(int playerOnMap);
+
+	void _addMenuPanel(SDLTextureClass *texture);
 };
 
 

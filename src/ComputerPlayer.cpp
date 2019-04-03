@@ -8,8 +8,12 @@
 ComputerPlayer::ComputerPlayer(int playerNumber, int playerSymbol) : APlayer(playerNumber, playerSymbol) {
 }
 
-Move ComputerPlayer::makeMove(GomokuMainBoard &bord, APlayer *otherPlayer) {
-    ArtificialIntelligence * AI = new ArtificialIntelligence;
+Move ComputerPlayer::makeMove(GomokuMainBoard &board, APlayer *otherPlayer) {
+    Move    move;
 
-    return AI->runAI(bord, this, otherPlayer);
+    ArtificialIntelligence * AI = new ArtificialIntelligence;
+    move = AI->runAI(board, this, otherPlayer);
+    board.putStoneOnBoard(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY(), this->getPlayerSymbol(), BOARD_LINE_SIZE * BOARD_LINE_SIZE); //todo ask about depth in put stone on board;
+    board.check_for_capture(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY(), this, otherPlayer, true, move.coordinatesList);
+    return move;
 }

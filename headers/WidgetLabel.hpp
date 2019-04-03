@@ -9,7 +9,9 @@
 #include "Widget.hpp"
 
 class WidgetLabel : public Widget {
-
+public:
+    WidgetLabel(int x, int y, int h, int w);
+//    ~WidgetLabel();
 };
 
 

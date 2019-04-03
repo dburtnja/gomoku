@@ -12,6 +12,7 @@
 #include "../headers/WidgetButton.hpp"
 #include "../headers/WidgetButtonGroup.hpp"
 #include "../headers/ArtificialIntelligence.hpp"
+#include "../headers/WidgetLabel.hpp"
 
 View	*View::_selfInstance = nullptr;
 
@@ -77,7 +78,12 @@ void View::_afterInitSDL() {
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	this->_textures[0] = new SDLTextureClass(texture);
+	this->_textures.push_back(new SDLTextureClass(texture));
+
+	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+								this->_width, this->_height);
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	this->_textures.push_back(new SDLTextureClass(texture));
 }
 
 void View::_debugMessage(const char *message) {
@@ -249,6 +255,7 @@ bool View::showGameBoard(const char *img_file_path) {
 																&BLACK_COLOR_SDL, &WHITE_COLOR_SDL, this->_renderer);
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
+
 	while (this->pullEvent(&event));
 	this->updateGameScreen();
 	return true;
@@ -358,8 +365,37 @@ void View::_setBoardBackground(const char *img_file_path) {
 	this->_boardBackground->setAsRenderTarget(this->_renderer);
 	imageTexture.renderTexture(this->_renderer);
 	this->_renderBackgroundBoard();
-
+	this->_addMenuPanel(this->_textures[MENU_TEXTURE]);
 	SDL_SetRenderTarget(this->_renderer, NULL);
+}
+
+
+void View::_addMenuPanel(SDLTextureClass *texture) {
+//	int	x;
+//	int y;
+//	int w;
+//	int h;
+//	std::map<std::string, std::string>	messages;
+//
+//	messages["Last move"] = "A2";
+//	messages["Last move time"] = "0.2832 s";
+//
+//	x = this->_boardCoordinates[this->_coordinatesLength - 1] + 50;
+//	y = 50;
+//	w = this->_width - x - 50;
+//	h = 50;
+//
+//	for (auto message : messages) {
+//		this->_addMenuPanelRow(x, y, message.first, message.second);
+//	}
+//
+//	texture->setAsRenderTarget(this->_renderer);
+//	WidgetLabel *playerImageTitle = new WidgetLabel(x, y, h, w);
+//
+//	playerImageTitle->setText("Current Player:", BLACK_COLOR_SDL);
+//	playerImageTitle->render(this->_renderer);
+//
+//	SDL_SetRenderTarget(this->_renderer, NULL);
 }
 
 void View::putStoneOnBoard(SDL_Point indexPoint, int playerNumber) {
@@ -393,8 +429,8 @@ void View::showWiningLine(const char *message, Move *winingMove) {
     this->_debugMessage("Showing winning window.");
     color = GREY_COLOR_SDL;
     color.a = 150;
-	this->_textures[0]->clearTexture(this->_renderer, color);
-	this->_textures[0]->setAsRenderTarget(this->_renderer);
+	this->_textures[WIN_MESSAGE_TEXTURE]->clearTexture(this->_renderer, color);
+	this->_textures[WIN_MESSAGE_TEXTURE]->setAsRenderTarget(this->_renderer);
 	this->_renderText(message, this->_font46, 40, 40);
 	for (auto coordinate : winingMove->coordinatesList)
 		this->_renderStone(coordinate);
@@ -449,6 +485,7 @@ void View::_renderStone(Coordinates *coordinates) {
 
 	point.x = coordinates->getX();
 	point.y = coordinates->getY();
+//	stoneTexture = this->_getPlayerView(coordinates->getPlayer());
 	stoneTexture = coordinates->getPlayer() == FIRST_PLAYER_ON_MAP
 			? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
 	this->_placeTextureByIndexPoint(point, stoneTexture);
@@ -458,3 +495,29 @@ void View::_renderStone(Coordinates *coordinates) {
 View *View::getInstance() {
 	return View::_selfInstance;
 }
+
+SDLTextureClass *View::_getPlayerView(int playerOnMap) {
+
+	return nullptr;
+}
+
+void View::updateMove(Move &move) {
+	SDL_Rect	rect;
+
+    for (auto coordinate : move.coordinatesList) {
+    	if (coordinate->getPlayer() == EMPTY_CELL_ON_MAP) {
+//    		this->_boardTextureClass->setAsRenderTarget(this->_renderer);
+//    		SDL_SetRenderDrawBlendMode(this->_renderer, SDL_BLENDMODE_MOD);
+//    		SDL_SetRenderDrawColor(this->_renderer, 0, 0, 0, 0);
+//    		rect.x = coordinate->getX();
+//    		rect.y = coordinate->getY();
+//    		rect.w = 40;
+//    		rect.h = 40;
+//    		SDL_RenderDrawRect(this->_renderer, &rect);
+//    		std::cout << "DRAV RECT " << std::endl;
+    	} else {
+    		this->putStoneOnBoard(coordinate);
+    	}
+    }
+}
+

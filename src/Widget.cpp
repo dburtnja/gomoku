@@ -80,8 +80,10 @@ bool Widget::visibleCoordinates(int x, int y) {
 
 void Widget::setText(const char *message, SDL_Color textColor) {
     TTF_Font        *font;
+    int             fontSize;
 
-    font = TTF_OpenFont(FONT_FILE, this->_rect.h / 2);
+    fontSize = (this->_rect.h < this->_rect.w ? this->_rect.h : this->_rect.w) / 2;
+    font = TTF_OpenFont(FONT_FILE, fontSize);
     this->_messageSurface = TTF_RenderText_Solid(font, message, textColor);
     TTF_CloseFont(font);
 }

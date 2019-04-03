@@ -13,6 +13,8 @@ GomokuGame::GomokuGame() {
 }
 
 GomokuGame::~GomokuGame() {
+    for (auto *player : this->_players)
+        delete player;
     delete this->_board;
     delete this->_view;
 }
@@ -75,6 +77,25 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
 		return -1;
     }
 
+    this->_view->addEventHandler([this](View *view, SDL_Event *event){
+        SDL_Point   index;
+
+        if (event->type == SDL_MOUSEMOTION) {
+            if (event->motion.x % 5 == 0 || event->motion.y % 5 == 0) {
+                if (view->getIndexesFromCoordinate(&index, event->motion.x, event->motion.y)) {
+                    view->showBoardHelper(index, this->_getCurrentPlayer()->getPlayerSymbol());
+                    view->updateGameScreen();
+                }
+                return true;
+            }
+        }
+        return false;
+    });
+
+    this->_view->addEventHandler([](View *view, SDL_Event *event){
+        return false;
+    });
+
     while (this->_view->isRunning()) {
         while (this->_view->pullEvent(&event));
         move = this->_getCurrentPlayer()->makeMove(*(this->_board), this->_getOppositePlayer());
@@ -82,20 +103,18 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();
         } // todo add cpture ask about find win if it works if get first coordinate from coords
-        this->_view->updateAllBoard(this->_board);
+        this->_view->updateMove(move);
+//        this->_view->updateAllBoard(this->_board);
         this->_view->updateGameScreen();
         this->_moveCounter++;
-        std::cout << _moveCounter << std::endl;
     }
     return -1;
 }
 
 APlayer *GomokuGame::_getCurrentPlayer() {
-    std::cout << "get current " << this->_moveCounter % 2 << std::endl;
     return this->_players[this->_moveCounter % 2];
 }
 
 APlayer *GomokuGame::_getOppositePlayer() {
-    std::cout << "get opposite " << (this->_moveCounter + 1) % 2<< std::endl;
     return this->_players[(this->_moveCounter + 1) % 2];
 }

@@ -27,8 +27,7 @@ private:
 
     int _startGomokuGame(Move &winningMove);
 
-    APlayer * _getCurrentPlayer();
-
+    APlayer *_getCurrentPlayer();
     APlayer *_getOppositePlayer();
 };
 
