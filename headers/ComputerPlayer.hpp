@@ -15,7 +15,9 @@ class ComputerPlayer : public APlayer
 {
 public:
     ComputerPlayer(int playerNumber, int playerSymbol);
-    Move makeMove(GomokuMainBoard &bord, APlayer *otherPlayer) override ;
+
+protected:
+    Move _makeMove(GomokuMainBoard &board, APlayer *otherPlayer) override;
 };
 
 #endif //GOMOKU_AIPLAYER_HPP

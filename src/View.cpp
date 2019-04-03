@@ -13,6 +13,7 @@
 #include "../headers/WidgetButtonGroup.hpp"
 #include "../headers/ArtificialIntelligence.hpp"
 #include "../headers/WidgetLabel.hpp"
+#include "../headers/WidgetMenuField.hpp"
 
 View	*View::_selfInstance = nullptr;
 
@@ -24,6 +25,7 @@ View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint
 	this->_name = name;
 	this->_sleep_time = sleep_time;
 	this->_running = true;
+	this->_menuValues = new std::map<std::string, long>;
 
     this->_debugMessage("Initialising SDL.");
 
@@ -101,6 +103,8 @@ View::~View() {
 	delete this->_secondPlayerHelperStoneTexture;
 	delete this->_boardBackground;
 	delete this->_boardTextureClass;
+	delete this->_menuWidget;
+	delete this->_menuValues;
 	SDL_DestroyRenderer(this->_renderer);
 	SDL_DestroyWindow(this->_window);
 	IMG_Quit();
@@ -122,6 +126,7 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 	startButton->setText("RUN!", WHITE_COLOR_SDL);
 
 	firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
+	firstPlayerSelection->setBackgroundColor(GREY_COLOR_SDL);
 	firstPlayerSelection->setBackgroundAlphaColor(50);
 	firstPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
 	firstPlayerSelection->addButton(10, 70, 50, 380, "Human");
@@ -257,6 +262,7 @@ bool View::showGameBoard(const char *img_file_path) {
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
 
 	while (this->pullEvent(&event));
+	this->_debugMessage("First screen update.");
 	this->updateGameScreen();
 	return true;
 }
@@ -265,15 +271,18 @@ void View::_renderBackgroundBoard() {
 	int     firstCoordinate;
 	int     lastCoordinate;
 	int     textFirstCoordinate;
-	char    message[3];
+	char    numberMessage[3];
+	char    charMessage[2];
 
+	charMessage[1] = 0;
 	firstCoordinate = this->_boardCoordinates[0];
 	lastCoordinate = this->_boardCoordinates[this->_coordinatesLength - 1]; //todo check index
 	textFirstCoordinate = firstCoordinate - this->_distance;
 	for (int i = 0; i < this->_coordinatesLength; i++) {
-		sprintf(message, "%d", i + 1);
-        this->_renderText(message, this->_font24, textFirstCoordinate, this->_boardCoordinates[i]);
-        this->_renderText(message, this->_font24, this->_boardCoordinates[i], textFirstCoordinate);
+		sprintf(numberMessage, "%d", i + 1);
+		charMessage[0] = static_cast<char>('A' + i);
+        this->_renderText(numberMessage, this->_font24, textFirstCoordinate, this->_boardCoordinates[i] - 20);
+        this->_renderText(charMessage, this->_font24, this->_boardCoordinates[i], textFirstCoordinate);
 		this->_drawLine(
 				firstCoordinate, this->_boardCoordinates[i],
 				lastCoordinate, this->_boardCoordinates[i],
@@ -340,6 +349,7 @@ void View::updateGameScreen() {
 	this->_firsPlayerHelperStoneTexture->showOnRender(false);
 	this->_secondPlayerHelperStoneTexture->renderTexture(this->_renderer);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
+	this->_menuWidget->render(this->_renderer);
 	for (SDLTextureClass *element : this->_textures) {
 		element->renderTexture(this->_renderer);
 	}
@@ -370,32 +380,64 @@ void View::_setBoardBackground(const char *img_file_path) {
 }
 
 
+long View::_createValueOnMenu(std::string message, int y, const char *defaultValue) {
+	long	widgetId;
+	int		firstW;
+	int		secondW;
+
+	firstW = (this->_menuWidget->getW() / 3 * 2) - 10;
+	widgetId = this->_menuWidget->addLabel(10, y, 30, firstW, message.c_str());
+	if (widgetId < 0)
+		return -1;
+	this->_menuWidget->getWidgetById(widgetId)->
+	setBackgroundColor(GREY_COLOR_SDL)->
+	setBackgroundAlphaColor(150);
+
+	if (!defaultValue or defaultValue[0] == 0)
+        return -1;
+	secondW = (this->_menuWidget->getW() / 3) - 20;
+	widgetId = this->_menuWidget->addLabel(firstW + 20, y, 30, secondW, defaultValue);
+	if (widgetId < 0)
+		return -1;
+	this->_menuWidget->getWidgetById(widgetId)->
+			setBackgroundColor(GREY_COLOR_SDL)->
+			setBackgroundAlphaColor(150);
+
+	return widgetId;
+}
+
 void View::_addMenuPanel(SDLTextureClass *texture) {
-//	int	x;
-//	int y;
-//	int w;
-//	int h;
-//	std::map<std::string, std::string>	messages;
-//
-//	messages["Last move"] = "A2";
-//	messages["Last move time"] = "0.2832 s";
-//
-//	x = this->_boardCoordinates[this->_coordinatesLength - 1] + 50;
-//	y = 50;
-//	w = this->_width - x - 50;
-//	h = 50;
-//
-//	for (auto message : messages) {
-//		this->_addMenuPanelRow(x, y, message.first, message.second);
-//	}
-//
-//	texture->setAsRenderTarget(this->_renderer);
-//	WidgetLabel *playerImageTitle = new WidgetLabel(x, y, h, w);
-//
-//	playerImageTitle->setText("Current Player:", BLACK_COLOR_SDL);
-//	playerImageTitle->render(this->_renderer);
-//
-//	SDL_SetRenderTarget(this->_renderer, NULL);
+    int                                     x;
+    int                                     h;
+    int				                        w;
+    std::vector<std::vector<std::string>>   values;
+    int							            insideY;
+    long                                    widgetIg;
+
+    this->_debugMessage("Adding menu panel.");
+    insideY = 10;
+    values = {
+            {LAST_MOVE_MESSAGE, "0"},
+            {LAST_MOVE_TIME_MESSAGE, "0 s"},
+            {"Captures", ""},
+            {FIRST_PLAYER_CAPTURES_MESSAGE, "0"},
+            {SECOND_PLAYER_CAPTURES_MESSAGE, "0"}
+    };
+
+    x = this->_boardCoordinates[this->_coordinatesLength - 1] + 50;
+    h = this->_boardCoordinates[this->_coordinatesLength - 1] - this->_boardCoordinates[0];
+    w =  this->_width - x - 50;
+
+    this->_menuWidget = new WidgetMenuField(x, this->_boardCoordinates[0], h, w);
+    this->_menuWidget->setBackgroundAlphaColor(50);
+
+    this->_debugMessage("Adding values on menu.");
+	for (const auto &value : values) {
+        widgetIg = this->_createValueOnMenu(value[0], insideY, value[1].c_str());
+        if (widgetIg >= 0)
+            (*this->_menuValues)[value[0]] = widgetIg;
+        insideY += 40;
+    }
 }
 
 void View::putStoneOnBoard(SDL_Point indexPoint, int playerNumber) {
@@ -485,7 +527,6 @@ void View::_renderStone(Coordinates *coordinates) {
 
 	point.x = coordinates->getX();
 	point.y = coordinates->getY();
-//	stoneTexture = this->_getPlayerView(coordinates->getPlayer());
 	stoneTexture = coordinates->getPlayer() == FIRST_PLAYER_ON_MAP
 			? this->_firstPlayerStoneTexture : this->_secondPlayerStoneTexture;
 	this->_placeTextureByIndexPoint(point, stoneTexture);
@@ -521,3 +562,36 @@ void View::updateMove(Move &move) {
     }
 }
 
+void View::updateMenuValues(const Move &move) {
+    char    value[100];
+
+    sprintf(value, "%c.%d", move.coordinatesList[0]->getX() + 'A', move.coordinatesList[0]->getY() + 1);
+    this->_updateTextInWidget(LAST_MOVE_MESSAGE, value);
+
+    sprintf(value, "%f s", move.moveTime);
+	this->_updateTextInWidget(LAST_MOVE_TIME_MESSAGE, value);
+
+	sprintf(value, "%i", move.capturePlayer_1);
+	this->_updateTextInWidget(FIRST_PLAYER_CAPTURES_MESSAGE, value);
+
+	sprintf(value, "%i", move.capturePlayer_2);
+	this->_updateTextInWidget(SECOND_PLAYER_CAPTURES_MESSAGE, value);
+}
+
+void View::_updateTextInWidget(const char *widgetName, const char *newValue) {
+	Widget	*label;
+
+	label = this->_menuWidget->getWidgetById(this->_getIdFromWidgetValues(widgetName));
+	if (label) {
+		this->_debugMessage(widgetName);
+		label->setText(newValue, BLACK_COLOR_SDL);
+	}
+}
+
+long View::_getIdFromWidgetValues(const char *string) {
+    if (this->_menuValues->find(string) != this->_menuValues->end()) {
+        auto iterator = this->_menuValues->find(string);
+        return iterator->second;
+    }
+    return -1;
+}

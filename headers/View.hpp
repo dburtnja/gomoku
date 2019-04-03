@@ -12,6 +12,7 @@
 #include "SDLTextureClass.hpp"
 #include "GomokuMainBoard.hpp"
 #include "ArtificialIntelligence.hpp"
+#include "WidgetMenuField.hpp"
 
 #define HELPER_ALPHA	150
 
@@ -22,6 +23,12 @@
 
 #define MENU_TEXTURE            0
 #define WIN_MESSAGE_TEXTURE     1
+
+#define LAST_MOVE_MESSAGE		"Last move:"
+#define LAST_MOVE_TIME_MESSAGE	"Last move time:"
+#define FIRST_PLAYER_CAPTURES_MESSAGE	" -> First player:"
+#define SECOND_PLAYER_CAPTURES_MESSAGE	" -> Second player:"
+
 
 const SDL_Color	WHITE_COLOR_SDL = {255, 255, 255, 255};
 const SDL_Color	BLACK_COLOR_SDL = {0, 0, 0, 255};
@@ -58,6 +65,8 @@ public:
 
     void updateMove(Move &move);
 
+	void updateMenuValues(const Move &move);
+
 private:
 
 	int								_width;
@@ -84,7 +93,9 @@ private:
 	int								_distance;
 	int								_pointRadious;
     bool                            _debug;
-    static View						*_selfInstance;
+	WidgetMenuField                 *_menuWidget;
+	std::map<std::string, long>		*_menuValues;
+	static View						*_selfInstance;
 
 	SDL_Texture*	_loadImage(const char *img_file_path);
 	void			_drawLine(int x1, int y1, int x2, int y2, const SDL_Color color, Uint8 alpha, int w);
@@ -105,6 +116,12 @@ private:
     SDLTextureClass *_getPlayerView(int playerOnMap);
 
 	void _addMenuPanel(SDLTextureClass *texture);
+
+    long _createValueOnMenu(std::string message, int y, const char *defaultValue);
+
+	long _getIdFromWidgetValues(const char *string);
+
+	void _updateTextInWidget(const char *widgetName, const char *newValue);
 };
 
 

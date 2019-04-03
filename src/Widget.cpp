@@ -12,7 +12,8 @@ Widget::Widget(int x, int y, int h, int w) {
     this->_rect.y = y;
     this->_rect.h = h;
     this->_rect.w = w;
-    this->_currentBackgroundColor = GREY_COLOR_SDL;
+    this->_currentBackgroundColor = WHITE_COLOR_SDL;
+    this->_currentBackgroundColor.a = 0;
 }
 
 Widget::~Widget() {
@@ -59,9 +60,10 @@ void Widget::_showMessage(SDL_Renderer *renderer) {
     SDL_DestroyTexture(texture);
 }
 
-void Widget::setBackgroundColor(SDL_Color color) {
+Widget * Widget::setBackgroundColor(SDL_Color color) {
     this->_currentBackgroundColor = color;
     this->_originalBackgroundColor = color;
+    return this;
 }
 
 void Widget::setBackgroundAlphaColor(unsigned char alpha) {
@@ -82,6 +84,8 @@ void Widget::setText(const char *message, SDL_Color textColor) {
     TTF_Font        *font;
     int             fontSize;
 
+    if (this->_messageSurface)
+        SDL_FreeSurface(this->_messageSurface);
     fontSize = (this->_rect.h < this->_rect.w ? this->_rect.h : this->_rect.w) / 2;
     font = TTF_OpenFont(FONT_FILE, fontSize);
     this->_messageSurface = TTF_RenderText_Solid(font, message, textColor);
@@ -104,4 +108,8 @@ void Widget::setDisableValue(bool disable) {
     } else {
         this->_currentBackgroundColor = this->_originalBackgroundColor;
     }
+}
+
+int Widget::getW() {
+    return this->_rect.w;
 }

@@ -6,6 +6,7 @@
 #include "../headers/View.hpp"
 #include "../headers/ComputerPlayer.hpp"
 #include "../headers/HumanPlayer.hpp"
+#include "../headers/HumanVsCompute.hpp"
 
 GomokuGame::GomokuGame() {
     this->_board = new GomokuMainBoard;
@@ -13,6 +14,7 @@ GomokuGame::GomokuGame() {
 }
 
 GomokuGame::~GomokuGame() {
+    std::cout << "Free data in GomokuGame." << std::endl;
     for (auto *player : this->_players)
         delete player;
     delete this->_board;
@@ -62,6 +64,8 @@ APlayer *GomokuGame::_getPlayerObj(int playerType, int playerNumber, int playerS
         return new ComputerPlayer(playerNumber, playerSymbol);
     if (playerType == HUMAN_PLAYER)
         return new HumanPlayer(playerNumber, playerSymbol);
+    if (playerType == DEBUG_PLAYER)
+        return new HumanVsCompute(playerNumber, playerSymbol);
     std::cout << "WARNING: NO PLAYER SPECIFIED, SELECTING HUMAN PLAYER." << std::endl;
     return new HumanPlayer(playerNumber, playerSymbol);
 }
@@ -99,12 +103,17 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
     while (this->_view->isRunning()) {
         while (this->_view->pullEvent(&event));
         move = this->_getCurrentPlayer()->makeMove(*(this->_board), this->_getOppositePlayer());
-        if (this->_board->win(move.x, move.y)) {
+        move.capturePlayer_1 = this->_players[FIRST_PLAYER_POSITION]->getPlayerCapture();
+        move.capturePlayer_2 = this->_players[SECOND_PLAYER_POSITION]->getPlayerCapture();
+        if (!this->_view->isRunning())
+            return -1;
+        this->_view->updateMenuValues(move);
+        if (this->_board->win(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY())) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();
         } // todo add cpture ask about find win if it works if get first coordinate from coords
-        this->_view->updateMove(move);
-//        this->_view->updateAllBoard(this->_board);
+//        this->_view->updateMove(move);
+        this->_view->updateAllBoard(this->_board);
         this->_view->updateGameScreen();
         this->_moveCounter++;
     }

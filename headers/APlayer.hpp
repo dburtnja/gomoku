@@ -14,25 +14,28 @@ struct Move;
 
 class APlayer
 {
-    public:
-            APlayer(int playerNumber, int playerSymbol);
-            virtual ~APlayer();
+public:
+    APlayer(int playerNumber, int playerSymbol);
+    virtual ~APlayer();
 
-            int getPlayerNumber();
-            int getPlayerSymbol();
-            int getPlayerCapture();
-            double getTimeLastMove();
+    int getPlayerNumber();
+    int getPlayerSymbol();
+    int getPlayerCapture();
+    double getTimeLastMove();
 
-            void increaseCapture(int count);
-            void setTimeLastMove(double seconds);
+    void increaseCapture(int count);
+    void setTimeLastMove(double seconds);
 
-            virtual Move makeMove(GomokuMainBoard &bord, APlayer *otherPlayer) = 0;
+    Move makeMove(GomokuMainBoard &board, APlayer *otherPlayer);
 
-    private:
-            int _playerNumber;
-            int _playerSymbol;
-            int _capture;
-            double _moveTime;
+protected:
+    virtual Move _makeMove(GomokuMainBoard &board, APlayer *otherPlayer) = 0;
+
+private:
+    int _playerNumber;
+    int _playerSymbol;
+    int _capture;
+    double _moveTime;
 
 };
 

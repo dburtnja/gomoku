@@ -50,7 +50,7 @@ Move ArtificialIntelligence::runAI(GomokuMainBoard & mainBoard, APlayer * player
     clock_t end = clock();
     double seconds = (double)(end - start) / CLOCKS_PER_SEC;
     printf("The time: %f seconds\n", player_1->getTimeLastMove());
-
+    std::cout << move.coordinatesList[0]->getX() << " " << move.coordinatesList[0]->getY();
 
     return move;
 }

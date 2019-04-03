@@ -19,7 +19,7 @@ public:
 
     virtual void render(SDL_Renderer *render);
 
-    void    setBackgroundColor(SDL_Color color);
+    Widget * setBackgroundColor(SDL_Color color);
     void    setBackgroundAlphaColor(unsigned char alpha);
     void    setText(const char *message, SDL_Color textColor);
     void    setDisableValue(bool disable);
@@ -27,6 +27,7 @@ public:
     void    addEventHandler(std::function<bool(Widget*, SDL_Event*)>);
     bool    visibleCoordinates(int x, int y);
     bool    isDisabled();
+    int     getW();
 
 
 protected:
