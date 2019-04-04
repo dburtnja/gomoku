@@ -14,6 +14,7 @@ Move ComputerPlayer::_makeMove(GomokuMainBoard &board, APlayer *otherPlayer) {
 
     artificialIntelligence = new ArtificialIntelligence;
     move = artificialIntelligence->runAI(board, this, otherPlayer);
+
     delete artificialIntelligence;
     return move;
 }

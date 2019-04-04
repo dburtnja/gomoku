@@ -108,7 +108,8 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
         if (!this->_view->isRunning())
             return -1;
         this->_view->updateMenuValues(move);
-        if (this->_board->win(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY())) {
+        if (this->_board->win(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY())
+            || this->_getCurrentPlayer()->getPlayerCapture() >= 10) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();
         } // todo add cpture ask about find win if it works if get first coordinate from coords
@@ -126,4 +127,8 @@ APlayer *GomokuGame::_getCurrentPlayer() {
 
 APlayer *GomokuGame::_getOppositePlayer() {
     return this->_players[(this->_moveCounter + 1) % 2];
+}
+
+int GomokuGame::getMoveCounter() {
+    return _moveCounter;
 }
