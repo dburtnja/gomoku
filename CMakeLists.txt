@@ -35,7 +35,20 @@ add_executable(gomoku
         src/ComputerPlayer.cpp
         src/APlayer.cpp
         src/HumanPlayer.cpp
-        src/View.cpp src/Widget.cpp headers/Widget.hpp src/WidgetButton.cpp headers/WidgetButton.hpp src/WidgetButtonGroup.cpp headers/WidgetButtonGroup.hpp src/GomokuGame.cpp headers/GomokuGame.hpp src/WidgetLabel.cpp headers/WidgetLabel.hpp src/WidgetMenuField.cpp headers/WidgetMenuField.hpp src/HumanVsCompute.cpp headers/HumanVsCompute.hpp)
+        src/View.cpp src/Widget.cpp
+        headers/Widget.hpp
+        src/WidgetButton.cpp
+        headers/WidgetButton.hpp
+        src/WidgetButtonGroup.cpp
+        headers/WidgetButtonGroup.hpp
+        src/GomokuGame.cpp
+        headers/GomokuGame.hpp
+        src/WidgetLabel.cpp
+        headers/WidgetLabel.hpp
+        src/WidgetMenuField.cpp
+        headers/WidgetMenuField.hpp
+        src/HumanVsCompute.cpp
+        headers/HumanVsCompute.hpp)
 
 target_link_libraries(gomoku ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARIES}

@@ -23,7 +23,11 @@ SRC_FILES =	main.cpp \
 			HumanPlayer.cpp \
 			Widget.cpp \
 			WidgetButton.cpp \
-			WidgetButtonGroup.cpp
+			WidgetButtonGroup.cpp \
+			HumanVsCompute.cpp \
+			WidgetMenuField.cpp \
+			WidgetLabel.cpp \
+			GomokuGame.cpp
 
 INC_FILES = AiMove.hpp \
 			APlayer.hpp \
@@ -39,7 +43,11 @@ SDLTextureClass.hpp \
 View.hpp \
 Widget.hpp \
 WidgetButton.hpp \
-WidgetButtonGroup.hpp
+WidgetButtonGroup.hpp \
+HumanVsCompute.hpp\
+WidgetMenuField.hpp \
+WidgetLabel.hpp \
+GomokuGame.hpp
 
 
 OBJ_FILES 	=	$(SRC_FILES:.cpp=.o)
