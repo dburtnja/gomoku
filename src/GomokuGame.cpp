@@ -42,6 +42,8 @@ void GomokuGame::start() {
 void GomokuGame::_setPlayers() {
     int players[2];
 
+    players[FIRST_PLAYER_POSITION] = 0;
+    players[SECOND_PLAYER_POSITION] = 0;
     if (!this->_view->showStartWindowAndWaitForStart(START_GAMEBOARD_IMAGE, &players[0]))
     	std::cout << "Error on showStartWindowAndWaitForStart: " << SDL_GetError() << std::endl;
 
@@ -50,8 +52,6 @@ void GomokuGame::_setPlayers() {
             return;
         }
     }
-
-    std::cout << players[0] << " " << players[1] << std::endl;
 
     this->_players = {
             this->_getPlayerObj(players[FIRST_PLAYER_POSITION], FIRST_PLAYER_POSITION, FIRST_PLAYER_ON_MAP),
@@ -113,7 +113,7 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();
         } // todo add cpture ask about find win if it works if get first coordinate from coords
-//        this->_view->updateMove(move);
+        this->_view->updateMove(move);
         this->_view->updateAllBoard(this->_board);
         this->_view->updateGameScreen();
         this->_moveCounter++;

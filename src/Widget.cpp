@@ -6,6 +6,8 @@
 #include "../headers/View.hpp"
 
 Widget::Widget(int x, int y, int h, int w) {
+    this->_rect = SDL_Rect{};
+    this->_eventHandlers = std::list<std::function<bool(Widget*, SDL_Event*)>>();
     this->_disabled = false;
     this->_messageSurface = nullptr;
     this->_rect.x = x;

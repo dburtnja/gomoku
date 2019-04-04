@@ -1,14 +1,15 @@
 
-NAME = gomoku
+SDL_LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
-COM			=	g++ -std=c++11
-FLAGS		=	""
-OPTIMA		=	""
+APP_NAME = gomoku
 
-SRC_DIR		=	./src/
-INC_DIR		=	./headers/
-OBJ_DIR		=	./obj/
+OBJ_DIR = obj
 
+CXX = clang++
+
+CFLAGS = -g
+
+SRC_DIR = src
 
 SRC_FILES =	main.cpp \
 			GomokuMainBoard.cpp \
@@ -21,63 +22,35 @@ SRC_FILES =	main.cpp \
 			APlayer.cpp \
 			ComputerPlayer.cpp \
 			HumanPlayer.cpp \
+			HumanVsCompute.cpp \
 			Widget.cpp \
 			WidgetButton.cpp \
-			WidgetButtonGroup.cpp
+			WidgetButtonGroup.cpp \
+			WidgetLabel.cpp \
+			WidgetMenuField.cpp \
+			GomokuGame.cpp
 
-INC_FILES = AiMove.hpp \
-			APlayer.hpp \
-			ArtificialIntelligence.hpp \
-	AvailableSpot.hpp \
-BoardState.hpp \
-ComputerPlayer.hpp \
-Coordinates.hpp \
-GomokuMainBoard.hpp \
-HumanPlayer.hpp \
-MainHeader.hpp \
-SDLTextureClass.hpp \
-View.hpp \
-Widget.hpp \
-WidgetButton.hpp \
-WidgetButtonGroup.hpp
+SRC = $(patsubst %,$(SRC_DIR)/%, $(SRC_FILES))
+
+OBJ = $(patsubst %,$(OBJ_DIR)/%, $(SRC_FILES:.cpp=.o))
 
 
-OBJ_FILES 	=	$(SRC_FILES:.cpp=.o)
+all:	$(APP_NAME)
 
-SDL_DIR		=	./SDL
-SDL_FRM		=	-F $(SDL_DIR)
-SDL_LINK	=	-framework SDL2 -framework SDL2_image -framework SDL2_ttf
+$(APP_NAME): $(OBJ)
+						@$(CXX) $(OBJ) -o $(APP_NAME) $(SDL_LIBS)
 
-PWD			= 	$(shell pwd)
-LIB_FLAG	=	-rpath $(PWD)/$(SDL_DIR)
-
-SRCS 		=	$(addprefix $(SRC_DIR), $(SRC_FILES))
-HDRS 		=	$(addprefix $(INC_DIR), $(INC_FILES))
-OBJS 		= 	$(addprefix $(OBJ_DIR), $(OBJ_FILES))
-
-
-all: obj $(NAME)
-
-obj:
-	@mkdir -p $(OBJ_DIR)
-
-$(OBJ_DIR)%.o:$(SRC_DIR)%.cpp
-	$(COM) $(FLAGS) $(OPTIMA) $(SDL_FRM) -c $< -o $@ -I $(INC_DIR)
-
-
-$(NAME): $(OBJS) $(HDRS)
-	@$(COM) $(FLAGS) $(OPTIMA) $(SDL_FRM) $(SDL_LINK) $(LIB_FLAG) $(OBJS) -o $(NAME)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+						@mkdir -p $(OBJ_DIR)
+						$(CXX) -c $(CFLAGS) -o $@ $<
 
 clean:
-						@ rm -rf $(OBJ_FILES)
-						@ rm -rf $(OBJ_DIR)
+						@rm -rf $(OBJ_DIR)
 
 fclean:
 						@make clean
-						@rm -f $(NAME)
+						@rm -f $(APP_NAME)
 
 re:
 						@make fclean
 						@make all
-
-.PHONY: all clean fclean re
