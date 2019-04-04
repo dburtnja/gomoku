@@ -26,6 +26,13 @@ View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint
 	this->_sleep_time = sleep_time;
 	this->_running = true;
 	this->_menuValues = new std::map<std::string, long>;
+	this->_firsPlayerHelperStoneTexture = nullptr;
+	this->_secondPlayerHelperStoneTexture = nullptr;
+	this->_firstPlayerStoneTexture = nullptr;
+	this->_secondPlayerStoneTexture = nullptr;
+	this->_boardBackground = nullptr;
+	this->_boardTextureClass = nullptr;
+	this->_menuWidget = nullptr;
 
     this->_debugMessage("Initialising SDL.");
 
@@ -102,11 +109,14 @@ void View::_debugMessage(const char *message) {
 View::~View() {
 	this->_debugMessage("Free View memory.");
 	TTF_CloseFont(this->_font24);
+	TTF_CloseFont(this->_font46);
 	for (SDLTextureClass *texture : this->_textures)
 		delete texture;
 	delete [] this->_boardCoordinates;
 	delete this->_firsPlayerHelperStoneTexture;
 	delete this->_secondPlayerHelperStoneTexture;
+	delete this->_firstPlayerStoneTexture;
+	delete this->_secondPlayerStoneTexture;
 	delete this->_boardBackground;
 	delete this->_boardTextureClass;
 	delete this->_menuWidget;
@@ -118,31 +128,48 @@ View::~View() {
 	SDL_Quit();
 }
 
+void View::_setStartWidgets(std::vector<Widget *> *widgets, WidgetButton **startButton) {
+    WidgetButtonGroup		*firstPlayerSelection;
+    WidgetButtonGroup		*secondPlayerSelection;
+
+    *startButton = new WidgetButton(CENTER(this->_width, 100), this->_height - 100, 50, 100);
+    (*startButton)->setBackgroundColor(RED_COLOR_SDL);
+    (*startButton)->setBackgroundAlphaColor(150);
+    (*startButton)->setText("RUN!", WHITE_COLOR_SDL);
+
+    firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
+    firstPlayerSelection->setBackgroundColor(GREY_COLOR_SDL);
+    firstPlayerSelection->setBackgroundAlphaColor(50);
+    firstPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
+    firstPlayerSelection->addButton(10, 70, 50, 380, "Human");
+    firstPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
+
+    secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
+    secondPlayerSelection->setBackgroundAlphaColor(50);
+    secondPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
+    secondPlayerSelection->addButton(10, 70, 50, 380, "Human");
+    secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
+
+    widgets->push_back(firstPlayerSelection);
+    widgets->push_back(secondPlayerSelection);
+    widgets->push_back(*startButton);
+}
+
+void View::_freeStartWindowMemory(SDL_Texture *texture, std::vector<Widget *> widgets) {
+    for (auto widget : widgets) {
+        delete widget;
+    }
+    SDL_DestroyTexture(texture);
+}
+
 bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *players) {
 	SDL_Texture				*texture = nullptr;
 	SDL_Event				event;
-	WidgetButton    		*startButton;
-	WidgetButtonGroup		*firstPlayerSelection;
-	WidgetButtonGroup		*secondPlayerSelection;
-	std::vector<Widget*>	widgets;
+    WidgetButton    		*startButton;
+    std::vector<Widget*>	widgets;
 
-	startButton = new WidgetButton(CENTER(this->_width, 100), this->_height - 100, 50, 100);
-	startButton->setBackgroundColor(RED_COLOR_SDL);
-	startButton->setBackgroundAlphaColor(150);
-	startButton->setText("RUN!", WHITE_COLOR_SDL);
-
-	firstPlayerSelection = new WidgetButtonGroup(100, this->_height - 300, 190, 400);
-	firstPlayerSelection->setBackgroundColor(GREY_COLOR_SDL);
-	firstPlayerSelection->setBackgroundAlphaColor(50);
-	firstPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
-	firstPlayerSelection->addButton(10, 70, 50, 380, "Human");
-	firstPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
-
-	secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
-	secondPlayerSelection->setBackgroundAlphaColor(50);
-	secondPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
-	secondPlayerSelection->addButton(10, 70, 50, 380, "Human");
-	secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
+    event = SDL_Event{};
+    this->_setStartWidgets(&widgets, &startButton);
 
 	texture = this->_loadImage(img_file_path);
 	if (texture == nullptr) {
@@ -150,15 +177,16 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
 		return false;
 	}
 	SDL_RenderCopy(this->_renderer, texture, NULL, NULL);
-	widgets = {startButton, firstPlayerSelection, secondPlayerSelection};
 	SDL_RenderPresent(this->_renderer);
 
 	while (this->isRunning()) {
         while (this->pullEvent(&event)) {
             if (startButton->isClicked()) {
-            	players[FIRST_PLAYER_POSITION] = firstPlayerSelection->getSelected() + 1;
-            	players[SECOND_PLAYER_POSITION] = secondPlayerSelection->getSelected() + 1;
-                SDL_DestroyTexture(texture);
+            	players[FIRST_PLAYER_POSITION] =
+            	        reinterpret_cast<WidgetButtonGroup*>(widgets[FIRST_PLAYER_POSITION])->getSelected() + 1;
+            	players[SECOND_PLAYER_POSITION] =
+                        reinterpret_cast<WidgetButtonGroup*>(widgets[SECOND_PLAYER_POSITION])->getSelected() + 1;
+            	this->_freeStartWindowMemory(texture, widgets);
                 return true;
             }
             for (auto *widget : widgets) {
@@ -174,8 +202,8 @@ bool	View::showStartWindowAndWaitForStart(const char *img_file_path, int *player
         }
         SDL_Delay(this->_sleep_time);
 	}
-	SDL_DestroyTexture(texture);
-	return false;
+	this->_freeStartWindowMemory(texture, widgets);
+	return true;
 }
 
 SDL_Texture *View::_loadImage(const char *img_file_path) {
@@ -566,6 +594,7 @@ void View::updateMove(Move &move) {
     	} else {
     		this->putStoneOnBoard(coordinate);
     	}
+    	delete coordinate;
     }
 }
 

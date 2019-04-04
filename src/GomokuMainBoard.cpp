@@ -460,6 +460,7 @@ std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
 }
 
 GomokuMainBoard::~GomokuMainBoard() {
-
+    for (auto availabeSpot : this->availablespots)
+        delete availabeSpot;
 }
 

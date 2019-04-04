@@ -13,6 +13,7 @@
 #include "GomokuMainBoard.hpp"
 #include "ArtificialIntelligence.hpp"
 #include "WidgetMenuField.hpp"
+#include "WidgetButton.hpp"
 
 #define HELPER_ALPHA	150
 
@@ -56,46 +57,41 @@ public:
 	void		updateGameScreen();
 	void		putStoneOnBoard(SDL_Point indexPoint, int playerNumber);
 	void		putStoneOnBoard(Coordinates *coordinates);
-
-    void showWiningLine(const char *message, Move *winingMove);
-
-    void updateAllBoard(GomokuMainBoard *board);
-
-    void addEventHandler(std::function<bool(View *view, SDL_Event *event)>);
-
-    void updateMove(Move &move);
-
-	void updateMenuValues(const Move &move);
+    void		showWiningLine(const char *message, Move *winingMove);
+    void		updateAllBoard(GomokuMainBoard *board);
+    void		addEventHandler(std::function<bool(View *view, SDL_Event *event)>);
+    void		updateMove(Move &move);
+	void		updateMenuValues(const Move &move);
 
 private:
 
-	int								_width;
-	int								_height;
-	const char						*_name;
-	int								_first_player;
-	int								_second_player;
-	int 							_sleep_time;
-	bool							_running;
-	SDL_Window						*_window;
-	SDL_Renderer					*_renderer;
-	SDLTextureClass					*_boardBackground;
-	SDLTextureClass 				*_firsPlayerHelperStoneTexture;
-	SDLTextureClass					*_secondPlayerHelperStoneTexture;
-	SDLTextureClass 				*_firstPlayerStoneTexture;
-	SDLTextureClass 				*_secondPlayerStoneTexture;
-	SDLTextureClass 				*_boardTextureClass;
-	TTF_Font                        *_font24;
-	TTF_Font                        *_font46;
-	std::vector<SDLTextureClass*>	_textures;
+	int													_width;
+	int													_height;
+	const char											*_name;
+	int													_first_player;
+	int													_second_player;
+	int 												_sleep_time;
+	bool												_running;
+	SDL_Window											*_window;
+	SDL_Renderer										*_renderer;
+	SDLTextureClass										*_boardBackground;
+	SDLTextureClass 									*_firsPlayerHelperStoneTexture;
+	SDLTextureClass										*_secondPlayerHelperStoneTexture;
+	SDLTextureClass 									*_firstPlayerStoneTexture;
+	SDLTextureClass 									*_secondPlayerStoneTexture;
+	SDLTextureClass 									*_boardTextureClass;
+	TTF_Font                        					*_font24;
+	TTF_Font                        					*_font46;
+	std::vector<SDLTextureClass*>						_textures;
 	std::list<std::function<bool(View*, SDL_Event*)>>	_eventHandlers;
-	int								*_boardCoordinates;
-	int								_coordinatesLength;
-	int								_distance;
-	int								_pointRadious;
-    bool                            _debug;
-	WidgetMenuField                 *_menuWidget;
-	std::map<std::string, long>		*_menuValues;
-	static View						*_selfInstance;
+	int													*_boardCoordinates;
+	int													_coordinatesLength;
+	int													_distance;
+	int													_pointRadious;
+    bool                            					_debug;
+	WidgetMenuField                 					*_menuWidget;
+	std::map<std::string, long>							*_menuValues;
+	static View											*_selfInstance;
 
 	SDL_Texture*	_loadImage(const char *img_file_path);
 	void			_drawLine(int x1, int y1, int x2, int y2, const SDL_Color color, Uint8 alpha, int w);
@@ -108,20 +104,15 @@ private:
     void            _debugMessage(const char *message);
     void            _afterInitSDL();
     void            _setBoardValues(GomokuMainBoard *board);
-
-    void _renderText(const char *message, TTF_Font *font, int x, int y);
-
-	void _renderStone(Coordinates *coordinates);
-
+    void			_renderText(const char *message, TTF_Font *font, int x, int y);
+	void			_renderStone(Coordinates *coordinates);
     SDLTextureClass *_getPlayerView(int playerOnMap);
-
-	void _addMenuPanel(SDLTextureClass *texture);
-
-    long _createValueOnMenu(std::string message, int y, const char *defaultValue);
-
-	long _getIdFromWidgetValues(const char *string);
-
-	void _updateTextInWidget(const char *widgetName, const char *newValue);
+	void			_addMenuPanel(SDLTextureClass *texture);
+    long			_createValueOnMenu(std::string message, int y, const char *defaultValue);
+	long			_getIdFromWidgetValues(const char *string);
+	void			_updateTextInWidget(const char *widgetName, const char *newValue);
+    void			_setStartWidgets(std::vector<Widget *> *widgets, WidgetButton **startButton);
+	void			_freeStartWindowMemory(SDL_Texture *texture, std::vector<Widget *> widgets);
 };
 
 
