@@ -29,6 +29,7 @@ private:
 
     APlayer *_getCurrentPlayer();
     APlayer *_getOppositePlayer();
+    int     getMoveCounter();
 };
 
 

@@ -48,22 +48,6 @@ bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth)
 }
 
 void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
-    /*if (depth >= GOMOKU_BOARD_SIZE * GOMOKU_BOARD_SIZE - 2)
-    {
-        for (int i = -2; i<= 2; i++)
-        {
-            for (int j = -2; j<= 2; j++)
-            {
-                if (i == 0 && j == 0)
-                    continue;
-                if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE)
-                    and checkForSameSpot(x + i,y + j)
-                    and this->board[x + i][y + j] == 0)
-                    this->availablespots.push_back(new AvailableSpot(x + i, y + j));
-                    //this->availablespots.insert(this->availablespots.begin(),  new AvailableSpot(x + i, y + j));
-            }
-        }
-    }*/
     if (depth > 0)
     {
         for (int i = -1; i<= 1; i++)
@@ -76,7 +60,6 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     and checkForSameSpot(x + i,y + j)
                     and this->board[x + i][y + j] == 0)
                     this->availablespots.push_back(new AvailableSpot(x + i, y + j));
-                    //this->availablespots.insert(this->availablespots.begin(),new AvailableSpot(x + i, y + j));
             }
         }
     }
@@ -420,7 +403,13 @@ int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer *
     if (ready_for_capture && needToRemove == true)
         attack->increaseCapture(2);
     else if (ready_for_capture)
+    {
+        if (attack->getPlayerCapture() >= 10)
+            return INT_MAX;
+        if (attack->getPlayerCapture() >= 8)
+            return INT_MAX - 1000;
         return 25000 * (attack->getPlayerCapture() + 1) + (int) std::pow(7, attack->getPlayerCapture());
+    }
     return 0;
 }
 
