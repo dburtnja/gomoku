@@ -76,10 +76,16 @@ void View::_afterInitSDL() {
 
     this->_font24 = TTF_OpenFont(FONT_FILE, FONT_SIZE_24);
     this->_font46 = TTF_OpenFont(FONT_FILE, FONT_SIZE_46);
+    if (!this->_font24 or !this->_font46) {
+        std::cout << "Creating fonts error" << std::endl;
+        std::cout << TTF_GetError() << std::endl;
+        exit(-1);
+    }
     SDL_Texture	*texture;
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
-	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 	this->_textures.push_back(new SDLTextureClass(texture));
 
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
@@ -242,6 +248,7 @@ bool View::_checkViewEvent(SDL_Event *event) {
 		eventHandler(this, event);
 	if (event->type == SDL_QUIT) {
 		this->_running = false;
+		std::cout << "quit" << std::endl;
 		return false;
 	}
 	return true;

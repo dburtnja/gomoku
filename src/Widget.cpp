@@ -17,6 +17,7 @@ Widget::Widget(int x, int y, int h, int w) {
 }
 
 Widget::~Widget() {
+    for ()
     SDL_FreeSurface(this->_messageSurface);
 }
 
