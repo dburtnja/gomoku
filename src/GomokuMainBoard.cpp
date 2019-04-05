@@ -29,8 +29,9 @@ GomokuMainBoard::GomokuMainBoard(const GomokuMainBoard & toCopy)
     * this = toCopy;
 }
 
-GomokuMainBoard & GomokuMainBoard::operator = (const GomokuMainBoard & rhs)
-        {
+GomokuMainBoard::~GomokuMainBoard() {}
+
+GomokuMainBoard & GomokuMainBoard::operator = (const GomokuMainBoard & rhs){
     this->_boardSize = rhs._boardSize;
     return (* this);
 }
@@ -41,7 +42,6 @@ bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth)
         return false;
     board[x][y] = plyaer;
     (this->_move)++;
-
     this->addNewSpots(x, y, depth);
     return true;
 }
@@ -59,9 +59,10 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     and checkForSameSpot(x + i,y + j)
                     and this->board[x + i][y + j] == EMPTY_CELL_ON_MAP)
                 {
-                    //AvailableSpot * spot = new AvailableSpot(x + i, y + j);
-                    this->availablespots.push_back(new AvailableSpot(x + i, y + j));
-                    //std::cout << spot << " - " << spot->getX() << ":" <<spot->getY() << " index = " << this->availablespots.size() - 1 << "\n";
+                    AvailableSpot newSpot;
+                    newSpot.setX(x + i);
+                    newSpot.setY(y + j);
+                    this->availablespots.push_back(newSpot);
                 }
             }
         }
@@ -69,109 +70,29 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
     deleteUsedSpot(x, y);
 }
 
-void GomokuMainBoard::clearStoneOnBoard(int x, int y) {
-
-
-    this->dellOldSpots(x,y);
-    board[x][y] = 0;
-    this->availablespots.push_back(new AvailableSpot(x,y));
-
-}
-
-void GomokuMainBoard::dellOldSpots(int x, int y) {
-    for (int i = -1; i<= 1; i++)
-    {
-        for (int j = -1; j<= 1; j++)
-        {
-            if (i == 0 && j == 0)
-                continue;
-            if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE))
-                deleteUsedSpot(x + i , y + j);
-        }
-    }
-}
-
 void GomokuMainBoard::deleteUsedSpot(int x, int y) {
     int i = 0;
 
-    //std::cout<<"SIZE = " << this->availablespots.size() << "\n";
     for (auto & element: this->availablespots){
-        if (element->getX() == x and element->getY() == y)
-        {
-            //std::cout <<"delete " << this->availablespots[i] << " - " << this->availablespots[i]->getX() << ":" <<this->availablespots[i]->getY() << " index = " << i << "\n";
-
-            delete element;
+        if (element.getX() == x and element.getY() == y)
             this->availablespots.erase(this->availablespots.begin() + i);
-
-        }
         i++;
     }
-    //std::cout<<"SIZE after delete = " << this->availablespots.size() << "\n";
 }
 
 bool GomokuMainBoard::checkForSameSpot(int x, int y) {
     for (auto & element: this->availablespots)
-        if (element->getX() == x and element->getY() == y)
+        if (element.getX() == x and element.getY() == y)
             return false;
     return true;
 }
-
-void GomokuMainBoard::printBoard() {
-    int x;
-    int y = -1;
-
-    for (x = 0; x < GOMOKU_BOARD_SIZE; x++)
-    {
-        if (y == -1)
-        {
-            std::cout << "  |";
-            for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
-            {
-                std::cout << y;
-                if (y < 10)
-                    std::cout << " ";
-            }
-            std::cout << "\n";
-            for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
-            {
-                std::cout << "---";
-            }
-            std::cout << "\n";
-        }
-        std::cout.width(2);
-        std::cout << x << "|";
-
-        for (y = 0; y < GOMOKU_BOARD_SIZE; y++)
-        {
-            std::cout << board[y][x] << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n";
-
-}
-
-int checker(int (& element)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE])
-{
-
-    for (int i = 0; i < GOMOKU_BOARD_SIZE; ++i) {
-        for (int j = 0; j < GOMOKU_BOARD_SIZE; ++j) {
-            if (element[i][j] != board[i][j])
-                return 1;
-        }
-    }
-    return 0;
-}
-
 
 int GomokuMainBoard::getValue(int x, int y) {
     return (this->board[x][y]);
 }
 
 bool GomokuMainBoard::checkEmpty(int x, int y) {
-    if (x < 0 || x > GOMOKU_BOARD_SIZE)
-        return false;
-    if (y < 0 || y > GOMOKU_BOARD_SIZE)
+    if (x < 0 || x > GOMOKU_BOARD_SIZE || y < 0 || y > GOMOKU_BOARD_SIZE)
         return false;
     return this->board[x][y] == EMPTY_CELL_ON_MAP;
 }
@@ -183,98 +104,97 @@ void GomokuMainBoard::setValue(int x, int y, int c) {
 bool GomokuMainBoard::rowOfFive(int x, int y){
     int temp = 1;
     int i = 1;
-
-    while (y - i >= 0 && board[x][y - i] == board[x][y]){
-        temp++;
-        i++;
-    }
-    i = 1;
+    bool five;
 
     while (y + i <= GOMOKU_BOARD_SIZE-1 && board[x][y+i] == board[x][y]){
         temp++;
         i++;
     }
-
-    return (temp >= POINTS_TO_WIN);
-
-}
-
-bool GomokuMainBoard::columnOfFive(int x, int y){
-    //check for columns
-    int temp = 1;
-    int i = 1;
-    //bool five = false;
-
-    while (x-i >= 0 && board[x-i][y] == board[x][y]){
+    i = 1;
+    while (y - i >= 0 && board[x][y - i] == board[x][y]){
         temp++;
         i++;
     }
-    i = 1;
+    five = temp >= POINTS_TO_WIN;
+    return (five);
+}
+
+bool GomokuMainBoard::columnOfFive(int x, int y){
+    int temp = 1;
+    int i = 1;
+    bool five;
 
     while (x + i <= GOMOKU_BOARD_SIZE-1 && board[x+i][y] == board[x][y]){
         temp++;
         i++;
     }
-    return (temp >= POINTS_TO_WIN);
-}
-
-bool GomokuMainBoard::mainDiagnolOfFive(int x, int y){
-    //check for main diagnol
-    int temp = 1;
-    int i = 1;
-    //bool five = false;
-
-    while (x-i >= 0 && y - i >= 0 && board[x-i][y-i] == board[x][y]){
+    i = 1;
+    while (x-i >= 0 && board[x-i][y] == board[x][y]){
         temp++;
         i++;
     }
-    i = 1;
+    five = temp >= POINTS_TO_WIN;
+    return (five);
+}
+
+bool GomokuMainBoard::mainDiagnolOfFive(int x, int y){
+    int temp = 1;
+    int i = 1;
+    bool five;
 
     while (x + i < GOMOKU_BOARD_SIZE && y + i < GOMOKU_BOARD_SIZE && board[x+i][y+i] == board[x][y]){
         temp++;
         i++;
     }
-    return (temp >= POINTS_TO_WIN);
-}
-
-bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y){
-    //check for reverse diagnol
-    int temp = 1;
-    int i = 1;
-    //bool five = false;
-
-    while (x-i >= 0 && y + i < GOMOKU_BOARD_SIZE && board[x-i][y+i] == board[x][y]){
+    i = 1;
+    while (x-i >= 0 && y - i >= 0 && board[x-i][y-i] == board[x][y]){
         temp++;
         i++;
     }
-    i = 1;
-//    if (temp >=5)
-//        five = true;
-//    temp = 1;
+    five = temp >= POINTS_TO_WIN;
+    return (five);
+}
+
+bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y){
+    int temp = 1;
+    int i = 1;
+    bool five;
+
     while (x + i < GOMOKU_BOARD_SIZE && y - i >= 0 && board[x+i][y-i] == board[x][y]){
         temp++;
         i++;
     }
-    return (temp >= POINTS_TO_WIN);
+    i = 1;
+    while (x-i >= 0 && y + i < GOMOKU_BOARD_SIZE && board[x-i][y+i] == board[x][y]){
+        temp++;
+        i++;
+    }
+    five = temp >= POINTS_TO_WIN;
+    return (five);
 }
 
 bool GomokuMainBoard::win(int x, int y){
     return rowOfFive(x,y) || columnOfFive(x,y) || mainDiagnolOfFive(x,y) || reverseDiagnolOfFive(x,y);
 }
 
+void GomokuMainBoard::setValueAndAddNewSpot(int x, int y, int symbol) {
+    AvailableSpot newSpot;
+
+    this->board[x][y] = symbol;
+    newSpot.setX(x);
+    newSpot.setY(y);
+    this->availablespots.push_back(newSpot);
+}
 
 bool GomokuMainBoard::rowOfTwo(int x, int y, int attack, int feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
 {
     if (getValue(x,y) == attack and getValue(x,y - 1) == feed and getValue(x,y - 2) == feed and getValue(x,y - 3) == attack) {
         if (needToRemove)
         {
-            setValue(x, y - 1, 0);
-            setValue(x, y - 2, 0);
-            availablespots.push_back(new AvailableSpot(x, y - 1));
+            setValueAndAddNewSpot(x, y - 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x, y - 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x, y - 1, EMPTY_CELL_ON_MAP));
-            availablespots.push_back(new AvailableSpot(x, y - 2));
             coordinatesList.push_back(new Coordinates(x, y - 2, EMPTY_CELL_ON_MAP));
-
         }
 
         return true;
@@ -283,19 +203,15 @@ bool GomokuMainBoard::rowOfTwo(int x, int y, int attack, int feed, bool needToRe
     {
         if (needToRemove)
         {
-            setValue(x, y + 1, 0);
-            setValue(x, y + 2, 0);
-            availablespots.push_back(new AvailableSpot(x, y + 1));
+            setValueAndAddNewSpot(x, y + 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x, y + 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x, y + 1, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x, y + 2));
             coordinatesList.push_back(new Coordinates(x, y + 2, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
-
-    return false;}
+    return false;
+}
 
 bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
 {
@@ -303,13 +219,10 @@ bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needT
     {
         if (needToRemove)
         {
-            setValue(x - 1, y, 0);
-            setValue(x - 2, y, 0);
-            availablespots.push_back(new AvailableSpot(x - 1, y));
+            setValueAndAddNewSpot(x - 1, y, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x - 2, y, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x - 1, y, EMPTY_CELL_ON_MAP));
-            availablespots.push_back(new AvailableSpot(x - 2, y));
             coordinatesList.push_back(new Coordinates(x - 2, y, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
@@ -317,14 +230,10 @@ bool GomokuMainBoard::columnOfTwo(int x, int y, int attack, int feed, bool needT
     {
         if (needToRemove)
         {
-            setValue(x + 1, y, 0);
-            setValue(x + 2, y, 0);
-            availablespots.push_back(new AvailableSpot(x + 1, y));
+            setValueAndAddNewSpot(x + 1, y, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x + 2, y, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x + 1, y, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x + 2, y));
             coordinatesList.push_back(new Coordinates(x + 2, y, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
@@ -338,14 +247,10 @@ bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y, int attack, int feed, bool 
     {
         if (needToRemove)
         {
-            setValue(x - 1, y - 1, 0);
-            setValue(x - 2, y - 2, 0);
-            availablespots.push_back(new AvailableSpot(x - 1, y - 1));
+            setValueAndAddNewSpot(x - 1, y - 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x - 2, y - 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x - 1, y - 1, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x - 2, y - 2));
             coordinatesList.push_back(new Coordinates(x - 2, y - 2, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
@@ -353,18 +258,15 @@ bool GomokuMainBoard::mainDiagnolOfTwo(int x, int y, int attack, int feed, bool 
     {
         if (needToRemove)
         {
-            setValue(x + 1, y + 1, 0);
-            setValue(x + 2, y + 2, 0);
-            availablespots.push_back(new AvailableSpot(x + 1, y + 1));
+            setValueAndAddNewSpot(x + 1, y + 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x + 2, y + 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x + 1, y + 1, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x + 2, y + 2));
             coordinatesList.push_back(new Coordinates(x + 2, y + 2, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
-    return false;}
+    return false;
+}
 
 bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bool needToRemove, std::vector<Coordinates*> & coordinatesList)
 {
@@ -372,14 +274,10 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
     {
         if (needToRemove)
         {
-            setValue(x + 1, y - 1, 0);
-            setValue(x + 2, y - 2, 0);
-            availablespots.push_back(new AvailableSpot(x + 1, y - 1));
+            setValueAndAddNewSpot(x + 1, y - 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x + 2, y - 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x + 1, y - 1, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x + 2, y - 2));
             coordinatesList.push_back(new Coordinates(x + 2, y - 2, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
@@ -387,18 +285,13 @@ bool GomokuMainBoard::reverseDiagnolOfTwo(int x, int y, int attack, int feed, bo
     {
         if (needToRemove)
         {
-            setValue(x - 1, y + 1, 0);
-            setValue(x - 2, y + 2, 0);
-            availablespots.push_back(new AvailableSpot(x - 1, y + 1));
+            setValueAndAddNewSpot(x - 1, y + 1, EMPTY_CELL_ON_MAP);
+            setValueAndAddNewSpot(x - 2, y + 2, EMPTY_CELL_ON_MAP);
             coordinatesList.push_back(new Coordinates(x - 1, y + 1, EMPTY_CELL_ON_MAP));
-
-            availablespots.push_back(new AvailableSpot(x - 2, y + 2));
             coordinatesList.push_back(new Coordinates(x - 2, y + 2, EMPTY_CELL_ON_MAP));
-
         }
         return true;
     }
-
     return false;
 }
 
@@ -417,23 +310,19 @@ int GomokuMainBoard::check_for_capture(int x, int y, APlayer * attack, APlayer *
             return INT_MAX;
         if (attack->getPlayerCapture() >= 8)
             return INT_MAX - 1000;
-        return 25000 * (attack->getPlayerCapture() + 1) + (int) std::pow(7, attack->getPlayerCapture());
+        return 2500000 * (attack->getPlayerCapture() + 1) + (int) std::pow(25, attack->getPlayerCapture());
     }
     return 0;
 }
 
 bool GomokuMainBoard::draw(){
-    return false;
-}
-
-std::string GomokuMainBoard::toString() {
-    std::string s = "";
     for (int i = 0; i < GOMOKU_BOARD_SIZE; i++){
         for (int j = 0 ; j < GOMOKU_BOARD_SIZE; j++){
-            s+= getValue(i, j) + '0';
+            if (board[i][j] == EMPTY_CELL_ON_MAP)
+                return false;
         }
     }
-    return s;
+    return true;
 }
 
 int GomokuMainBoard::getBoardSize() {
@@ -468,9 +357,5 @@ std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
     return coordinates;
 }
 
-GomokuMainBoard::~GomokuMainBoard() {
-    for (auto availabeSpot : this->availablespots)
-        delete availabeSpot;
-    //this->availablespots.clear();
-}
+
 

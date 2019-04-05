@@ -18,6 +18,8 @@ class AvailableSpot {
 
         int  getX( void );
         int  getY( void );
+        void setX(int x);
+        void setY(int y);
 
         int p1_score = 0;
         int p2_score = 0;

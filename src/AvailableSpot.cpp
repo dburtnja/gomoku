@@ -31,3 +31,9 @@ int  AvailableSpot::getX() {
 int  AvailableSpot::getY() {
     return this->_y;
 }
+void AvailableSpot::setX(int x) {
+    this->_x = x;
+}
+void AvailableSpot::setY(int y) {
+    this->_y = y;
+}

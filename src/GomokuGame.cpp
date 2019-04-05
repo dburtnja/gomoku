@@ -111,7 +111,10 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
             || this->_getCurrentPlayer()->getPlayerCapture() >= 10) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();
-        } // todo add cpture ask about find win if it works if get first coordinate from coords
+        }
+        if (this->_board->draw())
+            std::cout << "DRAW!\n";
+        move.moveCounter = _moveCounter; //TODO show on view
         this->_view->updateMove(move);
         this->_view->updateAllBoard(this->_board);
         this->_view->updateGameScreen();

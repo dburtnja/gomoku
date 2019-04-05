@@ -32,6 +32,7 @@ struct Move{
     double moveTime;
     int capturePlayer_1;
     int capturePlayer_2;
+    int moveCounter;
 };
 
 
