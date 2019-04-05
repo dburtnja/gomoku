@@ -10,7 +10,8 @@ AvailableSpot::AvailableSpot() : _x(0), _y(0) {}
 
 AvailableSpot::AvailableSpot(int x, int y) : _x(x),_y(y) {}
 
-AvailableSpot::~AvailableSpot() {}
+AvailableSpot::~AvailableSpot() {
+}
 
 AvailableSpot::AvailableSpot(const AvailableSpot &toCopy) {
     * this = toCopy;

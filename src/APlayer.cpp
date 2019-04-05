@@ -10,6 +10,8 @@
 APlayer::APlayer(int playerNumber, int playerSymbol) {
     _playerNumber = playerNumber;
     _playerSymbol = playerSymbol;
+    _capture = 0;
+    _moveTime = 0;
 }
 
 APlayer::~APlayer() = default;

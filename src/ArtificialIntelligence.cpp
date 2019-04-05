@@ -136,6 +136,12 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
     return move;
 }
 
+void ArtificialIntelligence::deleteAvaibleSpotsVector(std::vector<AvailableSpot *> availablespots) {
+
+    //for (auto & element: availablespots)
+
+}
+
 int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, APlayer * player_1, APlayer * player_2)
 {
     std::vector<AvailableSpot *> tmp_vector_old;

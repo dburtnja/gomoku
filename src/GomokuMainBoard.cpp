@@ -92,7 +92,11 @@ void GomokuMainBoard::deleteUsedSpot(int x, int y) {
     int i = 0;
     for (auto & element: this->availablespots){
         if (element->getX() == x and element->getY() == y)
+        {
+            //delete (this->availablespots[i]);
             this->availablespots.erase(this->availablespots.begin() + i);
+
+        }
         i++;
     }
 
@@ -170,10 +174,8 @@ void GomokuMainBoard::setValue(int x, int y, int c) {
 }
 
 bool GomokuMainBoard::rowOfFive(int x, int y){
-    //check for rows
     int temp = 1;
     int i = 1;
-    //bool five = false;
 
     while (y - i >= 0 && board[x][y - i] == board[x][y]){
         temp++;
@@ -462,5 +464,6 @@ std::list<Coordinates> * GomokuMainBoard::getPlacedCoordinates() {
 GomokuMainBoard::~GomokuMainBoard() {
     for (auto availabeSpot : this->availablespots)
         delete availabeSpot;
+    //this->availablespots.clear();
 }
 

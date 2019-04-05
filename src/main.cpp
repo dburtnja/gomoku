@@ -1,7 +1,8 @@
 
 #include "../headers/GomokuGame.hpp"
 
-int main() {
+int main()
+{
     GomokuGame  *gomokuGame;
 
     try {
@@ -13,4 +14,5 @@ int main() {
 
     gomokuGame->start();
     delete gomokuGame;
+    return 0;
 }

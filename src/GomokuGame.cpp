@@ -17,8 +17,8 @@ GomokuGame::~GomokuGame() {
     std::cout << "Free data in GomokuGame." << std::endl;
     for (auto *player : this->_players)
         delete player;
-    delete this->_board;
     delete this->_view;
+    delete this->_board;
 }
 
 void GomokuGame::start() {
@@ -30,7 +30,6 @@ void GomokuGame::start() {
         std::cout << "Please select players!" << std::endl;
         return;
     }
-
     winner = this->_startGomokuGame(winningMove);
     if (winner >= 0) {
         std::cout << winner << " WIN!" << std::endl;

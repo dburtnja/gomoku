@@ -156,9 +156,9 @@ void View::_setStartWidgets(std::vector<Widget *> *widgets, WidgetButton **start
 }
 
 void View::_freeStartWindowMemory(SDL_Texture *texture, std::vector<Widget *> widgets) {
-    for (auto widget : widgets) {
-        delete widget;
-    }
+    delete reinterpret_cast<WidgetButtonGroup *>(widgets[0]);
+    delete reinterpret_cast<WidgetButtonGroup *>(widgets[1]);
+    delete reinterpret_cast<WidgetButton *>(widgets[2]);
     SDL_DestroyTexture(texture);
 }
 
@@ -510,7 +510,10 @@ void View::showWiningLine(const char *message, Move *winingMove) {
 	this->_textures[WIN_MESSAGE_TEXTURE]->setAsRenderTarget(this->_renderer);
 	this->_renderText(message, this->_font46, 40, 40);
 	for (auto coordinate : winingMove->coordinatesList)
-		this->_renderStone(coordinate);
+	{
+        this->_renderStone(coordinate);
+        delete coordinate;
+    }
 	SDL_SetRenderTarget(this->_renderer, NULL);
 	this->updateGameScreen();
 	while (waitEvent(&event));
