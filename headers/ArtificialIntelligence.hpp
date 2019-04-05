@@ -43,7 +43,7 @@ class ArtificialIntelligence {
         int minSearch(GomokuMainBoard * mainBoard, int depth);
 
         int checkPatterns(int (& Board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE], int x, int y);
-        void deleteAvaibleSpotsVector(std::vector<AvailableSpot*> availablespots);
+        void deleteAvaibleSpotsVector(std::vector<AvailableSpot*> old, std::vector<AvailableSpot*> availablespots);
 };
 
 

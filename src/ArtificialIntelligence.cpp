@@ -126,7 +126,7 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
     move.x = x;
     move.y = y;
 
-
+    mainBoard.availablespots.erase(mainBoard.availablespots.begin(), mainBoard.availablespots.begin());
     mainBoard.availablespots = tmp_vector;
     //printf("x=%d, y=%d -> score = %d\n", x,y,value);
     //printf("time = %d\n", seconds);
@@ -136,30 +136,37 @@ Move ArtificialIntelligence::minmaxSearch(GomokuMainBoard & mainBoard, APlayer *
     return move;
 }
 
-void ArtificialIntelligence::deleteAvaibleSpotsVector(std::vector<AvailableSpot *> availablespots) {
+void ArtificialIntelligence::deleteAvaibleSpotsVector(std::vector<AvailableSpot *> old, std::vector<AvailableSpot *> availablespots ) {
 
     //for (auto & element: availablespots)
 
 }
 
-int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta, int x, int y, APlayer * player_1, APlayer * player_2)
-{
-    std::vector<AvailableSpot *> tmp_vector_old;
+int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int depth, bool isMax, int alpha, int beta,
+        int x, int y, APlayer * player_1, APlayer * player_2)
+
+        {
+    //std::vector<AvailableSpot *> tmp_vector_old(mainBoard.availablespots);
     int c = isMax ? player_1->getPlayerSymbol()  : player_2->getPlayerSymbol();
     int value = 0;
     Move move{};
 
 
-    tmp_vector_old = mainBoard.availablespots;
+    //tmp_vector_old = mainBoard.availablespots;
     mainBoard.putStoneOnBoard(x, y, c, depth);
 
 
     if (mainBoard.win(x,y))
     {
-        mainBoard.availablespots = tmp_vector_old;
-        tmp_vector_old.clear();
+        mainBoard.setValue(x, y, EMPTY_CELL_ON_MAP);
+        //mainBoard.clearStoneOnBoard(x,y);
+        mainBoard.availablespots.erase(mainBoard.availablespots.begin(), mainBoard.availablespots.begin());
 
-        mainBoard.setValue(x,y, EMPTY_CELL_ON_MAP);
+        //mainBoard.availablespots = tmp_vector_old;
+
+        //tmp_vector_old.clear();
+        //deleteAvaibleSpotsVector(tmp_vector_old, mainBoard.availablespots);
+
 
         if (isMax)
         {
@@ -188,11 +195,13 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 
         if (value > 0)
             value+=capture_value;
+        //mainBoard.clearStoneOnBoard(x,y);
+        mainBoard.setValue(x, y, EMPTY_CELL);
 
-        mainBoard.setValue(x,y, EMPTY_CELL);
+        mainBoard.availablespots.erase(mainBoard.availablespots.begin(), mainBoard.availablespots.begin());
 
-        tmp_vector_old.clear();
-        mainBoard.availablespots = tmp_vector_old;
+        //mainBoard.availablespots = tmp_vector_old;
+        //tmp_vector_old.clear();
         return value;
     }
 
@@ -200,15 +209,15 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
 
     if (isMax)
     {
-        std::vector<AvailableSpot *> tmp_vector;
+        std::vector<AvailableSpot *> tmp_vector(mainBoard.availablespots);
 
-        tmp_vector = mainBoard.availablespots;
+        //tmp_vector = mainBoard.availablespots;
         int m = INT_MAX;
 
-        if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
+        /*if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
             std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer1);
         else
-            std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);
+            std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);*/
 
 
         for (auto & element: tmp_vector)
@@ -232,24 +241,28 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                 break ;
             }
         }
-        mainBoard.availablespots = tmp_vector_old;
-        tmp_vector_old.clear();
-        tmp_vector.clear();
+        mainBoard.availablespots.erase(mainBoard.availablespots.begin(), mainBoard.availablespots.begin());
+
+        mainBoard.availablespots = tmp_vector;
+        //tmp_vector_old.clear();
+        //tmp_vector.clear();
 
         mainBoard.setValue(x,y, EMPTY_CELL_ON_MAP);
+        //mainBoard.clearStoneOnBoard(x,y);
+
         return m;
     }
     else
     {
-        std::vector<AvailableSpot *> tmp_vector;
+        std::vector<AvailableSpot *> tmp_vector(mainBoard.availablespots);
 
-        tmp_vector = mainBoard.availablespots;
+        //tmp_vector = mainBoard.availablespots;
         int M = INT_MIN;
 
-        if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
+        /*if (player_1->getPlayerSymbol() == FIRST_PLAYER_ON_MAP)
             std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer1);
         else
-            std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);
+            std::sort(mainBoard.availablespots.begin(), mainBoard.availablespots.end(), mySortPlayer2);*/
         for (auto & element: tmp_vector)
         {
             int x_cor = element->getX();
@@ -271,11 +284,14 @@ int ArtificialIntelligence::minimaxAlphaBeta(GomokuMainBoard & mainBoard, int de
                 break ;
             }
         }
-        mainBoard.availablespots = tmp_vector_old;
-        tmp_vector_old.clear();
-        tmp_vector.clear();
+        mainBoard.availablespots.erase(mainBoard.availablespots.begin(), mainBoard.availablespots.begin());
+
+        mainBoard.availablespots = tmp_vector;
+        //tmp_vector_old.clear();
+        //tmp_vector.clear();
 
         mainBoard.setValue(x,y, EMPTY_CELL_ON_MAP);
+        //mainBoard.clearStoneOnBoard(x,y);
 
         return M;
     }

@@ -37,7 +37,6 @@ GomokuMainBoard & GomokuMainBoard::operator = (const GomokuMainBoard & rhs)
 
 bool GomokuMainBoard::putStoneOnBoard(int x, int y, int plyaer, int depth)
 {
-
 	if (board[x][y] != EMPTY_CELL_ON_MAP)
         return false;
     board[x][y] = plyaer;
@@ -58,11 +57,16 @@ void GomokuMainBoard::addNewSpots(int x, int y, int depth) {
                     continue;
                 if ((x + i >= 0 and x + i < GOMOKU_BOARD_SIZE) and (y + j >= 0 and y + j < GOMOKU_BOARD_SIZE)
                     and checkForSameSpot(x + i,y + j)
-                    and this->board[x + i][y + j] == 0)
+                    and this->board[x + i][y + j] == EMPTY_CELL_ON_MAP)
+                {
+                    //AvailableSpot * spot = new AvailableSpot(x + i, y + j);
                     this->availablespots.push_back(new AvailableSpot(x + i, y + j));
+                    //std::cout << spot << " - " << spot->getX() << ":" <<spot->getY() << " index = " << this->availablespots.size() - 1 << "\n";
+                }
             }
         }
     }
+
     deleteUsedSpot(x, y);
 }
 
@@ -90,15 +94,20 @@ void GomokuMainBoard::dellOldSpots(int x, int y) {
 
 void GomokuMainBoard::deleteUsedSpot(int x, int y) {
     int i = 0;
+    std::cout<<"SIZE = " << this->availablespots.size() << "\n";
     for (auto & element: this->availablespots){
         if (element->getX() == x and element->getY() == y)
         {
-            //delete (this->availablespots[i]);
+            std::cout <<"delete " << this->availablespots[i] << " - " << this->availablespots[i]->getX() << ":" <<this->availablespots[i]->getY() << " index = " << i << "\n";
+            element = NULL;
             this->availablespots.erase(this->availablespots.begin() + i);
+            //delete this->availablespots[i];
+            break ;
 
         }
         i++;
     }
+    std::cout<<"SIZE after delete = " << this->availablespots.size() << "\n";
 
 }
 
