@@ -385,9 +385,9 @@ void View::updateGameScreen() {
 	this->_secondPlayerHelperStoneTexture->renderTexture(this->_renderer);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
 	this->_menuWidget->render(this->_renderer);
-	for (SDLTextureClass *element : this->_textures) {
-		element->renderTexture(this->_renderer);
-	}
+//	for (SDLTextureClass *element : this->_textures) {
+//		element->renderTexture(this->_renderer);
+//	}
 	SDL_RenderPresent(this->_renderer);
 }
 

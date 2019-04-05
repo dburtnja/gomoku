@@ -57,6 +57,7 @@ class GomokuMainBoard {
         //int checkVictoryBoard(int (& board)[GOMOKU_BOARD_SIZE][GOMOKU_BOARD_SIZE]);
 
         std::vector<AvailableSpot*> availablespots;
+        std::vector<AvailableSpot> availablespots2;
         //std::vector<BoardState *> boardHash;
 
     int getBoardSize();

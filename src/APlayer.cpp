@@ -49,7 +49,6 @@ Move APlayer::makeMove(GomokuMainBoard &board, APlayer *otherPlayer) {
     move.moveTime = double(clock() - start) / CLOCKS_PER_SEC;
     if (move.coordinatesList.size() > 0)
     {
-
         board.putStoneOnBoard(
                 move.coordinatesList[0]->getX(),
                 move.coordinatesList[0]->getY(),
@@ -60,5 +59,6 @@ Move APlayer::makeMove(GomokuMainBoard &board, APlayer *otherPlayer) {
                 this, otherPlayer, true, move.coordinatesList);
 
     }
+
     return move;
 }
