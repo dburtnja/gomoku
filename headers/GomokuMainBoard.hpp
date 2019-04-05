@@ -59,8 +59,7 @@ class GomokuMainBoard {
         std::vector<AvailableSpot*> availablespots;
         //std::vector<BoardState *> boardHash;
 
-
-        int getBoardSize();
+    int getBoardSize();
 
         int getPlayer();
 

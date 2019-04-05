@@ -100,7 +100,7 @@ void GomokuMainBoard::deleteUsedSpot(int x, int y) {
         {
             std::cout <<"delete " << this->availablespots[i] << " - " << this->availablespots[i]->getX() << ":" <<this->availablespots[i]->getY() << " index = " << i << "\n";
             element = NULL;
-            this->availablespots.erase(this->availablespots.begin() + i);
+             this->availablespots.erase(this->availablespots.begin() + i);
             //delete this->availablespots[i];
             break ;
 
