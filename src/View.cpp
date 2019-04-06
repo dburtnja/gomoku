@@ -79,7 +79,11 @@ void View::_setBoardCoordinates() {
 }
 
 void View::_afterInitSDL() {
-	this->_debugMessage("Creating textures");
+    SDLTextureClass *textureClass;
+    SDL_Texture     *texture;
+
+
+    this->_debugMessage("Creating textures");
 
     this->_font24 = TTF_OpenFont(FONT_FILE, FONT_SIZE_24);
     this->_font46 = TTF_OpenFont(FONT_FILE, FONT_SIZE_46);
@@ -88,17 +92,21 @@ void View::_afterInitSDL() {
         std::cout << TTF_GetError() << std::endl;
         exit(-1);
     }
-    SDL_Texture	*texture;
+
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	this->_textures.push_back(new SDLTextureClass(texture));
+    textureClass = new SDLTextureClass(texture);
+    textureClass->clearTexture(this->_renderer);
+	this->_textures.push_back(textureClass);
 
 	texture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
 								this->_width, this->_height);
-	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	this->_textures.push_back(new SDLTextureClass(texture));
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    textureClass = new SDLTextureClass(texture);
+    textureClass->clearTexture(this->_renderer);
+    this->_textures.push_back(textureClass);
 }
 
 void View::_debugMessage(const char *message) {
@@ -385,9 +393,9 @@ void View::updateGameScreen() {
 	this->_secondPlayerHelperStoneTexture->renderTexture(this->_renderer);
 	this->_secondPlayerHelperStoneTexture->showOnRender(false);
 	this->_menuWidget->render(this->_renderer);
-//	for (SDLTextureClass *element : this->_textures) {
-//		element->renderTexture(this->_renderer);
-//	}
+	for (SDLTextureClass *element : this->_textures) {
+		element->renderTexture(this->_renderer);
+	}
 	SDL_RenderPresent(this->_renderer);
 }
 
@@ -402,7 +410,7 @@ void View::_setBoardBackground(const char *img_file_path) {
 			this->_width, this->_height);
 	SDL_SetTextureBlendMode(boardTexture, SDL_BLENDMODE_BLEND);
 	this->_boardTextureClass = new SDLTextureClass(boardTexture);
-
+    this->_boardTextureClass->clearTexture(this->_renderer);
 	boardBackgroundTexture = SDL_CreateTexture(this->_renderer, SDL_PIXELFORMAT_RGBA8888,
 								SDL_TEXTUREACCESS_TARGET, this->_width, this->_height);
 
@@ -576,25 +584,11 @@ View *View::getInstance() {
 	return View::_selfInstance;
 }
 
-SDLTextureClass *View::_getPlayerView(int playerOnMap) {
-
-	return nullptr;
-}
-
 void View::updateMove(Move &move) {
 	SDL_Rect	rect;
 
     for (auto coordinate : move.coordinatesList) {
     	if (coordinate->getPlayer() == EMPTY_CELL_ON_MAP) {
-//    		this->_boardTextureClass->setAsRenderTarget(this->_renderer);
-//    		SDL_SetRenderDrawBlendMode(this->_renderer, SDL_BLENDMODE_MOD);
-//    		SDL_SetRenderDrawColor(this->_renderer, 0, 0, 0, 0);
-//    		rect.x = coordinate->getX();
-//    		rect.y = coordinate->getY();
-//    		rect.w = 40;
-//    		rect.h = 40;
-//    		SDL_RenderDrawRect(this->_renderer, &rect);
-//    		std::cout << "DRAV RECT " << std::endl;
     	} else {
     		this->putStoneOnBoard(coordinate);
     	}

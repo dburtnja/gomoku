@@ -68,6 +68,8 @@ void SDLTextureClass::_changeColor(SDL_Surface *surface, const SDL_Color srcColo
 }
 
 void SDLTextureClass::_setProperties(SDL_Texture *texture) {
+	this->_srcrect = SDL_Rect{};
+	this->_dstrect = SDL_Rect{};
 	this->_texture = texture;
 	this->_srcExist = false;
 	this->_dstExist = false;

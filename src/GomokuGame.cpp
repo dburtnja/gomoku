@@ -95,10 +95,6 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
         return false;
     });
 
-    this->_view->addEventHandler([](View *view, SDL_Event *event){
-        return false;
-    });
-
     while (this->_view->isRunning()) {
         while (this->_view->pullEvent(&event));
         move = this->_getCurrentPlayer()->makeMove(*(this->_board), this->_getOppositePlayer());
