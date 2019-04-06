@@ -20,6 +20,7 @@ AvailableSpot::AvailableSpot(const AvailableSpot &toCopy) {
 AvailableSpot& AvailableSpot::operator=(const AvailableSpot &rhs) {
     this->_x = rhs._x;
     this->_y = rhs._y;
+    this->p1_score = rhs.p1_score;
 
     return (* this);
 }

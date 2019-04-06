@@ -13,7 +13,7 @@
 class Widget {
 public:
     Widget(int x, int y, int h, int w);
-    ~Widget();
+    virtual ~Widget();
 
     bool checkEvent(SDL_Event *event);
 

@@ -32,6 +32,8 @@ Move HumanVsCompute::_makeMove(GomokuMainBoard &board, APlayer *otherPlayer) {
                     board.getValue(index.x, index.y) == EMPTY_CELL_ON_MAP)
             {
                 move.coordinatesList.push_back(new Coordinates(index.x, index.y, this->getPlayerSymbol()));
+                move.coordinatesList[0]->setX(index.x);
+                move.coordinatesList[0]->setY(index.y);
                 return move;
             }
         }

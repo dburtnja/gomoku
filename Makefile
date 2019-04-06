@@ -2,8 +2,8 @@
 NAME = gomoku
 
 COM			=	g++ -std=c++11
-FLAGS		=	""
-OPTIMA		=	""
+FLAGS		=	-Wall -Wextra -Werror
+OPTIMA		=	-O3
 
 SRC_DIR		=	./src/
 INC_DIR		=	./headers/

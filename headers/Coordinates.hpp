@@ -16,6 +16,8 @@ public:
 
     int getX();
     int getY();
+    void setX(int x);
+    void setY(int x);
     int getPlayer();
 
 private:

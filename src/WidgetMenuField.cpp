@@ -32,7 +32,7 @@ void WidgetMenuField::render(SDL_Renderer *render) {
 }
 
 Widget *WidgetMenuField::getWidgetById(long id) {
-    if (this->_widgets.size() > id and id >= 0)
+    if ((long) this->_widgets.size() > id and id >= 0)
         return this->_widgets[id];
     return nullptr;
 }

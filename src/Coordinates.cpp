@@ -18,6 +18,14 @@ int Coordinates::getY() {
     return this->_y;
 }
 
+void Coordinates::setX(int x) {
+    this->_x = x;
+}
+
+void Coordinates::setY(int y) {
+    this->_y = y;
+}
+
 int Coordinates::getPlayer() {
     return this->_player;
 }

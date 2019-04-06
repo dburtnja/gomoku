@@ -418,7 +418,7 @@ void View::_setBoardBackground(const char *img_file_path) {
 	this->_boardBackground->setAsRenderTarget(this->_renderer);
 	imageTexture.renderTexture(this->_renderer);
 	this->_renderBackgroundBoard();
-	this->_addMenuPanel(this->_textures[MENU_TEXTURE]);
+	this->_addMenuPanel();
 	SDL_SetRenderTarget(this->_renderer, NULL);
 }
 
@@ -449,7 +449,7 @@ long View::_createValueOnMenu(std::string message, int y, const char *defaultVal
 	return widgetId;
 }
 
-void View::_addMenuPanel(SDLTextureClass *texture) {
+void View::_addMenuPanel() {
     int                                     x;
     int                                     h;
     int				                        w;
@@ -585,8 +585,6 @@ View *View::getInstance() {
 }
 
 void View::updateMove(Move &move) {
-	SDL_Rect	rect;
-
     for (auto coordinate : move.coordinatesList) {
     	if (coordinate->getPlayer() == EMPTY_CELL_ON_MAP) {
     	} else {

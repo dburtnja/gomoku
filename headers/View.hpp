@@ -108,7 +108,7 @@ private:
     void			_renderText(const char *message, TTF_Font *font, int x, int y);
 	void			_renderStone(Coordinates *coordinates);
     SDLTextureClass *_getPlayerView(int playerOnMap);
-	void			_addMenuPanel(SDLTextureClass *texture);
+	void			_addMenuPanel();
     long			_createValueOnMenu(std::string message, int y, const char *defaultValue);
 	long			_getIdFromWidgetValues(const char *string);
 	void			_updateTextInWidget(const char *widgetName, const char *newValue);
