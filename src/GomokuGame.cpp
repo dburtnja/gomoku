@@ -104,7 +104,7 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
         if (!this->_view->isRunning())
             return -1;
         this->_view->updateMenuValues(move);
-        if (this->_board->win(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY())
+        if (this->_board->win(move.coordinatesList[0]->getX(), move.coordinatesList[0]->getY(), &move)
             || this->_getCurrentPlayer()->getPlayerCapture() >= 10) {
             winningMove = move;
             return this->_getCurrentPlayer()->getPlayerNumber();

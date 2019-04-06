@@ -26,7 +26,7 @@ class GomokuMainBoard {
         bool checkEmpty(int x, int y);
         void setValue(int x,int y, int c);
         bool win(int, int);
-        bool win(int, int, Move&);
+        bool win(int, int, Move*);
         bool draw();
         int check_for_capture( int x_cor, int y_cor, APlayer * attack, APlayer * feed, bool, std::vector<Coordinates*> &);
         bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);

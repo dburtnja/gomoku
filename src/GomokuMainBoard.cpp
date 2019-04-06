@@ -108,14 +108,14 @@ bool GomokuMainBoard::rowOfFive(int x, int y, Move *move){
 
     while (y + i <= GOMOKU_BOARD_SIZE-1 && board[x][y+i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x, y + i, board[x][y]));
         temp++;
         i++;
     }
     i = 1;
     while (y - i >= 0 && board[x][y - i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x, y - i, board[x][y]));
         temp++;
         i++;
     }
@@ -132,14 +132,14 @@ bool GomokuMainBoard::columnOfFive(int x, int y, Move *move){
 
     while (x + i <= GOMOKU_BOARD_SIZE-1 && board[x+i][y] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x+i, y, board[x][y]));
         temp++;
         i++;
     }
     i = 1;
     while (x-i >= 0 && board[x-i][y] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x-i, y, board[x][y]));
         temp++;
         i++;
     }
@@ -156,14 +156,14 @@ bool GomokuMainBoard::mainDiagnolOfFive(int x, int y, Move *move){
 
     while (x + i < GOMOKU_BOARD_SIZE && y + i < GOMOKU_BOARD_SIZE && board[x+i][y+i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x+i, y+i, board[x][y]));
         temp++;
         i++;
     }
     i = 1;
     while (x-i >= 0 && y - i >= 0 && board[x-i][y-i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x-i, y-i, board[x][y]));
         temp++;
         i++;
     }
@@ -180,14 +180,14 @@ bool GomokuMainBoard::reverseDiagnolOfFive(int x, int y, Move *move){
 
     while (x + i < GOMOKU_BOARD_SIZE && y - i >= 0 && board[x+i][y-i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x+i, y-i, board[x][y]));
         temp++;
         i++;
     }
     i = 1;
     while (x-i >= 0 && y + i < GOMOKU_BOARD_SIZE && board[x-i][y+i] == board[x][y]){
         if (move)
-            move->coordinatesList.push_back(new Coordinates(x, y, board[x][y]));
+            move->coordinatesList.push_back(new Coordinates(x-i, y+i, board[x][y]));
         temp++;
         i++;
     }
@@ -202,25 +202,31 @@ bool GomokuMainBoard::win(int x, int y) {
     mainDiagnolOfFive(x,y, nullptr) || reverseDiagnolOfFive(x,y, nullptr);
 }
 
-bool GomokuMainBoard::win(int x, int y, Move &move){
+bool GomokuMainBoard::win(int x, int y, Move *move){
     Move    tempMove{};
 
     if (rowOfFive(x,y, &tempMove) || columnOfFive(x,y, &tempMove) ||
     mainDiagnolOfFive(x,y, &tempMove) || reverseDiagnolOfFive(x,y, &tempMove)) {
-        for (auto coordinate : tempMove.coordinatesList)
-            move.coordinatesList.push_back(coordinate);
+        for (auto coordinate : tempMove.coordinatesList) {
+            std::cout << coordinate->getX() << coordinate->getY() << std::endl;
+            move->coordinatesList.push_back(coordinate);
+        }
         return true;
     }
+    for (auto coordinate : tempMove.coordinatesList)
+        std::cout << coordinate->getX() << std::endl;
     return false;
 }
 
 void GomokuMainBoard::_clearMove(Move *move) {
     if (move) {
-        for (auto coordinate : move->coordinatesList)
+        for (auto coordinate : move->coordinatesList) {
+            std::cout << coordinate << std::endl;
             delete coordinate;
+        }
+        move->coordinatesList.clear();
     }
 }
-
 
 void GomokuMainBoard::setValueAndAddNewSpot(int x, int y, int symbol) {
     AvailableSpot newSpot;
