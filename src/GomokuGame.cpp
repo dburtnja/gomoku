@@ -31,6 +31,7 @@ void GomokuGame::start() {
         return;
     }
     winner = this->_startGomokuGame(winningMove);
+
     if (winner >= 0) {
         std::cout << winner << " WIN!" << std::endl;
         this->_view->showWiningLine("Game over!", &winningMove);

@@ -19,7 +19,7 @@ View	*View::_selfInstance = nullptr;
 
 View::View(int width, int height, char const *name, GomokuMainBoard *board, Uint32 sleep_time) {
 	View::_selfInstance = this;
-	this->_debug = true;
+	this->_debug = false;
 	this->_width = width;
 	this->_height = height;
 	this->_name = name;
@@ -284,7 +284,6 @@ bool View::_checkViewEvent(SDL_Event *event) {
 		eventHandler(this, event);
 	if (event->type == SDL_QUIT) {
 		this->_running = false;
-		std::cout << "quit" << std::endl;
 		return false;
 	}
 	return true;
@@ -518,6 +517,7 @@ void View::showWiningLine(const char *message, Move *winingMove) {
 	this->_textures[WIN_MESSAGE_TEXTURE]->clearTexture(this->_renderer, color);
 	this->_textures[WIN_MESSAGE_TEXTURE]->setAsRenderTarget(this->_renderer);
 	this->_renderText(message, this->_font46, 40, 40);
+
 	for (auto coordinate : winingMove->coordinatesList)
 	{
         this->_renderStone(coordinate);
