@@ -26,16 +26,17 @@ class GomokuMainBoard {
         bool checkEmpty(int x, int y);
         void setValue(int x,int y, int c);
         bool win(int, int);
+        bool win(int, int, Move&);
         bool draw();
         int check_for_capture( int x_cor, int y_cor, APlayer * attack, APlayer * feed, bool, std::vector<Coordinates*> &);
         bool rowOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
         bool columnOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
         bool mainDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
         bool reverseDiagnolOfTwo(int, int, int, int, bool, std::vector<Coordinates*> &);
-        bool rowOfFive(int, int);
-        bool columnOfFive(int, int);
-        bool mainDiagnolOfFive(int, int);
-        bool reverseDiagnolOfFive(int, int);
+        bool rowOfFive(int, int, Move*);
+        bool columnOfFive(int, int, Move*);
+        bool mainDiagnolOfFive(int, int, Move*);
+        bool reverseDiagnolOfFive(int, int, Move*);
         bool putStoneOnBoard(int x, int y, int plyaer, int depth);
         void addNewSpots(int x, int y, int depth);
         void setValueAndAddNewSpot(int x, int y, int symbol);
@@ -54,6 +55,8 @@ class GomokuMainBoard {
         unsigned int _boardSize;
         int _players[2];
         int _move;
+
+    void _clearMove(Move *move);
 };
 
 #endif

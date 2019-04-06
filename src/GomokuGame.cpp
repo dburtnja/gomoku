@@ -33,7 +33,7 @@ void GomokuGame::start() {
     winner = this->_startGomokuGame(winningMove);
     if (winner >= 0) {
         std::cout << winner << " WIN!" << std::endl;
-        this->_view->showWiningLine("WINING message", &winningMove);
+        this->_view->showWiningLine("Game over!", &winningMove);
     }
 }
 
@@ -71,7 +71,7 @@ APlayer *GomokuGame::_getPlayerObj(int playerType, int playerNumber, int playerS
 
 int GomokuGame::_startGomokuGame(Move &winningMove) {
     SDL_Event   event;
-    Move        move;
+    Move        move{};
 
     this->_moveCounter = 0;
 
@@ -111,7 +111,6 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
         }
         if (this->_board->draw())
             std::cout << "DRAW!\n";
-        move.moveCounter = _moveCounter; //TODO show on view
         this->_view->updateMove(move);
         this->_view->updateAllBoard(this->_board);
         this->_view->updateGameScreen();
