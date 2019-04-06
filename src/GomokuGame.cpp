@@ -104,6 +104,7 @@ int GomokuGame::_startGomokuGame(Move &winningMove) {
         move = this->_getCurrentPlayer()->makeMove(*(this->_board), this->_getOppositePlayer());
         move.capturePlayer_1 = this->_players[FIRST_PLAYER_POSITION]->getPlayerCapture();
         move.capturePlayer_2 = this->_players[SECOND_PLAYER_POSITION]->getPlayerCapture();
+        move.moveCounter = this->_moveCounter;
         if (!this->_view->isRunning())
             return -1;
         this->_view->updateMenuValues(move);

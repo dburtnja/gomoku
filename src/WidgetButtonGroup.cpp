@@ -48,8 +48,10 @@ void WidgetButtonGroup::addButton(int x, int y, int h, int w, char const *name, 
     button = new WidgetButton(this->_rect.x + x, this->_rect.y + y, h, w);
     button->setBackgroundColor(WHITE_COLOR_SDL);
     button->setText(name, BLACK_COLOR_SDL);
-    if (setAsDefault)
+    if (setAsDefault) {
         button->setDisableValue(true);
+        this->_selected = static_cast<int>(this->_buttons.size());
+    }
     this->_buttons.push_back(button);
 }
 

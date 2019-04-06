@@ -25,8 +25,9 @@
 #define MENU_TEXTURE            0
 #define WIN_MESSAGE_TEXTURE     1
 
-#define LAST_MOVE_MESSAGE		"Last move:"
-#define LAST_MOVE_TIME_MESSAGE	"Last move time:"
+#define LAST_MOVE_MESSAGE				"Last move:"
+#define MOVE_COUNTER_MESSAGE			"Move counter:"
+#define LAST_MOVE_TIME_MESSAGE			"Last move time:"
 #define FIRST_PLAYER_CAPTURES_MESSAGE	" -> First player:"
 #define SECOND_PLAYER_CAPTURES_MESSAGE	" -> Second player:"
 

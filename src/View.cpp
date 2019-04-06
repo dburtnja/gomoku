@@ -146,8 +146,8 @@ void View::_setStartWidgets(std::vector<Widget *> *widgets, WidgetButton **start
 
     secondPlayerSelection = new WidgetButtonGroup(this->_width - 500, this->_height - 300, 190, 400);
     secondPlayerSelection->setBackgroundAlphaColor(50);
-    secondPlayerSelection->addButton(10, 10, 50, 380, "Computer", true);
-    secondPlayerSelection->addButton(10, 70, 50, 380, "Human");
+    secondPlayerSelection->addButton(10, 10, 50, 380, "Computer");
+    secondPlayerSelection->addButton(10, 70, 50, 380, "Human", true);
     secondPlayerSelection->addButton(10, 130, 50, 380, "Computer & Human");
 
     widgets->push_back(firstPlayerSelection);
@@ -453,6 +453,7 @@ void View::_addMenuPanel(SDLTextureClass *texture) {
     insideY = 10;
     values = {
             {LAST_MOVE_MESSAGE, "0"},
+			{MOVE_COUNTER_MESSAGE, "0"},
             {LAST_MOVE_TIME_MESSAGE, "0 s"},
             {"Captures", ""},
             {FIRST_PLAYER_CAPTURES_MESSAGE, "0"},
@@ -607,7 +608,10 @@ void View::updateMenuValues(const Move &move) {
     sprintf(value, "%c.%d", move.coordinatesList[0]->getX() + 'A', move.coordinatesList[0]->getY() + 1);
     this->_updateTextInWidget(LAST_MOVE_MESSAGE, value);
 
-    sprintf(value, "%f s", move.moveTime);
+	sprintf(value, "%d", move.moveCounter);
+	this->_updateTextInWidget(MOVE_COUNTER_MESSAGE, value);
+
+	sprintf(value, "%f s", move.moveTime);
 	this->_updateTextInWidget(LAST_MOVE_TIME_MESSAGE, value);
 
 	sprintf(value, "%i", move.capturePlayer_1);
