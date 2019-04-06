@@ -208,20 +208,16 @@ bool GomokuMainBoard::win(int x, int y, Move *move){
     if (rowOfFive(x,y, &tempMove) || columnOfFive(x,y, &tempMove) ||
     mainDiagnolOfFive(x,y, &tempMove) || reverseDiagnolOfFive(x,y, &tempMove)) {
         for (auto coordinate : tempMove.coordinatesList) {
-            std::cout << coordinate->getX() << coordinate->getY() << std::endl;
             move->coordinatesList.push_back(coordinate);
         }
         return true;
     }
-    for (auto coordinate : tempMove.coordinatesList)
-        std::cout << coordinate->getX() << std::endl;
     return false;
 }
 
 void GomokuMainBoard::_clearMove(Move *move) {
     if (move) {
         for (auto coordinate : move->coordinatesList) {
-            std::cout << coordinate << std::endl;
             delete coordinate;
         }
         move->coordinatesList.clear();
